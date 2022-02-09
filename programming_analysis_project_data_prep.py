@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 '''#Config control
 0.0.3 - removal of np arrays in df primary actors to allow for the saving of generated metadata to and from csv's 
-0.0.4 transferal to spyder
+0.0.5 transferal to spyder and continued work
+0.0.5 Re-orginisation of code
 
 #Required actions:
     remapping of files,
@@ -23,44 +24,31 @@ Spyder Editor
 This is a temporary script file.
 """
 #%% Hard restart/regeneration of data
-runcell("Import Modules and CSVs", 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/programming_analysis_project_main 0.0.4.py')
-runcell("Regenerate df_PrimaryActorsList", 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/programming_analysis_project_main 0.0.4.py')
-runcell("Call Generate Actor Metadata", 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/programming_analysis_project_main 0.0.4.py')
-
+runcell("Import Modules and CSVs", 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/programming_analysis_project_main 0.0.5.py')
+runcell("Reset and Define Metatables and General Variables/Methods", 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/programming_analysis_project_main 0.0.5.py')
+runcell("General Methods", 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/programming_analysis_project_main 0.0.5.py')
+runcell("md_PrimaryActorsList - Step 1", 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/programming_analysis_project_main 0.0.5.py')
+runcell("md_PrimaryActorsList - Step 2", 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/programming_analysis_project_main 0.0.5.py')
+runcell("Generate Actor Metadata", 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/programming_analysis_project_main 0.0.5.py')
+runcell("Generate actor to film metadata", 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/programming_analysis_project_main 0.0.5.py')
+runcell("md_film_scores - Step 1", 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/programming_analysis_project_main 0.0.5.py')
+runcell("md_film_scores - Step 2", 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/programming_analysis_project_main 0.0.5.py')
 
 #%% start up run
-runcell("Import Modules and CSVs", 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/programming_analysis_project_main 0.0.4.py')
-runcell("Re-loading.csv's", 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/programming_analysis_project_main 0.0.4.py')
-runcell("Call Generate Actor Metadata", 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/programming_analysis_project_main 0.0.4.py')
+runcell("Import Modules and CSVs", 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/programming_analysis_project_main 0.0.5.py')
+runcell("Reset and Define Metatables and General Variables/Methods", 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/programming_analysis_project_main 0.0.5.py')
+runcell("General Methods", 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/programming_analysis_project_main 0.0.5.py')
+runcell("Re-loading.csv's", 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/programming_analysis_project_main 0.0.5.py')
 
+#%% Save progress 
 
-
-#%% Call Generate Actor Metadata
-
-'''This is to be consolodated to one'''
-
-#runcell("Generate PrimaryActorsList", 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/programming_analysis_project_main 0.0.4.py')
-runcell("Generate Actor Metadata", 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/programming_analysis_project_main 0.0.4.py')
-runcell("Generate actor to film metadata", 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/programming_analysis_project_main 0.0.4.py')
-
-#%% Regenerate df_PrimaryActorsList
-
-print(datetime.now())
-runcell("Reset Metatables (df_PrimaryActorsList, md_actor_to_film) and Generate df_PrimaryActorsList", 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/programming_analysis_project_main 0.0.4.py')
-print(datetime.now())
-get_film_ratings_v1(0)
-print(datetime.now())
-get_film_ratings_v1(1)
-print(datetime.now())
-get_film_ratings_v1(2)
-print(datetime.now())
+runcell("Save .csv's", 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/programming_analysis_project_main 0.0.5.py')
 
 
 #%% Import Modules and CSVs
 ''' Import modules, data and initialise global variables'''
 
 from datetime import datetime
-start = datetime.now()
 import pdb
 import numpy as np
 import pandas as pd
@@ -74,100 +62,123 @@ from sklearn.linear_model import LinearRegression
 #start = datetime.now()
 df_title_principals = pd.read_csv(r"C:\Users\fabio\OneDrive\Documents\Studies\Programming_Analysis_Project/title_principals.tsv", sep='\t')
 df_title_ratings = pd.read_csv(r"C:\Users\fabio\OneDrive\Documents\Studies\Programming_Analysis_Project/title_ratings.tsv", sep='\t')
+
 df_name_basics = pd.read_csv(r"C:\Users\fabio\OneDrive\Documents\Studies\Programming_Analysis_Project\name_basics.tsv", sep='\t')
+df_name_basics.set_index('nconst', inplace=True)
+#df_name_basics.set_index('nconst', inplace=True)
 #df_title_akas = pd.read_csv("/content/drive/MyDrive/Data_Analysis_Project/title_akas.tsv", sep='\t')
 df_title_basics = pd.read_csv(r"C:\Users\fabio\OneDrive\Documents\Studies\Programming_Analysis_Project\title_basics.tsv", sep='\t')
+df_title_basics.set_index('tconst', inplace=True)
+#df_title_basics.set_index('tconst', inplace=True)
 #df_title_crew = pd.read_csv("/content/drive/MyDrive/Data_Analysis_Project/title_crew.tsv", sep='\t')
 #print("Time taken: " + str(datetime.now() - start))
 
 
-#Generate the metadata columns required in primary tables
-#df_title_principals['Relative Scoring'] = False
 
-# General Variables
-df_PrimaryActorsList_column_values = ["Number", "Name", "Rel_IDs", "Ratings", "Rating Years", 'Tconts', "Rating - Mean", "Rating - Std Dev", "Start Year", "Final Year", "Films_Training_Qty", "Films_Testing_Qty", "Training Mean", "Training Std", "Model_Gradient", "Model_Intercept", "Model Rating 2020"]
-df_PrimaryActorsList = pd.DataFrame(columns = df_PrimaryActorsList_column_values)
-
-df_RatingModels_column_names = ["Name", 'Tconts', "Model"]
-df_RatingModels = pd.DataFrame(columns = df_RatingModels_column_names, dtype=object)
-
-md_actor_to_film_column_names = ['tconts', 'nconst', 'film name', 'actor name', 'film year', 'film score', 'actor relative score']
-md_actor_to_film = pd.DataFrame(columns = md_actor_to_film_column_names)
-
-md_secondary_actors_column_names = ['ncont', 'Name', 'Start Year', 'Final Year', 'Relative Actor Scores', 'Relative Actor Score - Mean']
-md_secondary_actors = pd.DataFrame(columns = md_secondary_actors_column_names)
-
-md_film_scores_column_names = ['tconst', 'name', 'genre', 'Primary Actor Ratings', 'Primary Actor Ratings - Mean', 'Primary Actor Ratings - Std Dev']
-md_film_scores = pd.DataFrame(columns = md_film_scores_column_names)
-
-#initialise general methods and global variables
-Final_Training_Year = 2005
-title_principals_unique_category = []
-runcell("General Methods", 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/programming_analysis_project_main 0.0.4.py')
-get_unique_values__title_principals_category()
-roles_of_secondary_interest = ['self', 'actor', 'actress']
-
-print("Time taken: " + str(datetime.now() - start))
 
 
 #%% Re-loading.csv's
 
 #Re-loading .csv's
 
-df_PrimaryActorsList = pd.read_csv(r"C:\Users\fabio\OneDrive\Documents\Studies\Programming_Analysis_Project\Metadata\df_PrimaryActorsList.csv")
-relister_main(df_PrimaryActorsList, 'Ratings')
-relister_main(df_PrimaryActorsList, 'Rating Years', "int")
-relister_main(df_PrimaryActorsList, 'Tconts', "string")
+
 
 md_actor_to_film = pd.read_csv(r'C:\Users\fabio\OneDrive\Documents\Studies\Programming_Analysis_Project\Metadata\md_actor_to_film.csv')
+md_actor_to_film.set_index(['nconst', 'tconst'], inplace=True)
+md_actor_to_film = md_actor_to_film.loc[:, ~md_actor_to_film.columns.str.contains('^Unnamed')]
 
 md_film_scores = pd.read_csv(r'C:\Users\fabio\OneDrive\Documents\Studies\Programming_Analysis_Project\Metadata\md_film_scores.csv')
 relister_main(md_film_scores, 'genre', "string")
-relister_main(md_film_scores, 'Primary Actor Ratings', 'float')
+relister_main(md_film_scores, 'Primary Actor Relative Ratings', 'float')
+relister_main(md_film_scores, 'nconst', 'string')
+md_film_scores = md_film_scores.loc[:, ~md_film_scores.columns.str.contains('^Unnamed')]
+md_film_scores.set_index('tconst', inplace=True)
 
 
-#%%
+md_PrimaryActorsList = pd.read_csv(r"C:\Users\fabio\OneDrive\Documents\Studies\Programming_Analysis_Project\Metadata\md_PrimaryActorsList.csv")
+relister_main(md_PrimaryActorsList, 'Ratings')
+relister_main(md_PrimaryActorsList, 'Rating Years', "int")
+relister_main(md_PrimaryActorsList, 'tconst', "string")
+relister_main(md_PrimaryActorsList, 'nconst', "string")
 
-#relister_main(df_PrimaryActorsList, 'Tconts', "string")
+
+
+md_film_scores = pd.read_csv(r'C:\Users\fabio\OneDrive\Documents\Studies\Programming_Analysis_Project\Metadata\md_film_scores.csv')
+
+
+md_secondary_actors = pd.read_csv(r'C:\Users\fabio\OneDrive\Documents\Studies\Programming_Analysis_Project\Metadata\md_secondary_actors.csv')
+relister_main(md_secondary_actors, 'tconst', "string")
+relister_main(md_secondary_actors, 'Relative Actor Scores', 'float')
+relister_main(md_secondary_actors, 'Film Years', 'int')
+md_secondary_actors = md_secondary_actors.loc[:, ~md_secondary_actors.columns.str.contains('^Unnamed')]
+
+
+md_title_principals_reduced = pd.read_csv(r'C:\Users\fabio\OneDrive\Documents\Studies\Programming_Analysis_Project\Metadata\md_title_principals_reduced.csv')
+
+
+
 
 #%% Save .csv's 
 
 # Commented out lines are for colab 
 
-#df_PrimaryActorsList.to_csv('df_PrimaryActorsList.csv')
-#!cp df_PrimaryActorsList.csv "drive/My Drive/Data_Analysis_Project/Metadata"
+#md_PrimaryActorsList.to_csv('md_PrimaryActorsList.csv')
+#!cp md_PrimaryActorsList.csv "drive/My Drive/Data_Analysis_Project/Metadata"
 
-df_PrimaryActorsList.to_csv(r'C:\Users\fabio\OneDrive\Documents\Studies\Programming_Analysis_Project\Metadata\df_PrimaryActorsList.csv')
+
 md_actor_to_film.to_csv(r'C:\Users\fabio\OneDrive\Documents\Studies\Programming_Analysis_Project\Metadata\md_actor_to_film.csv')
 md_film_scores.to_csv(r'C:\Users\fabio\OneDrive\Documents\Studies\Programming_Analysis_Project\Metadata\md_film_scores.csv')
+md_PrimaryActorsList.to_csv(r'C:\Users\fabio\OneDrive\Documents\Studies\Programming_Analysis_Project\Metadata\md_PrimaryActorsList.csv')
+md_secondary_actors.to_csv(r'C:\Users\fabio\OneDrive\Documents\Studies\Programming_Analysis_Project\Metadata\md_secondary_actors.csv')
+
+md_title_principals_reduced.to_csv(r'C:\Users\fabio\OneDrive\Documents\Studies\Programming_Analysis_Project\Metadata\md_title_principals_reduced.csv')
 
 
+#%% Reset and Define Metatables and General Variables/Methods
 
-#%% Reset Metatables (df_PrimaryActorsList, md_actor_to_film) and Generate df_PrimaryActorsList
+#Reset and Define Metatables 
+md_PrimaryActorsList_column_values = ["Number", "Name", "nconst", "Ratings", "Rating Years", 'tconst', "Rating - Mean", "Rating - Std Dev", "Start Year", "Final Year", "Films_Training_Qty", "Films_Testing_Qty", "Training Mean", "Training Std", "Model_Gradient", "Model_Intercept", "Model Rating 2020"]
+md_PrimaryActorsList = pd.DataFrame(columns = md_PrimaryActorsList_column_values)
 
+md_RatingModels_column_names = ["Name", 'tconst', "Model"]
+md_RatingModels = pd.DataFrame(columns = md_RatingModels_column_names, dtype=object)
 
-# initialise and Reset [df_PrimaryActorsList, md_actor_to_film]
-df_PrimaryActorsList_column_values = ["Number", "Name", "Rel_IDs", "Ratings", "Rating Years", 'Tconts', "Rating - Mean", "Rating - Std Dev", "Start Year", "Final Year", "Films_Training_Qty", "Films_Testing_Qty", "Training Mean", "Training Std", "Model_Gradient", "Model_Intercept", "Model Rating 2020"]
-df_PrimaryActorsList = pd.DataFrame(columns = df_PrimaryActorsList_column_values)
-
-md_actor_to_film_column_names = ['tconts', 'nconst', 'film name', 'actor name','film year', 'film score', 'actor relative score']
+md_actor_to_film_column_names = ['tconst', 'nconst', 'film name', 'actor name','film year', 'film score', 'actor relative score']
 md_actor_to_film = pd.DataFrame(columns = md_actor_to_film_column_names)
+md_actor_to_film.set_index(['nconst', 'tconst'], inplace=True)
 
-#Find all the top actors 1
+md_secondary_actors_column_names = ['name', 'nconst', 'Start Year', 'Final Year', 'tconst', 'Relative Actor Scores', 'Film Years', 'Relative Actor Score - Mean', "Relative Actor Score - Std"]
+md_secondary_actors = pd.DataFrame(columns = md_secondary_actors_column_names)
+#md_secondary_actors.set_index('name', inplace=True)
+
+md_film_scores_column_names = ['tconst', 'name', 'genre', 'nconst', 'Primary Actor Relative Ratings', 'Primary Actor Relative Ratings - Mean', 'Primary Actor Relative Ratings - Std Dev']
+md_film_scores = pd.DataFrame(columns = md_film_scores_column_names)#, index=['tconst'])
+md_film_scores.set_index('tconst', inplace=True)
+
 PrimaryActorsList = ["Jack Nicholson", "Marlon Brando", "Robert De Niro", "Al Pacino", "Daniel Day-Lewis", "Dustin Hoffman", "Tom Hanks", "Anthony Hopkins", "Paul Newman", "Denzel Washington", "Spencer Tracy", "Laurence Olivier", "Jack Lemmon", "Michael Caine", "James Stewart", "Robin Williams", "Robert Duvall", "Sean Penn", "Morgan Freeman", "Jeff Bridges", "Sidney Poitier", "Peter O'Toole", "Clint Eastwood", "Gene Hackman", "Charles Chaplin", "Ben Kingsley", "Philip Seymour Hoffman", "Leonardo DiCaprio", "Russell Crowe", "Kevin Spacey", "Humphrey Bogart", "Gregory Peck", "Clark Gable", "Gary Cooper", "George C. Scott", "Jason Robards", "Charles Laughton", "Anthony Quinn", "Peter Sellers", "James Cagney", "Peter Finch", "Henry Fonda", "Cary Grant", "Richard Burton", "Burt Lancaster", "William Holden", "John Wayne", "Kirk Douglas", "Alec Guinness", "Christopher Plummer", "Tommy Lee Jones", "Sean Connery", "Alan Arkin", "Christopher Walken", "Joe Pesci", "Ian McKellen", "Michael Douglas", "Jon Voight", "Albert Finney", "Geoffrey Rush", "Jeremy Irons", "Javier Bardem", "Heath Ledger", "Christoph Waltz", "Ralph Fiennes", "Johnny Depp", "Benicio Del Toro", "Jamie Foxx", "Joaquin Phoenix", "Colin Firth", "Matthew McConaughey", "Christian Bale", "Gary Oldman", "Edward Norton", "Brad Pitt", "Tom Cruise", "Matt Damon", "Hugh Jackman", "Robert Downey Jr.", "Liam Neeson", "Mel Gibson", "Harrison Ford", "Woody Allen", "Steve McQueen", "Orson Welles", "Robert Redford", "James Dean", "Charlton Heston", "Gene Kelly", "Robert Mitchum", "Bill Murray", "Samuel L. Jackson", "Jim Carrey", "Don Cheadle", "Martin Sheen", "Alan Rickman", "Edward G. Robinson", "Will Smith", "John Goodman", "Buster Keaton"]
-df_PrimaryActorsList_column_values_reduced = ["Number", "Name", "Rel_IDs", "Ratings", "Rating Years", 'Tconts']
+md_PrimaryActorsList_column_values_reduced = ["Number", "Name", "nconst", "Ratings", "Rating Years", 'tconst']
+
+
+#General Variables/Methods
+Final_Training_Year = 2005
+title_principals_unique_category = list([])
+runcell("General Methods", 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/programming_analysis_project_main 0.0.5.py')
+get_unique_values__title_principals_category()
+roles_of_secondary_interest = ['self', 'actor', 'actress']
+
+#%% md_PrimaryActorsList - Step 1
 
 #reset values
-returnedFlag = []
-df_PrimaryActorsList = df_PrimaryActorsList[0:0]
+returnedFlag = list([])
+md_PrimaryActorsList = md_PrimaryActorsList[0:0]
 row_number = 0
-blank_lists  = []
+blank_lists  = list([])
 
 #Find all the top actors 2
 for i in PrimaryActorsList[:3]:
   row_number += 1
   nameK = str(i)
-  rel_key = []
+  rel_key = list([])
   rel_key_mask = df_name_basics['primaryName'] == i
   #pdb.set_trace()
   rel_key_slice = df_name_basics['nconst'].values
@@ -176,28 +187,209 @@ for i in PrimaryActorsList[:3]:
   #pdb.set_trace()
   #rel_key = df_name_basics[df_name_basics['primaryName'] == i].index
   #print(str(row_number), str(nameK), str(rel_key))
-  addition = pd.Series(data=[row_number, nameK, rel_key, blank_lists, blank_lists, blank_lists], index=df_PrimaryActorsList_column_values_reduced)
-  df_PrimaryActorsList = df_PrimaryActorsList.append(addition, ignore_index=True)
+  addition = pd.Series(data=[row_number, nameK, rel_key, blank_lists, blank_lists, blank_lists], index=md_PrimaryActorsList_column_values_reduced)
+  md_PrimaryActorsList = md_PrimaryActorsList.append(addition, ignore_index=True)
   
 
 
-df_PrimaryActorsList.head()
+#%% md_PrimaryActorsList - Step 2
+
+print(datetime.now())
+#runcell("Reset Metatables (md_PrimaryActorsList, md_actor_to_film) and Generate md_PrimaryActorsList", 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/programming_analysis_project_main 0.0.5.py')
+print(datetime.now())
+get_film_ratings_v1(0)
+print(datetime.now())
+get_film_ratings_v1(1)
+print(datetime.now())
+get_film_ratings_v1(2)
+print(datetime.now())
+
+
+    
+
 
 
 #%% Generate Actor Metadata
 
-for i in np.arange(0, len(df_PrimaryActorsList)):
+for i in np.arange(0, len(md_PrimaryActorsList)):
     
-    define_actor_metadata_step_1(df_PrimaryActorsList, i)
-    M, C, rating2020, Mean, Std = create_actor_model(i, df_PrimaryActorsList)
+    define_actor_metadata_step_1(md_PrimaryActorsList, i)
+    M, C, rating2020, Mean, Std = create_actor_model(i, md_PrimaryActorsList)
 
-    df_PrimaryActorsList["Model_Gradient"][i] = float(M)
-    df_PrimaryActorsList["Model_Intercept"][i] = float(C)
-    df_PrimaryActorsList["Model Rating 2020"][i] = float(rating2020)
+    md_PrimaryActorsList["Model_Gradient"][i] = float(M)
+    md_PrimaryActorsList["Model_Intercept"][i] = float(C)
+    md_PrimaryActorsList["Model Rating 2020"][i] = float(rating2020)
     
-    df_PrimaryActorsList["Training Mean"][i] = float(Mean)
-    df_PrimaryActorsList["Training Std"][i] = float(Std)
+    md_PrimaryActorsList["Training Mean"][i] = float(Mean)
+    md_PrimaryActorsList["Training Std"][i] = float(Std)
+
+
+
+#%% Generate actor to film metadata
+
+actor_name = ""
+for i in md_actor_to_film.index:
+    actor_name_new = i[0]
+    if not(actor_name == actor_name_new):
+        actor_name = actor_name_new
+        actor_index = md_PrimaryActorsList[md_PrimaryActorsList['Name'] == actor_name].index[0]
+        actor_expected_2020_score   = md_PrimaryActorsList['Model Rating 2020'][actor_index]
+        actor_gradient              = md_PrimaryActorsList['Model_Gradient'][actor_index]
+        actor_std_dev               = md_PrimaryActorsList['Training Std'][actor_index]
+    film_year   = md_actor_to_film['film year'][i]
+    film_score  = md_actor_to_film['film score'][i]
     
+    md_actor_to_film['actor relative score'][i] = float(evaluate_actor_to_film_score(actor_expected_2020_score, actor_gradient, actor_std_dev, film_year, film_score))
+
+
+
+#%% md_film_scores - Step 1
+
+unique_tconst = get_unique_values__relevant_film_tconst()
+
+md_film_scores = md_film_scores[0:0]
+
+for i in range(0, len(unique_tconst)):
+    df_index = df_title_basics[df_title_basics['tconst'] == unique_tconst[i]].index
+    #data = pd.Series([unique_tconst[i], df_title_basics['primaryTitle'][df_index].values[0], df_title_basics['genres'][df_index].values[0], list([]), None, None], index=md_film_scores_column_names[1:])
+    data = pd.Series(data=[df_title_basics['primaryTitle'][df_index].values[0], df_title_basics['genres'][df_index].values[0], list([]), list([]), None, None], index=md_film_scores_column_names[1:], name=unique_tconst[i])
+    md_film_scores = md_film_scores.append(data)
+
+
+
+#%% md_film_scores - Step 2
+
+for film_rel_index in md_actor_to_film.index:
+    target_nconst = film_rel_index[0]
+    target_tconst = film_rel_index[1]
+    
+    target_rating = md_actor_to_film['actor relative score'][film_rel_index]
+    
+    md_film_scores.loc[target_tconst, 'nconst'].append(target_nconst)
+    md_film_scores.loc[target_tconst, 'Primary Actor Relative Ratings'].append(target_rating)
+    
+for film_index in md_film_scores.index:
+    md_film_scores.loc[film_index, 'Primary Actor Relative Ratings - Mean'] = np.mean(md_film_scores.loc[film_index, 'Primary Actor Relative Ratings'])
+    md_film_scores.loc[film_index, 'Primary Actor Relative Ratings - Std Dev'] = np.std(md_film_scores.loc[film_index, 'Primary Actor Relative Ratings'])
+
+
+
+#%% collect Secondary Actor Metadata - Step 1
+
+#list_categories = ['self', 'actor', 'actress']
+
+unique_tconst = get_unique_values__relevant_film_tconst()
+mask_for_film = [True if ele in unique_tconst else False for ele in df_title_principals['tconst']]
+md_title_principals_reduced = df_title_principals[mask_for_film]
+
+list_categories = ['self', 'actor', 'actress']
+mask_for_category = [True if ele in list_categories else False for ele in md_title_principals_reduced['category']]
+md_title_principals_reduced = md_title_principals_reduced[mask_for_category]
+
+unique_secondary_nconst = get_unique_values(md_title_principals_reduced, 'nconst')
+
+
+#%%
+
+unique_secondary_nconst = get_unique_values(md_title_principals_reduced, 'nconst')
+md_secondary_actors = md_secondary_actors[0:0]
+
+#md_secondary_actors = md_secondary_actors.loc[:, ~md_secondary_actors.columns.str.contains('^Unnamed')]
+#md_secondary_actors = md_secondary_actors.loc[:, ~md_secondary_actors.columns.str.contains('0')]
+
+#Collect all associated names to nconst (to later group according to name)
+for nconst in unique_secondary_nconst:
+    name = df_name_basics.loc[nconst, 'primaryName']
+    
+    data=[name, nconst]#, Start_Year, Final_Year, tconsts, Relative_Actor_Scores, film_years, Relative_Actor_Score_Mean]
+    
+    columns = md_secondary_actors_column_names[0:2]
+        
+    addition = pd.Series(data=data, index=columns)
+    md_secondary_actors = md_secondary_actors.append(addition, ignore_index=True)
+    
+md_secondary_actors = pd.DataFrame(md_secondary_actors.groupby('name')['nconst'].apply(list))
+
+md_secondary_actors["Start Year"] = None
+md_secondary_actors["Final Year"] = None
+md_secondary_actors["tconsts"] = None
+md_secondary_actors["Relative Actor Scores"] = None
+md_secondary_actors["Film Years"] = None
+md_secondary_actors["Relative Actor Score - Mean"] = None
+md_secondary_actors["Relative Actor Score - Std"] = None
+for i in range(0, len(md_secondary_actors)):
+    md_secondary_actors["tconsts"][i]               = list([])
+    md_secondary_actors["Relative Actor Scores"][i] = list([])
+    md_secondary_actors["Film Years"][i]            = list([])
+    
+
+    
+''' 
+   
+md_secondary_actors.set_index('tconst')
+df_test = md_secondary_actors.groupby('name')['nconst'].apply(list)
+
+
+'''
+    
+'''
+Start_Year = None
+Final_Year = None
+tconsts = list([])
+Relative_Actor_Scores = list([])
+film_years = list([])
+Relative_Actor_Score_Mean = None
+'''
+
+
+
+#%%
+for nconst in unique_secondary_nconst:
+    name = df_name_basics.loc[nconst, 'primaryName']
+    Start_Year = None
+    Final_Year = None
+    tconsts = list([])
+    Relative_Actor_Scores = list([])
+    film_years = list([])
+    Relative_Actor_Score_Mean = None
+    
+    data=[name, Start_Year, Final_Year, tconsts, Relative_Actor_Scores, film_years, Relative_Actor_Score_Mean]
+    name=nconst
+    column=md_secondary_actors_column_names[1:]
+    addition_2 = pd.Series(data=data, name=name, column=column)
+    
+
+'''
+md_secondary_actors_column_names = ['nconst', 'Name', 'Start Year', 'Final Year', 'Relative Actor Scores', 'Relative Actor Score - Mean']
+
+
+addition_index = md_actor_to_film.columns
+addition_2 = pd.Series(data=[title, md_PrimaryActorsList['nconst'][actor_ID][0], df_title_basics['originalTitle'][title_year_index].values[0], md_PrimaryActorsList['Name'][actor_ID], int(title_year), float(value), None], index=addition_index)
+md_actor_to_film = md_actor_to_film.append(addition_2, ignore_index=True)
+
+'''
+
+
+#%% Reduce df_title_principals and collect Secondary Actor Metadata
+
+'''XXXXXXXXXXXXXXXXXXXXXXX I'm not sure this is still needed'''
+
+#get_unique_values__title_principals_category()
+
+unique_primary_nconts = get_unique_values__primary_actor_nconts()
+
+list_categories = ['self', 'actor', 'actress']
+mask_for_category = [True if ele in list_categories else False for ele in df_title_principals['category']]
+df_title_principals_reduced = df_title_principals[mask_for_category]
+
+unique_tconst = get_unique_values__relevant_film_tconst()
+mask_for_relevent_film = [True if ele in unique_tconst else False for ele in df_title_principals_reduced['tconst']]
+df_title_principals_reduced = df_title_principals_reduced[mask_for_relevent_film]
+
+df_title_principals_reduced['Relative Scoring'] = False
+df_title_principals_reduced['Relationship Class'] = 0
+
+
 
 #%% General Methods
 #definition of methods
@@ -208,6 +400,7 @@ def relister_main(dataframe, column_name, format='float'):
 
 def relister_single(dataframe, column_name, row_num, format='float'):
   if len(dataframe[column_name][row_num]) <= 2:
+    dataframe[column_name][row_num] = list([])
     return
   if np.isreal(dataframe[column_name][row_num][0]):
     return
@@ -216,7 +409,7 @@ def relister_single(dataframe, column_name, row_num, format='float'):
   if target_string[0] == '[':
       target_string = target_string[1:-1]
   new_list_raw = target_string.split(',')
-  new_list = []
+  new_list = list([])
   first = True
   for i in new_list_raw:
     if format=='float':
@@ -231,7 +424,7 @@ def relister_single(dataframe, column_name, row_num, format='float'):
         value = string
     
     if first == True:
-      new_list = [value]
+      new_list = list([value])
       first = False
     else:
       new_list.append(value)
@@ -241,14 +434,14 @@ def relister_single(dataframe, column_name, row_num, format='float'):
 #find an actor's films and their ratings
 def get_film_ratings_v1(actor_ID, df_title_basics=df_title_basics, df_title_ratings=df_title_ratings):
   
-  global df_PrimaryActorsList, md_actor_to_film
+  global md_PrimaryActorsList, md_actor_to_film
   
   #reset cells about to be populated
-  df_PrimaryActorsList['Ratings'][actor_ID] = []
-  df_PrimaryActorsList['Rating Years'][actor_ID] = []
-  df_PrimaryActorsList['Tconts'][actor_ID] = []
+  md_PrimaryActorsList['Ratings'][actor_ID] = list([])
+  md_PrimaryActorsList['Rating Years'][actor_ID] = list([])
+  md_PrimaryActorsList['tconst'][actor_ID] = list([])
     
-  for ncont_rel in df_PrimaryActorsList['Rel_IDs'][actor_ID]:
+  for ncont_rel in md_PrimaryActorsList['nconst'][actor_ID]:
     titles_mask = df_title_principals['nconst'] == ncont_rel
     titles = df_title_principals['tconst'][titles_mask]
     
@@ -260,24 +453,24 @@ def get_film_ratings_v1(actor_ID, df_title_basics=df_title_basics, df_title_rati
         title_year_index  = df_title_basics[df_title_basics['tconst'] == title].index
         title_year = df_title_basics['startYear'][title_year_index]
         
-        addition_index = ['tconts', 'nconst', 'film name', 'actor name','film year', 'film score', 'actor relative score']
-        addition_2 = pd.Series(data=[title, df_PrimaryActorsList['Rel_IDs'][actor_ID][0], df_title_basics['originalTitle'][title_year_index].values[0], df_PrimaryActorsList['Name'][actor_ID], int(title_year), float(value), None], index=addition_index)
+        addition_index = md_actor_to_film.columns
+        addition_2 = pd.Series(data=[title, md_PrimaryActorsList['nconst'][actor_ID][0], df_title_basics['originalTitle'][title_year_index].values[0], md_PrimaryActorsList['Name'][actor_ID], int(title_year), float(value), None], index=addition_index)
         md_actor_to_film = md_actor_to_film.append(addition_2, ignore_index=True)
         
         
         
         #pdb.set_trace()
-        if len(df_PrimaryActorsList['Ratings'][actor_ID]) == 0:
-          df_PrimaryActorsList['Ratings'][actor_ID] = [value.values[0]]
-          df_PrimaryActorsList['Rating Years'][actor_ID] = [int(title_year.values[0])]
-          df_PrimaryActorsList['Tconts'][actor_ID] = [title]
+        if len(md_PrimaryActorsList['Ratings'][actor_ID]) == 0:
+          md_PrimaryActorsList['Ratings'][actor_ID] = [value.values[0]]
+          md_PrimaryActorsList['Rating Years'][actor_ID] = [int(title_year.values[0])]
+          md_PrimaryActorsList['tconst'][actor_ID] = [title]
         else:
-          df_PrimaryActorsList['Ratings'][actor_ID].append(value.values[0])
-          df_PrimaryActorsList['Rating Years'][actor_ID].append(int(title_year.values[0]))
-          df_PrimaryActorsList['Tconts'][actor_ID].append(title)
+          md_PrimaryActorsList['Ratings'][actor_ID].append(value.values[0])
+          md_PrimaryActorsList['Rating Years'][actor_ID].append(int(title_year.values[0]))
+          md_PrimaryActorsList['tconst'][actor_ID].append(title)
         
         #add relationship to specialist table
-        #['tconts', 'nconst', 'film name', 'actor name', 'actor relative score']
+        #['tconst', 'nconst', 'film name', 'actor name', 'actor relative score']
         
         
           
@@ -315,7 +508,7 @@ def define_actor_metadata_step_1(datatable, row):
     datatable['Films_Testing_Qty'][row] = films_count - datatable['Films_Training_Qty'][row]
 
 
-def visualise_ratings_career(actor_name_or_ID = 'Jack Nicholson', dataframe = df_PrimaryActorsList):
+def visualise_ratings_career(actor_name_or_ID = 'Jack Nicholson', dataframe = md_PrimaryActorsList):
   #FG comment: index initialied at impossible value to force failure down the line if the if statments dont catch it
   actor_index = len(dataframe) + 5
   
@@ -333,7 +526,7 @@ def visualise_ratings_career(actor_name_or_ID = 'Jack Nicholson', dataframe = df
   
   plt.show()
 
-def create_actor_model(actor_name_or_ID = 'Jack Nicholson', dataframe = df_PrimaryActorsList, final_training_year = Final_Training_Year, generate_chart=False, print_chart = False):
+def create_actor_model(actor_name_or_ID = 'Jack Nicholson', dataframe = md_PrimaryActorsList, final_training_year = Final_Training_Year, generate_chart=False, print_chart = False):
     
     '''   # This method splits the training data of an actor and 
     returns the linear regression model, std dev and charts the prediction 
@@ -394,34 +587,46 @@ def get_unique_values__title_principals_category():
     column_values = df_title_principals[["category"]].values.ravel()
     title_principals_unique_category =  pd.unique(column_values)
     
-def get_unique_values__relevant_film_tconts():
-    unique_tconts_ = df_PrimaryActorsList["Tconts"].values.ravel()
-    unique_tconts = []
-    for sublist in unique_tconts_:
+def get_unique_values__relevant_film_tconst():
+    unique_tconst_ = md_PrimaryActorsList["tconst"].values.ravel()
+    unique_tconst = list([])
+    for sublist in unique_tconst_:
         for item in sublist:
-            unique_tconts.append(item)
+            unique_tconst.append(item)
         
-    unique_tconts = pd.unique(unique_tconts)
-    #unique_tconts = list(unique_tconts[1:-1].split(","))
-    #for i in range(0, len(unique_tconts)):
-    #    unique_tconts[i] = unique_tconts[i].replace("'","")
-    #    unique_tconts[i] = unique_tconts[i].replace(" ","")
-    return unique_tconts
+    unique_tconst = pd.unique(unique_tconst)
+    #unique_tconst = list(unique_tconst[1:-1].split(","))
+    #for i in range(0, len(unique_tconst)):
+    #    unique_tconst[i] = unique_tconst[i].replace("'","")
+    #    unique_tconst[i] = unique_tconst[i].replace(" ","")
+    return unique_tconst
 
 def get_unique_values__primary_actor_nconts():
-    unique_primary_nconts_ = []
-    '''for i in range(0,len(df_PrimaryActorsList["Rel_IDs"])):
+    unique_primary_nconts_ = list([])
+    '''for i in range(0,len(md_PrimaryActorsList["nconst"])):
         if i == 0:
-            unique_primary_nconts_ = df_PrimaryActorsList["Rel_IDs"][i]
+            unique_primary_nconts_ = md_PrimaryActorsList["nconst"][i]
         else:
-            unique_primary_nconts_ = np.concatenate((unique_primary_nconts_, df_PrimaryActorsList["Rel_IDs"][i]))'''
-    unique_primary_nconts_ = df_PrimaryActorsList["Rel_IDs"].values.ravel()
-    unique_primary_nconts = []
+            unique_primary_nconts_ = np.concatenate((unique_primary_nconts_, md_PrimaryActorsList["nconst"][i]))'''
+    unique_primary_nconts_ = md_PrimaryActorsList["nconst"].values.ravel()
+    unique_primary_nconts = list([])
     for sublist in unique_primary_nconts_:
         for item in sublist:
             unique_primary_nconts.append(item)
     
     return unique_primary_nconts
+
+def get_unique_values(dataframe, column, single_or_nested='single'):
+    unique_values = list([])
+    unique_values_temp = dataframe[column].values.ravel()
+    if single_or_nested == 'single':
+        return unique_values_temp
+    else:
+        for sublist in unique_values_temp:
+            for item in sublist:
+                unique_values.append(item)    
+        return unique_values
+
 
 def evaluate_actor_to_film_score(actor_expected_2020_score, actor_gradient, actor_std_dev, film_year, film_score):
     year_of_intercept = 2020
@@ -429,69 +634,8 @@ def evaluate_actor_to_film_score(actor_expected_2020_score, actor_gradient, acto
     relative_z_difference = (film_score - actor_expected_score_for_films_year) / actor_std_dev
     return relative_z_difference
 
-def evaluate_film_relative_scores(md_film_scores=md_film_scores, df_PrimaryActorsList = df_PrimaryActorsList):
+def evaluate_film_relative_scores(md_film_scores=md_film_scores, md_PrimaryActorsList = md_PrimaryActorsList):
         
     return md_film_scores
-
-#%% Generate actor to film metadata
-
-
-
-
-actor_name = ""
-for i in range(0, len(md_actor_to_film)):
-    actor_name_new = md_actor_to_film['actor name'][i]
-    if not(actor_name == actor_name_new):
-        actor_name = actor_name_new
-        actor_index = df_PrimaryActorsList[df_PrimaryActorsList['Name'] == actor_name].index[0]
-        actor_expected_2020_score   = df_PrimaryActorsList['Model Rating 2020'][actor_index]
-        actor_gradient              = df_PrimaryActorsList['Model_Gradient'][actor_index]
-        actor_std_dev               = df_PrimaryActorsList['Training Std'][actor_index]
-    film_year   = md_actor_to_film['film year'][i]
-    film_score  = md_actor_to_film['film score'][i]
-    
-    md_actor_to_film['actor relative score'][i] = float(evaluate_actor_to_film_score(actor_expected_2020_score, actor_gradient, actor_std_dev, film_year, film_score))
-
-
-
-#%% Pre_pop md_film_scores
-
-unique_tconts = get_unique_values__relevant_film_tconts()
-
-md_film_scores_column_names = ['tconst', 'name', 'genre', 'Primary Actor Ratings', 'Primary Actor Ratings - Mean', 'Primary Actor Ratings - Std Dev']
-md_film_scores = pd.DataFrame(columns = md_film_scores_column_names)
-
-md_film_scores = md_film_scores[0:0]
-for i in range(0, len(unique_tconts)):
-    df_index = df_title_basics[df_title_basics['tconst'] == unique_tconts[i]].index
-    data = pd.Series([unique_tconts[i], df_title_basics['primaryTitle'][df_index].values[0], df_title_basics['genres'][df_index].values[0], [], None, None], index=md_film_scores_column_names)
-    md_film_scores = md_film_scores.append(data, ignore_index=True)
-
-
-#%% Reduce df_title_principals and collect Secondary Actor Metadata
-
-#get_unique_values__title_principals_category()
-
-unique_primary_nconts = get_unique_values__primary_actor_nconts()
-
-list_categories = ['self', 'actor', 'actress']
-mask_for_category = [True if ele in list_categories else False for ele in df_title_principals['category']]
-df_title_principals_reduced = df_title_principals[mask_for_category]
-
-unique_tconts = get_unique_values__relevant_film_tconts()
-mask_for_relevent_film = [True if ele in unique_tconts else False for ele in df_title_principals_reduced['tconst']]
-df_title_principals_reduced = df_title_principals_reduced[mask_for_relevent_film]
-
-df_title_principals_reduced['Relative Scoring'] = False
-df_title_principals_reduced['Relationship Class'] = 0
-
-#%%
-
-
-#mask_for_actor = df_title_principals['category'] == 
-#mask_for_actress = df_title_principals['nconst'] == 
-#mask_for_self = df_title_principals['nconst'] == 
-
-
 
 
