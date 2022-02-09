@@ -26,45 +26,47 @@ Spyder Editor
 This is a temporary script file.
 """
 #%% Hard restart/regeneration of data
-runcell("Import Modules and CSVs", 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/programming_analysis_project_main 0.0.7.py')
+
+
+runcell("Import Modules and CSVs", script_filepath + dataprep_filename)
 print("1")
 print(datetime.now())
-runcell("Reset and Define Metatables and General Variables/Methods", 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/programming_analysis_project_main 0.0.7.py')
+runcell("Reset and Define Metatables and General Variables/Methods", script_filepath + dataprep_filename)
 print("2")
 print(datetime.now())
-runcell("General Methods", 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/programming_analysis_project_main 0.0.7.py')
+runcell("General Methods", script_filepath + dataprep_filename)
 print("3")
 print(datetime.now())
-runcell("md_PrimaryActorsList - Step 1", 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/programming_analysis_project_main 0.0.7.py')
+runcell("md_PrimaryActorsList - Step 1", script_filepath + dataprep_filename)
 print("4")
 print(datetime.now())
-runcell("md_PrimaryActorsList - Step 2", 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/programming_analysis_project_main 0.0.7.py')
+runcell("md_PrimaryActorsList - Step 2", script_filepath + dataprep_filename)
 print("5")
 print(datetime.now())
-runcell("Generate Actor Metadata", 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/programming_analysis_project_main 0.0.7.py')
+runcell("Generate Actor Metadata", script_filepath + dataprep_filename)
 print("6")
 print(datetime.now())
-runcell("Generate actor to film metadata", 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/programming_analysis_project_main 0.0.7.py')
+runcell("Generate actor to film metadata", script_filepath + dataprep_filename)
 print("7")
 print(datetime.now())
-runcell("md_film_scores - Step 1", 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/programming_analysis_project_main 0.0.7.py')
+runcell("md_film_scores - Step 1", script_filepath + dataprep_filename)
 print("8")
 print(datetime.now())
-runcell("md_film_scores - Step 2", 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/programming_analysis_project_main 0.0.7.py')
+runcell("md_film_scores - Step 2", script_filepath + dataprep_filename)
 print("9")
 print(datetime.now())
-runcell("collect Secondary Actor Metadata - Step 1", 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/programming_analysis_project_main 0.0.7.py')
+runcell("collect Secondary Actor Metadata - Step 1", script_filepath + dataprep_filename)
 print("10")
 print(datetime.now())
-runcell("collect Secondary Actor Metadata - Step 2", 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/programming_analysis_project_main 0.0.7.py')
+runcell("collect Secondary Actor Metadata - Step 2", script_filepath + dataprep_filename)
 print("11")
 print(datetime.now())
-runcell("collect Secondary Actor Metadata - Step 3", 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/programming_analysis_project_main 0.0.7.py')
+runcell("collect Secondary Actor Metadata - Step 3", script_filepath + dataprep_filename)
 print(datetime.now())
 
 
 
-
+#%%
     
 
 
@@ -73,14 +75,22 @@ print(datetime.now())
 
 
 #%% start up run
-runcell("Import Modules and CSVs", 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/programming_analysis_project_main 0.0.7.py')
-runcell("Reset and Define Metatables and General Variables/Methods", 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/programming_analysis_project_main 0.0.7.py')
-runcell("General Methods", 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/programming_analysis_project_main 0.0.7.py')
-runcell("Re-loading.csv's", 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/programming_analysis_project_main 0.0.7.py')
+
+script_filepath = "C:\\Users\\fabio\\OneDrive\\Documents\\Studies\\Programming_Analysis_Project\\IMDB-Stars-Project\\"
+database_filepath = "C:\\Users\\fabio\\OneDrive\\Documents\\Studies\\Programming_Analysis_Project\\IMDB-Stars-Project\\data\\"
+metadata_filepath = "C:\\Users\\fabio\\OneDrive\\Documents\\Studies\\Programming_Analysis_Project\\IMDB-Stars-Project\\Metadata\\"
+
+dataprep_filename = "programming_analysis_project_data_prep.py"
+analysis_filename = "programming_analysis_project_analysis_file.py"
+
+runcell("Import Modules and CSVs", script_filepath + dataprep_filename)
+runcell("Reset and Define Metatables and General Variables/Methods", script_filepath + dataprep_filename)
+runcell("General Methods", script_filepath + dataprep_filename)
+runcell("Re-loading.csv's", script_filepath + dataprep_filename)
 
 #%% Save progress 
 
-runcell("Save .csv's", 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/programming_analysis_project_main 0.0.7.py')
+runcell("Save .csv's", script_filepath + dataprep_filename)
 
 
 #%% Import Modules and CSVs
@@ -95,20 +105,26 @@ import sklearn
 from sklearn.linear_model import LinearRegression
 import seaborn as sns
 import plotly.express as px
+import pathlib
+import os
+
+
+
+
 
 #from google.colab import drive
 #drive.mount('/content/drive')
 #from google.colab import files
 #start = datetime.now()
-df_title_principals = pd.read_csv(r"C:\Users\fabio\OneDrive\Documents\Studies\Programming_Analysis_Project/title_principals.tsv", sep='\t')
-df_title_ratings = pd.read_csv(r"C:\Users\fabio\OneDrive\Documents\Studies\Programming_Analysis_Project/title_ratings.tsv", sep='\t')
+df_title_principals = pd.read_csv(database_filepath + "title_principals.tsv", sep='\t')
+df_title_ratings = pd.read_csv(database_filepath + "title_ratings.tsv", sep='\t')
 df_title_ratings.set_index('tconst', inplace=True)
 
-df_name_basics = pd.read_csv(r"C:\Users\fabio\OneDrive\Documents\Studies\Programming_Analysis_Project\name_basics.tsv", sep='\t')
+df_name_basics = pd.read_csv(database_filepath + "name_basics.tsv", sep='\t')
 df_name_basics.set_index('nconst', inplace=True)
 #df_name_basics.set_index('nconst', inplace=True)
 #df_title_akas = pd.read_csv("/content/drive/MyDrive/Data_Analysis_Project/title_akas.tsv", sep='\t')
-df_title_basics = pd.read_csv(r"C:\Users\fabio\OneDrive\Documents\Studies\Programming_Analysis_Project\title_basics.tsv", sep='\t')
+df_title_basics = pd.read_csv(database_filepath + "title_basics.tsv", sep='\t')
 df_title_basics.set_index('tconst', inplace=True)
 #relister_main(df_title_basics, 'genres', "string")
 #df_title_basics.set_index('tconst', inplace=True)
@@ -125,11 +141,11 @@ df_title_basics.set_index('tconst', inplace=True)
 
 
 
-md_actor_to_film = pd.read_csv(r'C:\Users\fabio\OneDrive\Documents\Studies\Programming_Analysis_Project\Metadata\md_actor_to_film.csv')
+md_actor_to_film = pd.read_csv(metadata_filepath + 'md_actor_to_film.csv')
 md_actor_to_film.set_index(['nconst', 'tconst'], inplace=True)
 md_actor_to_film = md_actor_to_film.loc[:, ~md_actor_to_film.columns.str.contains('^Unnamed')]
 
-md_film_scores = pd.read_csv(r'C:\Users\fabio\OneDrive\Documents\Studies\Programming_Analysis_Project\Metadata\md_film_scores.csv')
+md_film_scores = pd.read_csv(metadata_filepath + 'md_film_scores.csv')
 relister_main(md_film_scores, 'genre', "string")
 relister_main(md_film_scores, 'Primary Actor Relative Ratings', 'float')
 relister_main(md_film_scores, 'nconst', 'string')
@@ -137,21 +153,21 @@ md_film_scores = md_film_scores.loc[:, ~md_film_scores.columns.str.contains('^Un
 md_film_scores.set_index('tconst', inplace=True)
 
 
-md_PrimaryActorsList = pd.read_csv(r"C:\Users\fabio\OneDrive\Documents\Studies\Programming_Analysis_Project\Metadata\md_PrimaryActorsList.csv")
+md_PrimaryActorsList = pd.read_csv(metadata_filepath + "md_PrimaryActorsList.csv")
 relister_main(md_PrimaryActorsList, 'Ratings')
 relister_main(md_PrimaryActorsList, 'Rating Years', "int")
 relister_main(md_PrimaryActorsList, 'tconst', "string")
 relister_main(md_PrimaryActorsList, 'nconst', "string")
 
 
-md_secondary_actors = pd.read_csv(r'C:\Users\fabio\OneDrive\Documents\Studies\Programming_Analysis_Project\Metadata\md_secondary_actors.csv')
+md_secondary_actors = pd.read_csv(metadata_filepath + 'md_secondary_actors.csv')
 #relister_main(md_secondary_actors, 'tconst', "string")
 relister_main(md_secondary_actors, 'Relative Actor Scores', 'float')
 relister_main(md_secondary_actors, 'Film Years', 'int')
 #md_secondary_actors = md_secondary_actors.loc[:, ~md_secondary_actors.columns.str.contains('^Unnamed')]
 
 
-md_title_principals_reduced = pd.read_csv(r'C:\Users\fabio\OneDrive\Documents\Studies\Programming_Analysis_Project\Metadata\md_title_principals_reduced.csv')
+md_title_principals_reduced = pd.read_csv(metadata_filepath + 'md_title_principals_reduced.csv')
 
 
 
@@ -164,12 +180,12 @@ md_title_principals_reduced = pd.read_csv(r'C:\Users\fabio\OneDrive\Documents\St
 #!cp md_PrimaryActorsList.csv "drive/My Drive/Data_Analysis_Project/Metadata"
 
 
-md_actor_to_film.to_csv(r'C:\Users\fabio\OneDrive\Documents\Studies\Programming_Analysis_Project\Metadata\md_actor_to_film.csv')
-md_film_scores.to_csv(r'C:\Users\fabio\OneDrive\Documents\Studies\Programming_Analysis_Project\Metadata\md_film_scores.csv')
-md_PrimaryActorsList.to_csv(r'C:\Users\fabio\OneDrive\Documents\Studies\Programming_Analysis_Project\Metadata\md_PrimaryActorsList.csv')
-md_secondary_actors.to_csv(r'C:\Users\fabio\OneDrive\Documents\Studies\Programming_Analysis_Project\Metadata\md_secondary_actors.csv')
+md_actor_to_film.to_csv(metadata_filepath + 'md_actor_to_film.csv')
+md_film_scores.to_csv(metadata_filepath + 'md_film_scores.csv')
+md_PrimaryActorsList.to_csv(metadata_filepath + 'md_PrimaryActorsList.csv')
+md_secondary_actors.to_csv(metadata_filepath + 'md_secondary_actors.csv')
 
-md_title_principals_reduced.to_csv(r'C:\Users\fabio\OneDrive\Documents\Studies\Programming_Analysis_Project\Metadata\md_title_principals_reduced.csv')
+md_title_principals_reduced.to_csv(metadata_filepath + 'md_title_principals_reduced.csv')
 
 
 #%% Reset and Define Metatables and General Variables/Methods
@@ -200,7 +216,7 @@ md_PrimaryActorsList_column_values_reduced = ["Number", "Name", "nconst", "Ratin
 #General Variables/Methods
 #Final_Training_Year = 2005
 title_principals_unique_category = list([])
-runcell("General Methods", 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/programming_analysis_project_main 0.0.7.py')
+runcell("General Methods", script_filepath + dataprep_filename)
 get_unique_values__title_principals_category()
 roles_of_secondary_interest = ['self', 'actor', 'actress']
 
@@ -243,7 +259,7 @@ for i in md_PrimaryActorsList.index:
         print(str(i) + " / " + str(md_PrimaryActorsList.index))
         print(PC)
 
-    #runcell("Reset Metatables (md_PrimaryActorsList, md_actor_to_film) and Generate md_PrimaryActorsList", 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/programming_analysis_project_main 0.0.7.py')
+    #runcell("Reset Metatables (md_PrimaryActorsList, md_actor_to_film) and Generate md_PrimaryActorsList", script_filepath + dataprep_filename)
     get_film_ratings_v1(i)
 
 print(md_PrimaryActorsList['Name'][md_PrimaryActorsList.index[94]])
@@ -377,7 +393,7 @@ unique_secondary_nconst = get_unique_values(md_title_principals_reduced, 'nconst
 print(datetime.now())
 mask_for_film_x = [True if ele in unique_tconst else False for ele in df_title_principals['tconst'][:10000000]]
 df_x = pd.DataFrame(mask_for_film_x)
-df_x.to_csv(r'C:\Users\fabio\OneDrive\Documents\Studies\Programming_Analysis_Project\Metadata\mask_for_film_1.csv')
+df_x.to_csv(metadata_filepath + 'mask_for_film_1.csv')
 print(datetime.now())
 print(len(mask_for_film_x))
 print("1")
@@ -385,26 +401,26 @@ print("1")
 
 mask_for_film_x = mask_for_film_x + [True if ele in unique_tconst else False for ele in df_title_principals['tconst'][10000000:20000000]]
 df_x = pd.DataFrame(mask_for_film_x)
-df_x.to_csv(r'C:\Users\fabio\OneDrive\Documents\Studies\Programming_Analysis_Project\Metadata\mask_for_film_2.csv')
+df_x.to_csv(metadata_filepath + 'mask_for_film_2.csv')
 print(datetime.now())
 print(len(mask_for_film_x))
 print("2")
 
 mask_for_film_x = mask_for_film_x + [True if ele in unique_tconst else False for ele in df_title_principals['tconst'][20000000:30000000]]
 df_x = pd.DataFrame(mask_for_film_x)
-df_x.to_csv(r'C:\Users\fabio\OneDrive\Documents\Studies\Programming_Analysis_Project\Metadata\mask_for_film_3.csv')
+df_x.to_csv(metadata_filepath + 'mask_for_film_3.csv')
 print(datetime.now())
 print("3")
 
 mask_for_film_x = mask_for_film_x + [True if ele in unique_tconst else False for ele in df_title_principals['tconst'][30000000:40000000]]
 df_x = pd.DataFrame(mask_for_film_x)
-df_x.to_csv(r'C:\Users\fabio\OneDrive\Documents\Studies\Programming_Analysis_Project\Metadata\mask_for_film_4.csv')
+df_x.to_csv(metadata_filepath + 'mask_for_film_4.csv')
 print(datetime.now())
 print("4")
 
 mask_for_film_x = mask_for_film_x + [True if ele in unique_tconst else False for ele in df_title_principals['tconst'][40000000:]]
 df_x = pd.DataFrame(mask_for_film_x)
-df_x.to_csv(r'C:\Users\fabio\OneDrive\Documents\Studies\Programming_Analysis_Project\Metadata\mask_for_film_5.csv')
+df_x.to_csv(metadata_filepath + 'mask_for_film_5.csv')
 print(datetime.now())
 print("5")
 

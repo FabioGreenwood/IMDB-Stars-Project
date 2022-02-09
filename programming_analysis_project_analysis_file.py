@@ -5,23 +5,29 @@ Created on Fri Jan 21 19:31:59 2022
 @author: fabio
 """
 
-from datetime import datetime
-import pdb
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
-import sklearn
-from sklearn.linear_model import LinearRegression
-import seaborn as sns
-import plotly.express as px
 
 
-#%% Re-loading.csv's
 
-runcell("Import Modules and CSVs", 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/programming_analysis_project_main 0.0.7.py')
-runcell("Reset and Define Metatables and General Variables/Methods", 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/programming_analysis_project_main 0.0.7.py')
-runcell("General Methods", 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/programming_analysis_project_main 0.0.7.py')
-runcell("Re-loading.csv's", 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/programming_analysis_project_main 0.0.7.py')
+
+
+#%% start up run
+
+
+script_filepath = "C:\\Users\\fabio\\OneDrive\\Documents\\Studies\\Programming_Analysis_Project\\IMDB-Stars-Project\\"
+database_filepath = "C:\\Users\\fabio\\OneDrive\\Documents\\Studies\\Programming_Analysis_Project\\IMDB-Stars-Project\\data\\"
+metadata_filepath = "C:\\Users\\fabio\\OneDrive\\Documents\\Studies\\Programming_Analysis_Project\\IMDB-Stars-Project\\Metadata\\"
+
+dataprep_filename = "programming_analysis_project_data_prep.py"
+analysis_filename = "programming_analysis_project_analysis_file.py"
+
+
+#import prepared data and methods from [programming_analysis_project_data_prep.py]
+runcell("start up run", script_filepath + dataprep_filename)
+runcell("Import Additional Modules and Define General Parameters", script_filepath + analysis_filename)
+
+
+#%% Import Additional Modules and Define General Parameters
+
 
 
 #%% Table info and clean-up
