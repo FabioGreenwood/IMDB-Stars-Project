@@ -4,6 +4,7 @@
 0.0.4 transferal to spyder and continued work
 0.0.5 Re-orginisation of code
 0.0.6 Incremental save
+0.0.7 Adjustment of the method of spliting the training set from according to a cut-off from 
 
 #Required actions:
     remapping of files,
@@ -25,40 +26,40 @@ Spyder Editor
 This is a temporary script file.
 """
 #%% Hard restart/regeneration of data
-runcell("Import Modules and CSVs", 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/programming_analysis_project_main 0.0.6.py')
+runcell("Import Modules and CSVs", 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/programming_analysis_project_main 0.0.7.py')
 print("1")
 print(datetime.now())
-runcell("Reset and Define Metatables and General Variables/Methods", 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/programming_analysis_project_main 0.0.6.py')
+runcell("Reset and Define Metatables and General Variables/Methods", 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/programming_analysis_project_main 0.0.7.py')
 print("2")
 print(datetime.now())
-runcell("General Methods", 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/programming_analysis_project_main 0.0.6.py')
+runcell("General Methods", 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/programming_analysis_project_main 0.0.7.py')
 print("3")
 print(datetime.now())
-runcell("md_PrimaryActorsList - Step 1", 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/programming_analysis_project_main 0.0.6.py')
+runcell("md_PrimaryActorsList - Step 1", 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/programming_analysis_project_main 0.0.7.py')
 print("4")
 print(datetime.now())
-runcell("md_PrimaryActorsList - Step 2", 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/programming_analysis_project_main 0.0.6.py')
+runcell("md_PrimaryActorsList - Step 2", 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/programming_analysis_project_main 0.0.7.py')
 print("5")
 print(datetime.now())
-runcell("Generate Actor Metadata", 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/programming_analysis_project_main 0.0.6.py')
+runcell("Generate Actor Metadata", 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/programming_analysis_project_main 0.0.7.py')
 print("6")
 print(datetime.now())
-runcell("Generate actor to film metadata", 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/programming_analysis_project_main 0.0.6.py')
+runcell("Generate actor to film metadata", 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/programming_analysis_project_main 0.0.7.py')
 print("7")
 print(datetime.now())
-runcell("md_film_scores - Step 1", 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/programming_analysis_project_main 0.0.6.py')
+runcell("md_film_scores - Step 1", 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/programming_analysis_project_main 0.0.7.py')
 print("8")
 print(datetime.now())
-runcell("md_film_scores - Step 2", 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/programming_analysis_project_main 0.0.6.py')
+runcell("md_film_scores - Step 2", 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/programming_analysis_project_main 0.0.7.py')
 print("9")
 print(datetime.now())
-runcell("collect Secondary Actor Metadata - Step 1", 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/programming_analysis_project_main 0.0.6.py')
+runcell("collect Secondary Actor Metadata - Step 1", 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/programming_analysis_project_main 0.0.7.py')
 print("10")
 print(datetime.now())
-runcell("collect Secondary Actor Metadata - Step 2", 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/programming_analysis_project_main 0.0.6.py')
+runcell("collect Secondary Actor Metadata - Step 2", 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/programming_analysis_project_main 0.0.7.py')
 print("11")
 print(datetime.now())
-runcell("collect Secondary Actor Metadata - Step 3", 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/programming_analysis_project_main 0.0.6.py')
+runcell("collect Secondary Actor Metadata - Step 3", 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/programming_analysis_project_main 0.0.7.py')
 print(datetime.now())
 
 
@@ -72,14 +73,14 @@ print(datetime.now())
 
 
 #%% start up run
-runcell("Import Modules and CSVs", 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/programming_analysis_project_main 0.0.6.py')
-runcell("Reset and Define Metatables and General Variables/Methods", 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/programming_analysis_project_main 0.0.6.py')
-runcell("General Methods", 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/programming_analysis_project_main 0.0.6.py')
-runcell("Re-loading.csv's", 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/programming_analysis_project_main 0.0.6.py')
+runcell("Import Modules and CSVs", 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/programming_analysis_project_main 0.0.7.py')
+runcell("Reset and Define Metatables and General Variables/Methods", 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/programming_analysis_project_main 0.0.7.py')
+runcell("General Methods", 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/programming_analysis_project_main 0.0.7.py')
+runcell("Re-loading.csv's", 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/programming_analysis_project_main 0.0.7.py')
 
 #%% Save progress 
 
-runcell("Save .csv's", 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/programming_analysis_project_main 0.0.6.py')
+runcell("Save .csv's", 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/programming_analysis_project_main 0.0.7.py')
 
 
 #%% Import Modules and CSVs
@@ -92,6 +93,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import sklearn
 from sklearn.linear_model import LinearRegression
+import seaborn as sns
+import plotly.express as px
 
 #from google.colab import drive
 #drive.mount('/content/drive')
@@ -99,6 +102,7 @@ from sklearn.linear_model import LinearRegression
 #start = datetime.now()
 df_title_principals = pd.read_csv(r"C:\Users\fabio\OneDrive\Documents\Studies\Programming_Analysis_Project/title_principals.tsv", sep='\t')
 df_title_ratings = pd.read_csv(r"C:\Users\fabio\OneDrive\Documents\Studies\Programming_Analysis_Project/title_ratings.tsv", sep='\t')
+df_title_ratings.set_index('tconst', inplace=True)
 
 df_name_basics = pd.read_csv(r"C:\Users\fabio\OneDrive\Documents\Studies\Programming_Analysis_Project\name_basics.tsv", sep='\t')
 df_name_basics.set_index('nconst', inplace=True)
@@ -171,7 +175,7 @@ md_title_principals_reduced.to_csv(r'C:\Users\fabio\OneDrive\Documents\Studies\P
 #%% Reset and Define Metatables and General Variables/Methods
 
 #Reset and Define Metatables 
-md_PrimaryActorsList_column_values = ["Number", "Name", "nconst", "Ratings", "Rating Years", 'tconst', "Rating - Mean", "Rating - Std Dev", "Start Year", "Final Year", "Films_Training_Qty", "Films_Testing_Qty", "Training Mean", "Training Std", "Model_Gradient", "Model_Intercept", "Model Rating 2020"]
+md_PrimaryActorsList_column_values = ["Number", "Name", "nconst", "Ratings", "Rating Years", 'tconst', "Rating - Mean", "Rating - Std Dev", "Start Year", "Final Year", "Films_Training_Qty", "Films_Testing_Qty", "Model_Gradient", "Model_Intercept", "Model Rating 2020"]
 md_PrimaryActorsList = pd.DataFrame(columns = md_PrimaryActorsList_column_values)
 
 md_RatingModels_column_names = ["Name", 'tconst', "Model"]
@@ -181,11 +185,11 @@ md_actor_to_film_column_names = ['tconst', 'nconst', 'film name', 'actor name','
 md_actor_to_film = pd.DataFrame(columns = md_actor_to_film_column_names)
 md_actor_to_film.set_index(['nconst', 'tconst'], inplace=True)
 
-md_secondary_actors_column_names = ['name', 'nconst', 'Start Year', 'Final Year', 'tconst', 'Relative Actor Scores', 'Film Years', 'Relative Actor Score - Mean', "Relative Actor Score - Std"]
+md_secondary_actors_column_names = ['name', 'nconst', 'Start Year', 'Final Year', 'tconst', 'Relative Actor Scores', 'Film Years', 'Relative Actor Score - Mean', "Relative Actor Score - Std", "Count"]
 md_secondary_actors = pd.DataFrame(columns = md_secondary_actors_column_names)
 #md_secondary_actors.set_index('name', inplace=True)
 
-md_film_scores_column_names = ['tconst', 'name', 'genre', 'film year', 'nconst', 'Primary Actor Relative Ratings', 'Primary Actor Relative Ratings - Mean', 'Primary Actor Relative Ratings - Std Dev']
+md_film_scores_column_names = ['tconst', 'name', 'genre', 'film year', 'rating', 'nconst', 'Primary Actor Relative Ratings', 'Primary Actor Relative Ratings - Mean', 'Primary Actor Relative Ratings - Std Dev']
 md_film_scores = pd.DataFrame(columns = md_film_scores_column_names)#, index=['tconst'])
 md_film_scores.set_index('tconst', inplace=True)
 
@@ -194,9 +198,9 @@ md_PrimaryActorsList_column_values_reduced = ["Number", "Name", "nconst", "Ratin
 
 
 #General Variables/Methods
-Final_Training_Year = 2005
+#Final_Training_Year = 2005
 title_principals_unique_category = list([])
-runcell("General Methods", 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/programming_analysis_project_main 0.0.6.py')
+runcell("General Methods", 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/programming_analysis_project_main 0.0.7.py')
 get_unique_values__title_principals_category()
 roles_of_secondary_interest = ['self', 'actor', 'actress']
 
@@ -209,7 +213,7 @@ row_number = 0
 blank_lists  = list([])
 
 #Find all the top actors 2
-for i in PrimaryActorsList[:10]:
+for i in PrimaryActorsList:
 #for i in PrimaryActorsList:
   row_number += 1
   nameK = str(i)
@@ -239,27 +243,36 @@ for i in md_PrimaryActorsList.index:
         print(str(i) + " / " + str(md_PrimaryActorsList.index))
         print(PC)
 
-    #runcell("Reset Metatables (md_PrimaryActorsList, md_actor_to_film) and Generate md_PrimaryActorsList", 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/programming_analysis_project_main 0.0.6.py')
+    #runcell("Reset Metatables (md_PrimaryActorsList, md_actor_to_film) and Generate md_PrimaryActorsList", 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/programming_analysis_project_main 0.0.7.py')
     get_film_ratings_v1(i)
-    
+
+print(md_PrimaryActorsList['Name'][md_PrimaryActorsList.index[94]])
+get_film_ratings_v1(md_PrimaryActorsList.index[96])
+get_film_ratings_v1(md_PrimaryActorsList.index[97])
+get_film_ratings_v1(md_PrimaryActorsList.index[98])
+get_film_ratings_v1(md_PrimaryActorsList.index[99])
 
     
 
 
+
+
+#%%
+
+get_film_ratings_v1(md_PrimaryActorsList.index[95])
 
 #%% Generate Actor Metadata
 
 for i in np.arange(0, len(md_PrimaryActorsList)):
     
     define_actor_metadata_step_1(md_PrimaryActorsList, i)
-    M, C, rating2020, Mean, Std = create_actor_model(i, md_PrimaryActorsList)
+    M, C, rating2020 = create_actor_model(i, md_PrimaryActorsList)
 
     md_PrimaryActorsList["Model_Gradient"][i] = float(M)
     md_PrimaryActorsList["Model_Intercept"][i] = float(C)
     md_PrimaryActorsList["Model Rating 2020"][i] = float(rating2020)
     
-    md_PrimaryActorsList["Training Mean"][i] = float(Mean)
-    md_PrimaryActorsList["Training Std"][i] = float(Std)
+    
 
 
 
@@ -267,15 +280,25 @@ for i in np.arange(0, len(md_PrimaryActorsList)):
 
 actor_name = ""
 for i in md_actor_to_film.index:
+    
     actor_name_new = md_actor_to_film['actor name'][i]
+    
+    if not type(actor_name_new) == str:
+        actor_name_new = actor_name_new[0]
+        
     if not(actor_name == actor_name_new):
         actor_name = actor_name_new
         actor_index = md_PrimaryActorsList[md_PrimaryActorsList['Name'] == actor_name].index[0]
         actor_expected_2020_score   = md_PrimaryActorsList['Model Rating 2020'][actor_index]
         actor_gradient              = md_PrimaryActorsList['Model_Gradient'][actor_index]
-        actor_std_dev               = md_PrimaryActorsList['Training Std'][actor_index]
+        actor_std_dev               = md_PrimaryActorsList['Rating - Std Dev'][actor_index]
     film_year   = md_actor_to_film['film year'][i]
     film_score  = md_actor_to_film['film score'][i]
+    
+    if film_year.size > 1:
+        film_year = film_year[0]
+        film_score = film_score[0]
+    
     
     md_actor_to_film['actor relative score'][i] = float(evaluate_actor_to_film_score(actor_expected_2020_score, actor_gradient, actor_std_dev, film_year, film_score))
 
@@ -291,7 +314,7 @@ for df_index in unique_tconst :#range(0, len(unique_tconst)):
 
     #df_index = df_title_basics[df_title_basics['tconst'] == unique_tconst[i]].index
     #data = pd.Series([unique_tconst[i], df_title_basics['primaryTitle'][df_index].values[0], df_title_basics['genres'][df_index].values[0], list([]), None, None], index=md_film_scores_column_names[1:])
-    data = pd.Series(data=[df_title_basics['primaryTitle'][df_index], df_title_basics['genres'][df_index].split(","), df_title_basics['startYear'][df_index], list([]), list([]), None, None], index=md_film_scores_column_names[1:], name=df_index)
+    data = pd.Series(data=[df_title_basics['primaryTitle'][df_index], df_title_basics['genres'][df_index].split(","), df_title_basics['startYear'][df_index], float(df_title_ratings['averageRating'][df_index]), list([]), list([]), None, None], index=md_film_scores_column_names[1:], name=df_index)
     md_film_scores = md_film_scores.append(data)
 
 '''
@@ -303,13 +326,18 @@ list([]), list([]), None, None], index=md_film_scores_column_names[1:]
 
 
 
+
 #%% md_film_scores - Step 2
 
+
+n=0
+
 for film_rel_index in md_actor_to_film.index:
+   
     target_nconst = film_rel_index[0]
     target_tconst = film_rel_index[1]
     
-    target_rating = md_actor_to_film['actor relative score'][film_rel_index]
+    target_rating = md_actor_to_film['actor relative score'][film_rel_index][0]
     
     md_film_scores.loc[target_tconst, 'nconst'].append(target_nconst)
     md_film_scores.loc[target_tconst, 'Primary Actor Relative Ratings'].append(target_rating)
@@ -317,6 +345,10 @@ for film_rel_index in md_actor_to_film.index:
 for film_index in md_film_scores.index:
     md_film_scores.loc[film_index, 'Primary Actor Relative Ratings - Mean'] = np.mean(md_film_scores.loc[film_index, 'Primary Actor Relative Ratings'])
     md_film_scores.loc[film_index, 'Primary Actor Relative Ratings - Std Dev'] = np.std(md_film_scores.loc[film_index, 'Primary Actor Relative Ratings'])
+
+
+
+
 
 
 
@@ -332,7 +364,52 @@ list_categories = ['self', 'actor', 'actress']
 mask_for_category = [True if ele in list_categories else False for ele in md_title_principals_reduced['category']]
 md_title_principals_reduced = md_title_principals_reduced[mask_for_category]
 
+
 unique_secondary_nconst = get_unique_values(md_title_principals_reduced, 'nconst')
+
+#%% collect Secondary Actor Metadata - Step 1 - alturnative With hardcoded counter
+
+
+
+
+
+
+print(datetime.now())
+mask_for_film_x = [True if ele in unique_tconst else False for ele in df_title_principals['tconst'][:10000000]]
+df_x = pd.DataFrame(mask_for_film_x)
+df_x.to_csv(r'C:\Users\fabio\OneDrive\Documents\Studies\Programming_Analysis_Project\Metadata\mask_for_film_1.csv')
+print(datetime.now())
+print(len(mask_for_film_x))
+print("1")
+
+
+mask_for_film_x = mask_for_film_x + [True if ele in unique_tconst else False for ele in df_title_principals['tconst'][10000000:20000000]]
+df_x = pd.DataFrame(mask_for_film_x)
+df_x.to_csv(r'C:\Users\fabio\OneDrive\Documents\Studies\Programming_Analysis_Project\Metadata\mask_for_film_2.csv')
+print(datetime.now())
+print(len(mask_for_film_x))
+print("2")
+
+mask_for_film_x = mask_for_film_x + [True if ele in unique_tconst else False for ele in df_title_principals['tconst'][20000000:30000000]]
+df_x = pd.DataFrame(mask_for_film_x)
+df_x.to_csv(r'C:\Users\fabio\OneDrive\Documents\Studies\Programming_Analysis_Project\Metadata\mask_for_film_3.csv')
+print(datetime.now())
+print("3")
+
+mask_for_film_x = mask_for_film_x + [True if ele in unique_tconst else False for ele in df_title_principals['tconst'][30000000:40000000]]
+df_x = pd.DataFrame(mask_for_film_x)
+df_x.to_csv(r'C:\Users\fabio\OneDrive\Documents\Studies\Programming_Analysis_Project\Metadata\mask_for_film_4.csv')
+print(datetime.now())
+print("4")
+
+mask_for_film_x = mask_for_film_x + [True if ele in unique_tconst else False for ele in df_title_principals['tconst'][40000000:]]
+df_x = pd.DataFrame(mask_for_film_x)
+df_x.to_csv(r'C:\Users\fabio\OneDrive\Documents\Studies\Programming_Analysis_Project\Metadata\mask_for_film_5.csv')
+print(datetime.now())
+print("5")
+
+md_title_principals_reduced = df_title_principals[mask_for_film_x]
+
 
 
 #%% collect Secondary Actor Metadata - Step 2
@@ -343,8 +420,11 @@ md_secondary_actors = md_secondary_actors[0:0]
 #md_secondary_actors = md_secondary_actors.loc[:, ~md_secondary_actors.columns.str.contains('^Unnamed')]
 #md_secondary_actors = md_secondary_actors.loc[:, ~md_secondary_actors.columns.str.contains('0')]
 
+counter = 0
+columns = md_secondary_actors_column_names[0:2]
 #Collect all associated names to nconst (to later group according to name)
 for nconst in unique_secondary_nconst:
+    
     try:
         name = df_name_basics.loc[nconst, 'primaryName']
     except KeyError as err:
@@ -352,24 +432,51 @@ for nconst in unique_secondary_nconst:
     
     data=[name, nconst]#, Start_Year, Final_Year, tconsts, Relative_Actor_Scores, film_years, Relative_Actor_Score_Mean]
     
-    columns = md_secondary_actors_column_names[0:2]
+    
         
     addition = pd.Series(data=data, index=columns)
     md_secondary_actors = md_secondary_actors.append(addition, ignore_index=True)
     
-md_secondary_actors = pd.DataFrame(md_secondary_actors.groupby('name')['nconst'].apply(list))
+    
+    #counter
+    counter += 1
+    if float(counter) % int(len(unique_secondary_nconst) / 10) == 0:
+        print("-----")
+        print(datetime.now())
+        PC = float(float(counter) / len(unique_secondary_nconst))
+        print(str(counter ) + " / " + str(len(unique_secondary_nconst)))
+        print(PC)
+    #counter
+    
+    
+   
+    
+#md_secondary_actors_2 = pd.DataFrame(md_secondary_actors.groupby('name')['nconst'].apply(list))
 
-md_secondary_actors["Start Year"] = None
-md_secondary_actors["Final Year"] = None
-md_secondary_actors["tconsts"] = None
-md_secondary_actors["Relative Actor Scores"] = None
-md_secondary_actors["Film Years"] = None
-md_secondary_actors["Relative Actor Score - Mean"] = None
-md_secondary_actors["Relative Actor Score - Std"] = None
+md_secondary_actors["Start Year"]                   = None
+md_secondary_actors["Final Year"]                   = None
+md_secondary_actors["tconsts"]                      = None
+md_secondary_actors["Relative Actor Scores"]        = None
+md_secondary_actors["Film Years"]                   = None
+md_secondary_actors["Relative Actor Score - Mean"]  = None
+md_secondary_actors["Relative Actor Score - Std"]   = None
+
+counter = 0
 for i in range(0, len(md_secondary_actors)):
     md_secondary_actors["tconsts"][i]               = list([])
     md_secondary_actors["Relative Actor Scores"][i] = list([])
     md_secondary_actors["Film Years"][i]            = list([])
+    
+    #counter
+    counter += 1
+    if float(counter) % int(len(md_secondary_actors) / 10) == 0:
+        print("-----")
+        print(datetime.now())
+        PC = float(float(counter) / len(md_secondary_actors))
+        print(str(counter ) + " / " + str(len(md_secondary_actors)))
+        print(PC)
+    #counter
+    
     
 
 #%% collect Secondary Actor Metadata - Step 3
@@ -380,13 +487,17 @@ iterations = len(md_title_principals_reduced)
 
 #reset values 
 for n in range(0, len(md_secondary_actors)):
-    md_secondary_actors['tconsts'][n] = list([])
-    md_secondary_actors['Relative Actor Scores'][n] = list([])
-    md_secondary_actors['Film Years'][n] = list([])
-    md_secondary_actors['Relative Actor Score - Mean'][n] = None
-    md_secondary_actors['Relative Actor Score - Std'][n] = None
+    md_secondary_actors['tconsts'][n]                       = list([])
+    md_secondary_actors['Relative Actor Scores'][n]         = list([])
+    md_secondary_actors['Film Years'][n]                    = list([])
+    md_secondary_actors['Relative Actor Score - Mean'][n]   = None
+    md_secondary_actors['Relative Actor Score - Std'][n]    = None
 
 
+#%% collect Secondary Actor Metadata - Step 4
+print(datetime.now())
+counter = 0
+start = datetime.now()
 for i in md_title_principals_reduced.index:
     #progress timer
     #if i % int(iterations / 10) == 0:
@@ -411,13 +522,30 @@ for i in md_title_principals_reduced.index:
     md_secondary_actors['Relative Actor Scores'][actor_index].append(md_film_scores['Primary Actor Relative Ratings - Mean'][tconst])
     md_secondary_actors['Film Years'][actor_index].append(int(md_film_scores['film year'][tconst]))
     
-for x in range(0,len(md_secondary_actors)):
-    md_secondary_actors['Relative Actor Score - Mean'][x] = np.mean(md_secondary_actors['Relative Actor Scores'][x])
-    md_secondary_actors['Relative Actor Score - Std'][x] = np.mean(md_secondary_actors['Relative Actor Scores'][x])
+    #counter
+    counter += 1
+    if float(counter) % int(len(md_title_principals_reduced) / 100) == 0:
+        print("-----")
+        print(datetime.now())
+        PC = float(float(counter) / len(md_title_principals_reduced))
+        print(str(counter ) + " / " + str(len(md_title_principals_reduced)))
+        print(PC)
+        print("end estimate @: " + str(((datetime.now() - start) / 0.5) + datetime.now()))
+    #counter
     
-    md_secondary_actors['Start Year'][x] = min(md_secondary_actors['Film Years'][x])
-    md_secondary_actors['Final Year'][x] = max(md_secondary_actors['Film Years'][x])
-
+    
+md_secondary_actors['Count'] = ""
+print(datetime.now())    
+for x in range(0,len(md_secondary_actors)):
+    md_secondary_actors['Count'][x] = len(md_secondary_actors['Relative Actor Scores'][x])    
+    if len(md_secondary_actors['Relative Actor Scores'][x]) > 0:
+        md_secondary_actors['Relative Actor Score - Mean'][x] = np.mean(md_secondary_actors['Relative Actor Scores'][x])
+        md_secondary_actors['Relative Actor Score - Std'][x] = np.std(md_secondary_actors['Relative Actor Scores'][x])
+        
+        md_secondary_actors['Start Year'][x] = min(md_secondary_actors['Film Years'][x])
+        md_secondary_actors['Final Year'][x] = max(md_secondary_actors['Film Years'][x])
+        
+    
 
 print(datetime.now())
 
@@ -488,6 +616,63 @@ df_title_principals_reduced = df_title_principals_reduced[mask_for_relevent_film
 df_title_principals_reduced['Relative Scoring'] = False
 df_title_principals_reduced['Relationship Class'] = 0
 
+#%% 
+
+
+
+
+#%% Split Metatable Function
+
+def split_meta_table(table, training_tconst, testing_tconst, columns_to_copy, columns_to_split, split_index = 'tconst'):
+    #this function splits various tables into to separate testing and training tables according to which tconst values have been deemed to be training films or testing films
+    #it will then populate the data on films deemed for training in the table_training and data on the films deemed for table_testing and return both tables
+    #please note values such as 'start year', 'final year', mean and standard deviations will have to be repopulated after this function
+    table_training = table[0:0]
+    table_testing = table[0:0]
+    
+    for target_column in columns_to_copy:
+        if not target_column in table.columns:
+            raise Exception("Error column named" + target_column + "not in table targeted for spliting")
+    
+    for target_column in columns_to_split:
+        if not target_column in table.columns:
+            raise Exception("Error column named" + target_column + "not in table targeted for spliting")
+        
+    
+    for table_index in table.index:
+        
+        table_training = table_training.append(pd.Series(data=None, name=table_index))
+        table_testing = table_testing.append(pd.Series(data=None, name=table_index))
+        tconsts = table[split_index][table_index]
+        
+        for target_column in columns_to_copy:
+            table_training[target_column][table_index] = table[target_column][table_index]
+            table_testing[target_column][table_index] = table[target_column][table_index]
+        
+        
+        for target_column in columns_to_split:
+            table_training[target_column][table_index] = list([])
+            table_testing[target_column][table_index] = list([])
+            for t in range(0, len(tconsts)):
+                if tconsts[t] in training_tconst:
+                    table_training[target_column][table_index].append(table[target_column][table_index][t])
+                    #table_training[target_column][table_index] = table_training[target_column][table_index].append(table[target_column][table_index][t])
+                elif tconsts[t] in testing_tconst:
+                    table_testing[target_column][table_index].append(table[target_column][table_index][t])
+                    #table_testing[target_column][table_index] = table_testing[target_column][table_index].append(table[target_column][table_index][t])
+                else:
+                    raise Exception("Error tconst: " + tconsts[t] + " not sepcified as either for the training or testing dataset, check inputs")
+            
+        return table_training, table_testing
+        
+    
+
+columns_to_copy = ['Name', 'nconst']
+columns_to_split = ['tconst', 'Ratings']
+
+table_training, table_testing = split_meta_table(md_PrimaryActorsList, unique_tconst[:5], unique_tconst[5:], columns_to_copy, columns_to_split)
+
+
 
 
 #%% General Methods
@@ -546,9 +731,9 @@ def get_film_ratings_v1(actor_ID, df_title_basics=df_title_basics, df_title_rati
     
     #pdb.set_trace()
     for title in titles:
-      rating_index = df_title_ratings[df_title_ratings['tconst'] == title].index
-      if rating_index.size > 0:
-        value = df_title_ratings['averageRating'][rating_index] 
+      #rating_index = df_title_ratings[df_title_ratings['tconst'] == title].index
+      if title in df_title_ratings.index:
+        value = df_title_ratings['averageRating'][title] 
         
         title_year = df_title_basics['startYear'][title]
         
@@ -560,11 +745,13 @@ def get_film_ratings_v1(actor_ID, df_title_basics=df_title_basics, df_title_rati
         
         #pdb.set_trace()
         if len(md_PrimaryActorsList['Ratings'][actor_ID]) == 0:
-          md_PrimaryActorsList['Ratings'][actor_ID] = [value.values[0]]
+          md_PrimaryActorsList['Ratings'][actor_ID] = [value]
+          #md_PrimaryActorsList['Ratings'][actor_ID] = [value.values[0]]
           md_PrimaryActorsList['Rating Years'][actor_ID] = [title_year]
           md_PrimaryActorsList['tconst'][actor_ID] = [title]
         else:
-          md_PrimaryActorsList['Ratings'][actor_ID].append(value.values[0])
+          md_PrimaryActorsList['Ratings'][actor_ID].append(value)
+          #md_PrimaryActorsList['Ratings'][actor_ID].append(value.values[0])
           md_PrimaryActorsList['Rating Years'][actor_ID].append(title_year)
           md_PrimaryActorsList['tconst'][actor_ID].append(title)
         
@@ -600,10 +787,7 @@ def define_actor_metadata_step_1(datatable, row):
     #datatable['Films_Testing_Qty'][row] = max(rating_years_data)
     datatable['Start Year'][row] = min(rating_years_data)
     datatable['Final Year'][row] = max(rating_years_data)
-    for i in rating_years_data:
-        #pdb.set_trace()
-        if (float(i) <= Final_Training_Year) :
-            training_films_count += 1
+    
     datatable['Films_Training_Qty'][row] = training_films_count
     datatable['Films_Testing_Qty'][row] = films_count - datatable['Films_Training_Qty'][row]
 
@@ -626,7 +810,7 @@ def visualise_ratings_career(actor_name_or_ID = 'Jack Nicholson', dataframe = md
   
   plt.show()
 
-def create_actor_model(actor_name_or_ID = 'Jack Nicholson', dataframe = md_PrimaryActorsList, final_training_year = Final_Training_Year, generate_chart=False, print_chart = False):
+def create_actor_model(actor_name_or_ID = 'Jack Nicholson', dataframe = md_PrimaryActorsList, generate_chart=False, print_chart = False):
     
     '''   # This method splits the training data of an actor and 
     returns the linear regression model, std dev and charts the prediction 
@@ -648,14 +832,14 @@ def create_actor_model(actor_name_or_ID = 'Jack Nicholson', dataframe = md_Prima
     ratings = dataframe['Ratings'][actor_index]
     rating_years = dataframe['Rating Years'][actor_index]
     
-    training_mask = [(film < final_training_year + 1) for film in rating_years]
+    #training_mask = [(film < final_training_year + 1) for film in rating_years]
     #training_mask = list(map(lambda x: x <= final_training_year, rating_years))
     
-    ratings_training = [ratings[i] for i in range(len(ratings)) if training_mask[i]]
-    rating_years_training = [rating_years[i] for i in range(len(rating_years)) if training_mask[i]]
+    #ratings_training = [ratings[i] for i in range(len(ratings)) if training_mask[i]]
+    #rating_years_training = [rating_years[i] for i in range(len(rating_years)) if training_mask[i]]
     
-    ratings_testing = [ratings[i] for i in range(len(ratings)) if not(training_mask[i])]
-    rating_years_testing = [rating_years[i] for i in range(len(rating_years)) if not(training_mask[i])]
+    #ratings_testing = [ratings[i] for i in range(len(ratings)) if not(training_mask[i])]
+    #rating_years_testing = [rating_years[i] for i in range(len(rating_years)) if not(training_mask[i])]
         
     ratings = np.array(ratings).reshape(-1, 1)
     rating_years = np.array(rating_years).reshape(-1, 1)
@@ -663,8 +847,8 @@ def create_actor_model(actor_name_or_ID = 'Jack Nicholson', dataframe = md_Prima
     model = LinearRegression().fit(rating_years, ratings)
     #print(model.score(rating_years, ratings))
     #print(model.predict(np.array(2000).reshape(1, -1)))
-    training_mean = np.mean(ratings_testing)
-    training_std = np.std(ratings_testing)
+    #training_mean = np.mean(ratings_testing)
+    #training_std = np.std(ratings_testing)
     rating2020 = model.predict(np.array(2020).reshape(1,-1))[0][0]
     
     if generate_chart == True:
@@ -680,7 +864,7 @@ def create_actor_model(actor_name_or_ID = 'Jack Nicholson', dataframe = md_Prima
         if print_chart == True:
             return model.coef_[0][0], model.intercept_[0][0], rating2020, training_mean, training_std, plt
     
-    return model.coef_[0], model.intercept_[0], rating2020, training_mean, training_std
+    return model.coef_[0], model.intercept_[0], rating2020#, training_mean, training_std
 
 def get_unique_values__title_principals_category():
     global title_principals_unique_category #list of unique roles in a film
