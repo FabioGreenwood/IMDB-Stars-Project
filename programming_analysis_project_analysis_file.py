@@ -42,7 +42,7 @@ md_title_principals_reduced.info()
 
 #%% md_PrimaryActorsList - Basic Analysis
 
-md_PrimaryActorsList_2 = md_PrimaryActorsList.drop(["Number", "Name", "nconst", "Ratings", "Rating Years", "tconst", "Films_Training_Qty", "Films_Testing_Qty"], axis=1)
+md_PrimaryActorsList_2 = md_PrimaryActorsList.drop(["Number", "name", "nconst", "Ratings", "Rating Years", "tconst", "Films_Training_Qty", "Films_Testing_Qty"], axis=1)
 md_PrimaryActorsList_corr = md_PrimaryActorsList_2.corr()
 sns.pairplot(md_PrimaryActorsList_2)
 
@@ -145,7 +145,7 @@ def return_nconsts_in_film_with_highest_film_counts(film_tconst, actors_qty, act
     primary_actors_in_film['count'] = None
     
     for index in primary_actors_in_film.index:
-        row_in_df = actor_DB.loc[actor_DB['Name'] == primary_actors_in_film['actor name'][index]].index[0]
+        row_in_df = actor_DB.loc[actor_DB['name'] == primary_actors_in_film['actor name'][index]].index[0]
         #primary_actors_in_film['count'][index] = len(md_PrimaryActorsList['tconst'][row_in_df])
         primary_actors_in_film.loc[index, 'count'] = len(actor_DB['tconst'][row_in_df])
     

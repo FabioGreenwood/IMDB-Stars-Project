@@ -262,7 +262,7 @@ for i in md_PrimaryActorsList.index:
     #runcell("Reset Metatables (md_PrimaryActorsList, md_actor_to_film) and Generate md_PrimaryActorsList", script_filepath + dataprep_filename)
     get_film_ratings_v1(i)
 
-print(md_PrimaryActorsList['Name'][md_PrimaryActorsList.index[94]])
+print(md_PrimaryActorsList['name'][md_PrimaryActorsList.index[94]])
 get_film_ratings_v1(md_PrimaryActorsList.index[96])
 get_film_ratings_v1(md_PrimaryActorsList.index[97])
 get_film_ratings_v1(md_PrimaryActorsList.index[98])
@@ -304,7 +304,7 @@ for i in md_actor_to_film.index:
         
     if not(actor_name == actor_name_new):
         actor_name = actor_name_new
-        actor_index = md_PrimaryActorsList[md_PrimaryActorsList['Name'] == actor_name].index[0]
+        actor_index = md_PrimaryActorsList[md_PrimaryActorsList['name'] == actor_name].index[0]
         actor_expected_2020_score   = md_PrimaryActorsList['Model Rating 2020'][actor_index]
         actor_gradient              = md_PrimaryActorsList['Model_Gradient'][actor_index]
         actor_std_dev               = md_PrimaryActorsList['Rating - Std Dev'][actor_index]
@@ -603,11 +603,11 @@ for nconst in unique_secondary_nconst:
     
 
 '''
-md_secondary_actors_column_names = ['nconst', 'Name', 'Start Year', 'Final Year', 'Relative Actor Scores', 'Relative Actor Score - Mean']
+md_secondary_actors_column_names = ['nconst', 'name', 'Start Year', 'Final Year', 'Relative Actor Scores', 'Relative Actor Score - Mean']
 
 
 addition_index = md_actor_to_film.columns
-addition_2 = pd.Series(data=[title, md_PrimaryActorsList['nconst'][actor_ID][0], df_title_basics['originalTitle'][title_year_index].values[0], md_PrimaryActorsList['Name'][actor_ID], int(title_year), float(value), None], index=addition_index)
+addition_2 = pd.Series(data=[title, md_PrimaryActorsList['nconst'][actor_ID][0], df_title_basics['originalTitle'][title_year_index].values[0], md_PrimaryActorsList['name'][actor_ID], int(title_year), float(value), None], index=addition_index)
 md_actor_to_film = md_actor_to_film.append(addition_2, ignore_index=True)
 
 '''
@@ -683,7 +683,7 @@ def split_meta_table(table, training_tconst, testing_tconst, columns_to_copy, co
         
     
 
-columns_to_copy = ['Name', 'nconst']
+columns_to_copy = ['name', 'nconst']
 columns_to_split = ['tconst', 'Ratings']
 
 table_training, table_testing = split_meta_table(md_PrimaryActorsList, unique_tconst[:5], unique_tconst[5:], columns_to_copy, columns_to_split)
@@ -754,7 +754,7 @@ def get_film_ratings_v1(actor_ID, df_title_basics=df_title_basics, df_title_rati
         title_year = df_title_basics['startYear'][title]
         
         addition_index = md_actor_to_film.columns
-        addition_2 = pd.Series(data=[df_title_basics['originalTitle'][title], md_PrimaryActorsList['Name'][actor_ID], int(title_year), float(value), None], name=(md_PrimaryActorsList['nconst'][actor_ID][0], title) , index=addition_index)
+        addition_2 = pd.Series(data=[df_title_basics['originalTitle'][title], md_PrimaryActorsList['name'][actor_ID], int(title_year), float(value), None], name=(md_PrimaryActorsList['nconst'][actor_ID][0], title) , index=addition_index)
         md_actor_to_film = md_actor_to_film.append(addition_2)
         
         
@@ -815,14 +815,14 @@ def visualise_ratings_career(actor_name_or_ID = 'Jack Nicholson', dataframe = md
   #actor_name_or_ID.str
   
   if isinstance(actor_name_or_ID, str):
-    actor_index = dataframe[dataframe['Name'] == actor_name_or_ID].index[0]
+    actor_index = dataframe[dataframe['name'] == actor_name_or_ID].index[0]
   else:
     actor_index = actor_name_or_ID
 
   ratings = dataframe['Ratings'][actor_index]
   rating_years = dataframe['Rating Years'][actor_index]
   plt.scatter(rating_years, ratings);
-  plt.title(dataframe['Name'][actor_index])
+  plt.title(dataframe['name'][actor_index])
   
   plt.show()
 
@@ -840,7 +840,7 @@ def create_actor_model(actor_name_or_ID = 'Jack Nicholson', dataframe = md_Prima
     #actor_name_or_ID.str
     
     if isinstance(actor_name_or_ID, str):
-      actor_index = dataframe[dataframe['Name'] == actor_name_or_ID].index[0]
+      actor_index = dataframe[dataframe['name'] == actor_name_or_ID].index[0]
     else:
       actor_index = actor_name_or_ID
     
@@ -875,7 +875,7 @@ def create_actor_model(actor_name_or_ID = 'Jack Nicholson', dataframe = md_Prima
         
         #plt.scatter(rating_years_testing, ratings_testing, label="Testing")
         
-        plt.title(dataframe['Name'][actor_index] + " Model Display")
+        plt.title(dataframe['name'][actor_index] + " Model Display")
         plt.show()
         if print_chart == True:
             return model.coef_[0][0], model.intercept_[0][0], rating2020, training_mean, training_std, plt
