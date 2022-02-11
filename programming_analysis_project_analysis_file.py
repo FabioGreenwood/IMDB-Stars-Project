@@ -49,7 +49,7 @@ sns.pairplot(md_PrimaryActorsList_2)
 
 #%% md_secondary_actors - Basic Analysis
 
-md_secondary_actors_2 = md_secondary_actors.drop(["name", "nconst", "tconsts"], axis=1)
+md_secondary_actors_2 = md_secondary_actors.drop(["name", "nconst", "tconst"], axis=1)
 md_secondary_actors_corr = md_secondary_actors_2.corr()
 md_secondary_actors_pairplot = sns.pairplot(md_secondary_actors_2)
 md_secondary_actors_pairplot.fig.suptitle("md_secondary_actors")

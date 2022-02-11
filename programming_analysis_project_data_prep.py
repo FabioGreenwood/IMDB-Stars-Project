@@ -446,7 +446,7 @@ for nconst in unique_secondary_nconst:
     except KeyError as err:
         name = nconst
     
-    data=[name, nconst]#, Start_Year, Final_Year, tconsts, Relative_Actor_Scores, film_years, Relative_Actor_Score_Mean]
+    data=[name, nconst]#, Start_Year, Final_Year, tconst, Relative_Actor_Scores, film_years, Relative_Actor_Score_Mean]
     
     
         
@@ -471,7 +471,7 @@ for nconst in unique_secondary_nconst:
 
 md_secondary_actors["Start Year"]                   = None
 md_secondary_actors["Final Year"]                   = None
-md_secondary_actors["tconsts"]                      = None
+md_secondary_actors["tconst"]                      = None
 md_secondary_actors["Relative Actor Scores"]        = None
 md_secondary_actors["Film Years"]                   = None
 md_secondary_actors["Relative Actor Score - Mean"]  = None
@@ -479,7 +479,7 @@ md_secondary_actors["Relative Actor Score - Std"]   = None
 
 counter = 0
 for i in range(0, len(md_secondary_actors)):
-    md_secondary_actors["tconsts"][i]               = list([])
+    md_secondary_actors["tconst"][i]               = list([])
     md_secondary_actors["Relative Actor Scores"][i] = list([])
     md_secondary_actors["Film Years"][i]            = list([])
     
@@ -503,7 +503,7 @@ iterations = len(md_title_principals_reduced)
 
 #reset values 
 for n in range(0, len(md_secondary_actors)):
-    md_secondary_actors['tconsts'][n]                       = list([])
+    md_secondary_actors['tconst'][n]                       = list([])
     md_secondary_actors['Relative Actor Scores'][n]         = list([])
     md_secondary_actors['Film Years'][n]                    = list([])
     md_secondary_actors['Relative Actor Score - Mean'][n]   = None
@@ -534,7 +534,7 @@ for i in md_title_principals_reduced.index:
             actor_index += 1
     
     #film_index = md_film_scores[md_film_scores['tconst'] == tconst].index[0]
-    md_secondary_actors['tconsts'][actor_index].append(tconst)
+    md_secondary_actors['tconst'][actor_index].append(tconst)
     md_secondary_actors['Relative Actor Scores'][actor_index].append(md_film_scores['Primary Actor Relative Ratings - Mean'][tconst])
     md_secondary_actors['Film Years'][actor_index].append(int(md_film_scores['film year'][tconst]))
     
@@ -591,12 +591,12 @@ for nconst in unique_secondary_nconst:
     name = df_name_basics.loc[nconst, 'primaryName']
     Start_Year = None
     Final_Year = None
-    tconsts = list([])
+    tconst = list([])
     Relative_Actor_Scores = list([])
     film_years = list([])
     Relative_Actor_Score_Mean = None
     
-    data=[name, Start_Year, Final_Year, tconsts, Relative_Actor_Scores, film_years, Relative_Actor_Score_Mean]
+    data=[name, Start_Year, Final_Year, tconst, Relative_Actor_Scores, film_years, Relative_Actor_Score_Mean]
     name=nconst
     column=md_secondary_actors_column_names[1:]
     addition_2 = pd.Series(data=data, name=name, column=column)
@@ -659,7 +659,7 @@ def split_meta_table(table, training_tconst, testing_tconst, columns_to_copy, co
         
         table_training = table_training.append(pd.Series(data=None, name=table_index))
         table_testing = table_testing.append(pd.Series(data=None, name=table_index))
-        tconsts = table[split_index][table_index]
+        tconst = table[split_index][table_index]
         
         for target_column in columns_to_copy:
             table_training[target_column][table_index] = table[target_column][table_index]
@@ -669,15 +669,15 @@ def split_meta_table(table, training_tconst, testing_tconst, columns_to_copy, co
         for target_column in columns_to_split:
             table_training[target_column][table_index] = list([])
             table_testing[target_column][table_index] = list([])
-            for t in range(0, len(tconsts)):
-                if tconsts[t] in training_tconst:
+            for t in range(0, len(tconst)):
+                if tconst[t] in training_tconst:
                     table_training[target_column][table_index].append(table[target_column][table_index][t])
                     #table_training[target_column][table_index] = table_training[target_column][table_index].append(table[target_column][table_index][t])
-                elif tconsts[t] in testing_tconst:
+                elif tconst[t] in testing_tconst:
                     table_testing[target_column][table_index].append(table[target_column][table_index][t])
                     #table_testing[target_column][table_index] = table_testing[target_column][table_index].append(table[target_column][table_index][t])
                 else:
-                    raise Exception("Error tconst: " + tconsts[t] + " not sepcified as either for the training or testing dataset, check inputs")
+                    raise Exception("Error tconst: " + tconst[t] + " not sepcified as either for the training or testing dataset, check inputs")
             
         return table_training, table_testing
         
