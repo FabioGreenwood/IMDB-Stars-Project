@@ -120,9 +120,23 @@ fig.show()
 
 #%% General Methods
 
-def populate_input_actor_scores_for_film(film_tconst, desired_number_of_primary_actors, desired_number_of_secondary_actors):
-    #find every relavent primary actor, as select the ones with the highest film count
+def populate_input_actor_scores_for_film(film_tconst, desired_number_of_primary_actors, desired_number_of_secondary_actors, primary_actor_DB, secondary_actor_DB):
+    #Returns a list of primary and secondary actors tconst related to a film, to later populate a row of the predictor
     """ find a way to filter according to index"""
+    
+    '''Return up to [desired_number_of_primary_actors]  qty of tconsts'''
+    nconsts = return_nconsts_in_film_with_highest_film_counts(film_tconst, desired_number_of_primary_actors, primary_actor_DB, [])
+    
+    '''Return up to X  qty of tconsts to ensure that the total number of tconsts equals the sum of decired primary and secondary actors'''
+    secondary_actors_to_populate = desired_number_of_primary_actors + desired_number_of_secondary_actors - len(nconsts)
+    nconsts = return_tconsts_in_film_with_highest_film_counts(film_tconst, desired_number_of_primary_actors, primary_actor_DB, [])
+        
+def return_nconsts_in_film_with_highest_film_counts(film_tconst, actors_qty, actor_DB, previous_nconst):
+    # called twice by populate_input_actor_scores_for_film
+    if len(previous_tconst) == 0:
+        tconsts = np.array([])
+    else:
+        tconsts = previous_tconst
     
     
     primary_actors_in_film = md_actor_to_film[md_actor_to_film.index.get_level_values('tconst') == film_tconst]
@@ -133,26 +147,20 @@ def populate_input_actor_scores_for_film(film_tconst, desired_number_of_primary_
         #primary_actors_in_film['count'][index] = len(md_PrimaryActorsList['tconst'][row_in_df])
         primary_actors_in_film.loc[index, 'count'] = len(md_PrimaryActorsList['tconst'][row_in_df])
     
+    #remove tconsts already counted
+    for previous_nconst in previous_nconst:
+        primary_actors_in_film = primary_actors_in_film.drop(target_index)
+    
     primary_actors_to_be_populated_qty = min(desired_number_of_primary_actors, len(primary_actors_in_film))
-    actors_to_populate_tconsts = np.array([])
+    actors_to_populate_nconsts = np.array([])
     
     for i in range(0, primary_actors_to_be_populated):
         max_count = primary_actors_in_film['count'].max()
         target_index = primary_actors_in_film.loc[primary_actors_in_film['count'] == max_count].index
-        actors_to_populate_tconsts = np.append(actors_to_populate_tconsts, target_index[0][0])
+        actors_to_populate_nconsts = np.append(actors_to_populate_nconsts, target_index[0][0])
         primary_actors_in_film = primary_actors_in_film.drop(target_index)
-        
-        
-def return_tconsts_in_film_with_highest_film_counts(film_tconst, actors_qty, actor_DB, previous_tconst):
-    # called twice by populate_input_actor_scores_for_film
-    if len(previous_tconst) = 0:
-        tconsts = np.array([])
-    else:
-        tconsts = previous_tconst
-    return tconsts    
     
-    
-    
+    return nconsts
     
     
     
@@ -160,7 +168,7 @@ def return_tconsts_in_film_with_highest_film_counts(film_tconst, actors_qty, act
 
 #filtered_primary_actor_list = print(md_actor_to_film[np.in1d(md_actor_to_film.index.get_level_values(1), [film_tconst])])
 film_tconst = 'tt1067106'
-populate_input_actor_scores_for_film(film_tconst, 0)
+populate_input_actor_scores_for_film(film_tconst, 5, 5, md_PrimaryActorsList, md_secondary_actors)
 
 #md_actor_to_film[(nm0001715, tt0118528)]
 
