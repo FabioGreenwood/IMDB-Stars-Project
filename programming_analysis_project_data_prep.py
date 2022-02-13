@@ -145,6 +145,12 @@ md_actor_to_film = pd.read_csv(metadata_filepath + 'md_actor_to_film.csv')
 md_actor_to_film.set_index(['nconst', 'tconst'], inplace=True)
 md_actor_to_film = md_actor_to_film.loc[:, ~md_actor_to_film.columns.str.contains('^Unnamed')]
 
+
+md_actor_to_film_secondary = pd.read_csv(metadata_filepath + 'md_actor_to_film_secondary.csv')
+md_actor_to_film_secondary.set_index(['nconst', 'tconst'], inplace=True)
+md_actor_to_film_secondary = md_actor_to_film_secondary.loc[:, ~md_actor_to_film_secondary.columns.str.contains('^Unnamed')]
+
+
 md_film_scores = pd.read_csv(metadata_filepath + 'md_film_scores.csv')
 relister_main(md_film_scores, 'genre', "string")
 relister_main(md_film_scores, 'Primary Actor Relative Ratings', 'float')
@@ -161,11 +167,12 @@ relister_main(md_PrimaryActorsList, 'nconst', "string")
 
 
 md_secondary_actors = pd.read_csv(metadata_filepath + 'md_secondary_actors.csv')
-#relister_main(md_secondary_actors, 'tconst', "string")
+relister_main(md_secondary_actors, 'tconst', "string")
 relister_main(md_secondary_actors, 'Relative Actor Scores', 'float')
 relister_main(md_secondary_actors, 'Film Years', 'int')
+relister_main(md_secondary_actors, 'nconst', 'string')
 #md_secondary_actors = md_secondary_actors.loc[:, ~md_secondary_actors.columns.str.contains('^Unnamed')]
-
+md_secondary_actors = md_secondary_actors.loc[:, ~md_secondary_actors.columns.str.contains('^Unnamed')]
 
 md_title_principals_reduced = pd.read_csv(metadata_filepath + 'md_title_principals_reduced.csv')
 
@@ -181,11 +188,14 @@ md_title_principals_reduced = pd.read_csv(metadata_filepath + 'md_title_principa
 
 
 md_actor_to_film.to_csv(metadata_filepath + 'md_actor_to_film.csv')
+md_actor_to_film_secondary.to_csv(metadata_filepath + 'md_actor_to_film_secondary.csv')
 md_film_scores.to_csv(metadata_filepath + 'md_film_scores.csv')
 md_PrimaryActorsList.to_csv(metadata_filepath + 'md_PrimaryActorsList.csv')
 md_secondary_actors.to_csv(metadata_filepath + 'md_secondary_actors.csv')
 
 md_title_principals_reduced.to_csv(metadata_filepath + 'md_title_principals_reduced.csv')
+
+
 
 
 #%% Reset and Define Metatables and General Variables/Methods
@@ -201,6 +211,10 @@ md_actor_to_film_column_names = ['tconst', 'nconst', 'film name', 'actor name','
 md_actor_to_film = pd.DataFrame(columns = md_actor_to_film_column_names)
 md_actor_to_film.set_index(['nconst', 'tconst'], inplace=True)
 
+
+md_actor_to_film_secondary = pd.DataFrame(columns = md_actor_to_film_column_names)
+md_actor_to_film_secondary.set_index(['nconst', 'tconst'], inplace=True)
+
 md_secondary_actors_column_names = ['name', 'nconst', 'Start Year', 'Final Year', 'tconst', 'Relative Actor Scores', 'Film Years', 'Relative Actor Score - Mean', "Relative Actor Score - Std", "Count"]
 md_secondary_actors = pd.DataFrame(columns = md_secondary_actors_column_names)
 #md_secondary_actors.set_index('name', inplace=True)
@@ -211,6 +225,8 @@ md_film_scores.set_index('tconst', inplace=True)
 
 PrimaryActorsList = ["Jack Nicholson", "Marlon Brando", "Robert De Niro", "Al Pacino", "Daniel Day-Lewis", "Dustin Hoffman", "Tom Hanks", "Anthony Hopkins", "Paul Newman", "Denzel Washington", "Spencer Tracy", "Laurence Olivier", "Jack Lemmon", "Michael Caine", "James Stewart", "Robin Williams", "Robert Duvall", "Sean Penn", "Morgan Freeman", "Jeff Bridges", "Sidney Poitier", "Peter O'Toole", "Clint Eastwood", "Gene Hackman", "Charles Chaplin", "Ben Kingsley", "Philip Seymour Hoffman", "Leonardo DiCaprio", "Russell Crowe", "Kevin Spacey", "Humphrey Bogart", "Gregory Peck", "Clark Gable", "Gary Cooper", "George C. Scott", "Jason Robards", "Charles Laughton", "Anthony Quinn", "Peter Sellers", "James Cagney", "Peter Finch", "Henry Fonda", "Cary Grant", "Richard Burton", "Burt Lancaster", "William Holden", "John Wayne", "Kirk Douglas", "Alec Guinness", "Christopher Plummer", "Tommy Lee Jones", "Sean Connery", "Alan Arkin", "Christopher Walken", "Joe Pesci", "Ian McKellen", "Michael Douglas", "Jon Voight", "Albert Finney", "Geoffrey Rush", "Jeremy Irons", "Javier Bardem", "Heath Ledger", "Christoph Waltz", "Ralph Fiennes", "Johnny Depp", "Benicio Del Toro", "Jamie Foxx", "Joaquin Phoenix", "Colin Firth", "Matthew McConaughey", "Christian Bale", "Gary Oldman", "Edward Norton", "Brad Pitt", "Tom Cruise", "Matt Damon", "Hugh Jackman", "Robert Downey Jr.", "Liam Neeson", "Mel Gibson", "Harrison Ford", "Woody Allen", "Steve McQueen", "Orson Welles", "Robert Redford", "James Dean", "Charlton Heston", "Gene Kelly", "Robert Mitchum", "Bill Murray", "Samuel L. Jackson", "Jim Carrey", "Don Cheadle", "Martin Sheen", "Alan Rickman", "Edward G. Robinson", "Will Smith", "John Goodman", "Buster Keaton"]
 md_PrimaryActorsList_column_values_reduced = ["Number", "Name", "nconst", "Ratings", "Rating Years", 'tconst']
+
+
 
 
 #General Variables/Methods
@@ -698,7 +714,7 @@ def relister_main(dataframe, column_name, format='float'):
   for i in range(0, len(dataframe)):
     relister_single(dataframe, column_name, i, format)
 
-def relister_single(dataframe, column_name, row_num, format='float'):
+def relister_single(dataframe, column_name, row_num, format='float', return_value = False):
   if len(dataframe[column_name][row_num]) <= 2:
     dataframe[column_name][row_num] = list([])
     return
@@ -728,8 +744,44 @@ def relister_single(dataframe, column_name, row_num, format='float'):
       first = False
     else:
       new_list.append(value)
+      
+  if return_value == False:
+      dataframe[column_name][row_num] = new_list
+  else:
+      return new_list
+
+def relister_single_functional(cell, format_input):
+  if len(cell) <= 2:
+    cell = list([])
+    return
+  if np.isreal(cell[0]):
+    return
+  separator = ','
+  target_string = cell
+  if target_string[0] == '[':
+      target_string = target_string[1:-1]
+  new_list_raw = target_string.split(',')
+  new_list = list([])
+  first = True
+  for i in new_list_raw:
+    if format_input=='float':
+      value = float(i)
+    elif format_input=='int':
+        string = i.strip()
+        string = string.replace("'","")
+        value = int(string)
+    elif format_input=='string':
+        string = i.strip()
+        string = string.replace("'","")
+        value = string
     
-  dataframe[column_name][row_num] = new_list
+    if first == True:
+      new_list = list([value])
+      first = False
+    else:
+      new_list.append(value)
+      
+  return new_list
 
 #find an actor's films and their ratings
 def get_film_ratings_v1(actor_ID, df_title_basics=df_title_basics, df_title_ratings=df_title_ratings):
@@ -938,4 +990,73 @@ def evaluate_film_relative_scores(md_film_scores=md_film_scores, md_PrimaryActor
         
     return md_film_scores
 
+def return_populated_md_actor_to_film_secondary_dataframe(md_secondary_actors, md_actor_to_film_column_names = ['tconst', 'nconst', 'film name', 'actor name','film year', 'film score', 'actor relative score']):
+    
+    
+    md_actor_to_film_secondary = pd.DataFrame(columns = md_actor_to_film_column_names)
+    md_actor_to_film_secondary.set_index(['nconst', 'tconst'], inplace=True)
+        
+    unique_tconsts = set(md_actor_to_film.index.get_level_values('tconst'))
 
+    start = datetime.now()
+
+    for md_secondary_actors_row in range(0, len(md_secondary_actors)):
+        
+        if float(md_secondary_actors_row) % int(len(md_secondary_actors) / 10) == 0:
+            print("-----")
+            print(datetime.now())
+            PC = float(float(md_secondary_actors_row) / len(md_PrimaryActorsList.index))
+            print(str(md_secondary_actors_row) + " / " + str(len(md_secondary_actors)))
+            print(PC)
+            
+        
+        for film_num in range(0, len(md_secondary_actors['tconst'][md_secondary_actors_row]) ):
+            
+            film_tconst = md_secondary_actors['tconst'][md_secondary_actors_row][film_num]
+            data = [ md_film_scores['name'][film_tconst], md_secondary_actors['name'][md_secondary_actors_row], md_secondary_actors['Film Years'][md_secondary_actors_row][film_num], md_film_scores['rating'][film_tconst], None]
+            index = md_actor_to_film_column_names[2:]
+            name_1 =str(md_secondary_actors['nconst'][md_secondary_actors_row][0]) 
+            name = (name_1 , film_tconst)
+            
+            addition = pd.Series(data = data, index = index, name = name)
+            md_actor_to_film_secondary = md_actor_to_film_secondary.append(addition, ignore_index=False)
+    
+    return md_actor_to_film_secondary 
+
+def retrive_film_rating(database, film_tconst):
+    return database['Rating'][film_tconst]
+
+
+#%%
+
+
+
+md_actor_to_film_secondary  = return_populated_md_actor_to_film_secondary_dataframe(md_secondary_actors, md_actor_to_film_column_names)
+  
+#%%
+
+
+
+
+
+md_actor_to_film_secondary_2 = md_actor_to_film_secondary.copy()
+for i in range(0, len(md_actor_to_film_secondary_2)):
+    old_index = md_actor_to_film_secondary.index[i][0]
+    new_index = relister_single_functional(md_actor_to_film_secondary.index[i][0], 'string')
+    md_actor_to_film_secondary_2.rename(index={old_index : new_index},inplace=True)
+    
+    counter += 1
+    if float(counter) % int(len(md_actor_to_film_secondary_2) / 10) == 0:
+        print("-----")
+        print(datetime.now())
+        PC = float(float(counter) / len(md_actor_to_film_secondary_2))
+        print(str(counter ) + " / " + str(len(md_actor_to_film_secondary_2)))
+        print(PC)
+    
+    
+    
+#%% 
+print(relister_single_functional(md_actor_to_film_secondary.index[0][0], 'string'))
+ 
+  
+#md_secondary_actors.loc[md_secondary_actors['tconst'] == primary_actors_in_film['actor name'][index]].index[0]

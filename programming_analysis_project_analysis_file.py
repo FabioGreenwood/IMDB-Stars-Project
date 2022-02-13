@@ -120,20 +120,20 @@ fig.show()
 
 #%% General Methods
 
-def populate_input_actor_scores_for_film(film_tconst, desired_number_of_primary_actors, desired_number_of_secondary_actors, primary_actor_DB, secondary_actor_DB):
+def populate_input_actor_scores_for_film(film_tconst, desired_number_of_primary_actors, desired_number_of_secondary_actors, primary_actor_DB, secondary_actor_DB, md_actor_to_film, md_actor_to_film_secondary):
     #Returns a list of primary and secondary actors nconst related to a film, to later populate a row of the predictor
     """ find a way to filter according to index"""
     
     '''Return up to [desired_number_of_primary_actors]  qty of tconsts'''
-    nconsts = return_nconsts_in_film_with_highest_film_counts(film_tconst, desired_number_of_primary_actors, primary_actor_DB, [])
+    nconsts = return_nconsts_in_film_with_highest_film_counts(film_tconst, desired_number_of_primary_actors, primary_actor_DB, [], md_actor_to_film)
     print("a")
     '''Return up to X  qty of tconsts to ensure that the total number of tconsts equals the sum of decired primary and secondary actors'''
     secondary_actors_to_populate = desired_number_of_primary_actors + desired_number_of_secondary_actors - len(nconsts)
-    nconsts = return_nconsts_in_film_with_highest_film_counts(film_tconst, desired_number_of_primary_actors, secondary_actor_DB, [])
+    nconsts = return_nconsts_in_film_with_highest_film_counts(film_tconst, secondary_actors_to_populate, md_secondary_actors, nconsts, md_actor_to_film_secondary)
     
     return nconsts
         
-def return_nconsts_in_film_with_highest_film_counts(film_tconst, actors_qty, actor_DB, previous_nconst):
+def return_nconsts_in_film_with_highest_film_counts(film_tconst, actors_qty, actor_DB, previous_nconst, md_actor_to_film_relational_DB):
     # called twice by populate_input_actor_scores_for_film
     if len(previous_nconst) == 0:
         nconsts = np.array([])
@@ -141,19 +141,27 @@ def return_nconsts_in_film_with_highest_film_counts(film_tconst, actors_qty, act
         nconsts = previous_nconst
     
     
-    primary_actors_in_film = md_actor_to_film[md_actor_to_film.index.get_level_values('tconst') == film_tconst]
-    primary_actors_in_film['count'] = None
+    primary_actors_in_film = md_actor_to_film_relational_DB[md_actor_to_film_relational_DB.index.get_level_values('tconst') == film_tconst]
+    if not 'count' in primary_actors_in_film.columns:
+        primary_actors_in_film['count'] = None
     
     for index in primary_actors_in_film.index:
-        row_in_df = actor_DB.loc[actor_DB['name'] == primary_actors_in_film['actor name'][index]].index[0]
-        #primary_actors_in_film['count'][index] = len(md_PrimaryActorsList['tconst'][row_in_df])
-        primary_actors_in_film.loc[index, 'count'] = len(actor_DB['tconst'][row_in_df])
-    
+        if primary_actors_in_film['count'][index] == None:
+            row_in_df = actor_DB.loc[actor_DB['name'] == primary_actors_in_film['actor name'][index]].index[0]
+            #primary_actors_in_film['count'][index] = len(md_PrimaryActorsList['tconst'][row_in_df])
+            primary_actors_in_film.loc[index, 'count'] = len(actor_DB['tconst'][row_in_df])
+        
     #remove tconsts already counted
     for row_num in range(len(primary_actors_in_film) - 1, -1, -1):
         if primary_actors_in_film.index.get_level_values('nconst')[row_num] in nconsts:
             primary_actors_in_film = primary_actors_in_film.drop(primary_actors_in_film.index[row_num])
-            
+        try:
+            for i in range(0, len(primary_actors_in_film.index.get_level_values('nconst')[row_num])):
+                if primary_actors_in_film.index.get_level_values('nconst')[row_num][i] in nconsts:
+                    primary_actors_in_film = primary_actors_in_film.drop(primary_actors_in_film.index[row_num])
+                    i = len(primary_actors_in_film.index.get_level_values('nconst')[row_num])
+        except KeyError as err:
+            name = "w"
     
     actors_to_be_populated_qty = min(actors_qty, len(primary_actors_in_film))
     #actors_to_populate_nconsts = np.array([])
@@ -165,14 +173,52 @@ def return_nconsts_in_film_with_highest_film_counts(film_tconst, actors_qty, act
         primary_actors_in_film = primary_actors_in_film.drop(target_index)
     
     return nconsts
+
+def generate_entry_for_score_predictor(nconsts, column_qty, year, primary_actor_list, secondary_actor_list, md_actor_to_film, md_actor_to_film_secondary):
+    meta_scores = np.array([])
+    for i in range(0, len(nconsts)):
+        #check if nconst is a primary actor
+        nconst_is_primary = False
+        #determine if nconst, belongs to a primary actor and return the row number
+        for primary_actor_row in range(0, len(primary_actor_list)):
+            if nconsts[i] in primary_actor_list['nconst'] == True:
+                row_num = primary_actor_row
+                nconst_is_primary = True
+                break
+        
+        #determine if nconst, belongs to a secondary actor and return the row number
+        if nconst_is_primary == False:
+            for secondary_actor_row in range(0, len(secondary_actor_list)):
+                if nconsts[i] in secondary_actor_list['nconst'] == True:
+                    row_num = secondary_actor_row
+                    break
+            
+        if nconst_is_primary == True:
+            #if the nconst refers to a primary actor, their metascore for a film is generated according to their linear model and the films year
+            expected_rating = (2020 - year) * md_PrimaryActorsList["Model_Gradient"][row_num] + md_PrimaryActorsList["Model Rating 2020"][row_num]
+        else:
+            #otherwise thier metascore is just their average score of the dataset
+            ratings = np.array([])
+            for tconst in secondary_actor_list['tconst']:
+                ratings = np.append(ratings, md_film_scores['rating'][tconst])
+            expected_rating = ratings.mean()
+        
+        meta_scores = np.array(meta_scores, expected_rating)
+        
+    for i in range(0, column_qty - len(nconsts)):
+        meta_scores = np.array(meta_scores, 0)
     
+    return meta_scores
+
     
+
+        
     
-    
+#def create_row_of_predicted_film_scores_for_rating_forecas    
 
 #filtered_primary_actor_list = print(md_actor_to_film[np.in1d(md_actor_to_film.index.get_level_values(1), [film_tconst])])
 film_tconst = 'tt1067106'
-nconsts = populate_input_actor_scores_for_film(film_tconst, 5, 5, md_PrimaryActorsList, md_secondary_actors)
+nconsts = populate_input_actor_scores_for_film(film_tconst, 5, 5, md_PrimaryActorsList, md_secondary_actors, md_actor_to_film, md_actor_to_film_secondary)
 
 #md_actor_to_film[(nm0001715, tt0118528)]
 
