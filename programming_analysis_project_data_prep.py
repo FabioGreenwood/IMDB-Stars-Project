@@ -55,12 +55,9 @@ print("5")
 #%%
 
 print(datetime.now())
-runcell("md_PrimaryActorsList - Step 1", script_filepath + dataprep_filename)
-runcell("Generate md_title_principals_reduced", script_filepath + dataprep_filename)
-#%%
 
-print(datetime.now())
-runcell("half-step", script_filepath + dataprep_filename)
+runcell("Generate md_title_principals_reduced", script_filepath + dataprep_filename)
+
 print("6")
 print(datetime.now())
 runcell("Generate Actor Metadata", script_filepath + dataprep_filename)
