@@ -166,6 +166,15 @@ md_actor_to_film.set_index(['nconst', 'tconst'], inplace=True)
 md_actor_to_film = md_actor_to_film.loc[:, ~md_actor_to_film.columns.str.contains('^Unnamed')]
 
 
+md_actor_to_film = pd.read_csv(metadata_filepath + 'md_actor_to_film.csv')
+md_actor_to_film.set_index(['nconst', 'tconst'], inplace=True)
+md_actor_to_film = md_actor_to_film.loc[:, ~md_actor_to_film.columns.str.contains('^Unnamed')]
+
+md_actor_to_film_complete = pd.read_csv(metadata_filepath + 'md_actor_to_film_complete.csv')
+md_actor_to_film_complete.set_index(['nconst', 'tconst'], inplace=True)
+md_actor_to_film_complete = md_actor_to_film.loc[:, ~md_actor_to_film_complete.columns.str.contains('^Unnamed')]
+
+
 md_actor_to_film_secondary = pd.read_csv(metadata_filepath + 'md_actor_to_film_secondary.csv')
 md_actor_to_film_secondary.set_index(['nconst', 'tconst'], inplace=True)
 md_actor_to_film_secondary = md_actor_to_film_secondary.loc[:, ~md_actor_to_film_secondary.columns.str.contains('^Unnamed')]
@@ -237,6 +246,11 @@ md_RatingModels = pd.DataFrame(columns = md_RatingModels_column_names, dtype=obj
 md_actor_to_film_column_names = ['tconst', 'nconst', 'film name', 'actor name','film year', 'film score', 'actor relative score']
 md_actor_to_film = pd.DataFrame(columns = md_actor_to_film_column_names)
 md_actor_to_film.set_index(['nconst', 'tconst'], inplace=True)
+
+md_actor_to_film_column_names = ['tconst', 'nconst', 'film name', 'actor name','film year', 'film score', 'actor relative score']
+md_actor_to_film_complete = pd.DataFrame(columns = md_actor_to_film_column_names)
+md_actor_to_film_complete.set_index(['nconst', 'tconst'], inplace=True)
+
 
 md_actor_to_film_secondary = pd.DataFrame(columns = md_actor_to_film_column_names)
 md_actor_to_film_secondary.set_index(['nconst', 'tconst'], inplace=True)
@@ -437,6 +451,8 @@ list([]), list([]), None, None], index=md_film_scores_column_names[1:]
 
 
 n=0
+
+
 
 for film_rel_index in md_actor_to_film.index:
    
