@@ -51,7 +51,11 @@ runcell("Create Forecase Model Input", script_filepath + metadata_filepath)
 #%% Create Forecase Model Input
 
  #film is a christmas carol
-X, Y = populate_actor_metascores_for_insertion_into_the_model(film_tconst_list, 3, 3, md_PrimaryActorsList, md_secondary_actors, md_actor_to_film, md_actor_to_film_secondary)
+ 
+ 
+film_tconst_list = ['tt1067106', 'tt2008009']
+ 
+X, Y = populate_actor_metascores_for_insertion_into_the_model(training_tconsts, 3, 3, md_PrimaryActorsList, md_secondary_actors, md_actor_to_film, md_actor_to_film_secondary)
 
 
 
@@ -168,12 +172,17 @@ def return_nconsts_in_film_with_highest_film_counts(film_tconst, actors_qty, act
     
     
     primary_actors_in_film = md_actor_to_film_relational_DB[md_actor_to_film_relational_DB.index.get_level_values('tconst') == film_tconst]
-    if not 'count' in primary_actors_in_film.columns:
+    primary_actors_in_film_columns = primary_actors_in_film.columns
+    #add count column in table if not yet existant
+    if not 'count' in primary_actors_in_film_columns:
         primary_actors_in_film['count'] = None
-    
+    #assign a count value to a actor if one not populated yet
     for index in primary_actors_in_film.index:
-        if primary_actors_in_film['count'][index] == None:
-            row_in_df = actor_DB.loc[actor_DB['name'] == primary_actors_in_film['actor name'][index]].index[0]
+        print(index)
+        #count_needs_population = (primary_actors_in_film['count'][index] > 0).sum() == 0
+        #if count_needs_population == True:
+        if (primary_actors_in_film['count'][index] > 0).sum() == 0:
+            row_in_df = actor_DB.loc[actor_DB['name'] == primary_actors_in_film['actor name'][index][0]].index[0]
             #primary_actors_in_film['count'][index] = len(md_PrimaryActorsList['tconst'][row_in_df])
             primary_actors_in_film.loc[index, 'count'] = len(actor_DB['tconst'][row_in_df])
         

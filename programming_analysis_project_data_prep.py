@@ -36,45 +36,46 @@ from datetime import datetime
 option_to_generate_training_set = True
 print(datetime.now())
 runcell("Import Modules and CSVs", script_filepath + dataprep_filename)
-print("1")
+print("1 - Reset and Define Metatables and General Variables/Methods")
 print(datetime.now())
 runcell("Reset and Define Metatables and General Variables/Methods", script_filepath + dataprep_filename)
-print("2")
+print("2 - General Methods")
 print(datetime.now())
 runcell("General Methods", script_filepath + dataprep_filename)
-print("3")
+print("3 - md_PrimaryActorsList - Step 1")
 print(datetime.now())
 runcell("md_PrimaryActorsList - Step 1", script_filepath + dataprep_filename)
-print("3")
+print("4 - md_PrimaryActorsList - Step 2")
 print(datetime.now())
 
 print(datetime.now())
 runcell("md_PrimaryActorsList - Step 2", script_filepath + dataprep_filename)
-print("5")
+print("5 - Generate md_title_principals_reduced")
 
 print(datetime.now())
 
 runcell("Generate md_title_principals_reduced", script_filepath + dataprep_filename)
-
-print("6")
+#%%
+print("6 - Generate Actor Metadata")
 print(datetime.now())
 runcell("Generate Actor Metadata", script_filepath + dataprep_filename)
-print("7")
+print("7 - Generate actor to film metadata")
 print(datetime.now())
 runcell("Generate actor to film metadata", script_filepath + dataprep_filename)
-print("8")
+print("8 - md_film_scores - Step 1")
 print(datetime.now())
 runcell("md_film_scores - Step 1", script_filepath + dataprep_filename)
-print("9")
+print("9 - md_film_scores - Step 2")
 print(datetime.now())
 runcell("md_film_scores - Step 2", script_filepath + dataprep_filename)
-print("10")
+print("10 - collect Secondary Actor Metadata - Step 1")
 print(datetime.now())
 runcell("collect Secondary Actor Metadata - Step 1", script_filepath + dataprep_filename)
-print("11")
+print("11 - collect Secondary Actor Metadata - Step 2")
 print(datetime.now())
 runcell("collect Secondary Actor Metadata - Step 2", script_filepath + dataprep_filename)
 print(datetime.now())
+print("12 - collect Secondary Actor Metadata - Step 3")
 runcell("collect Secondary Actor Metadata - Step 3", script_filepath + dataprep_filename)
 print(datetime.now())
 runcell("Save .csv's", script_filepath + dataprep_filename)
@@ -186,7 +187,7 @@ relister_main(md_PrimaryActorsList, 'nconst', "string")
 
 
 md_secondary_actors = pd.read_csv(metadata_filepath + 'md_secondary_actors.csv')
-relister_main(md_secondary_actors, 'tconst', "string")
+#relister_main(md_secondary_actors, 'tconst', "string")
 relister_main(md_secondary_actors, 'Relative Actor Scores', 'float')
 relister_main(md_secondary_actors, 'Film Years', 'int')
 relister_main(md_secondary_actors, 'nconst', 'string')
@@ -373,6 +374,7 @@ for i in np.arange(0, len(md_PrimaryActorsList)):
 #%% Generate actor to film metadata
 
 actor_name = ""
+counter = 0
 for i in md_actor_to_film.index:
     
     actor_name_new = md_actor_to_film['actor name'][i]
@@ -392,11 +394,21 @@ for i in md_actor_to_film.index:
     if film_year.size > 1:
         film_year = film_year[0]
         film_score = film_score[0]
+    counter += 1
+    
+    if counter == 24036:
+        print("Break")
+    
+    if (isinstance(film_year, pd.Series)):
+        film_year = 2020
+    
+    if (isinstance(film_score, pd.Series)):
+        film_score = film_score[0]
+    
     
     
     md_actor_to_film['actor relative score'][i] = float(evaluate_actor_to_film_score(actor_expected_2020_score, actor_gradient, actor_std_dev, film_year, film_score))
-
-
+    
 
 #%% md_film_scores - Step 1
 
@@ -432,9 +444,17 @@ for film_rel_index in md_actor_to_film.index:
     target_tconst = film_rel_index[1]
     
     target_rating = md_actor_to_film['actor relative score'][film_rel_index][0]
+    '''This is a work-around to remove any entries in md_actor_to_films  that mention a film that was removed due to training purposes'''
+    try:
+        md_film_scores.loc[target_tconst, 'nconst'].append(target_nconst)
+        md_film_scores.loc[target_tconst, 'Primary Actor Relative Ratings'].append(target_rating)
+    except KeyError as err:
+        md_actor_to_film = md_actor_to_film.drop(labels=film_rel_index)
+        
+        
     
-    md_film_scores.loc[target_tconst, 'nconst'].append(target_nconst)
-    md_film_scores.loc[target_tconst, 'Primary Actor Relative Ratings'].append(target_rating)
+    
+    
     
 for film_index in md_film_scores.index:
     md_film_scores.loc[film_index, 'Primary Actor Relative Ratings - Mean'] = np.mean(md_film_scores.loc[film_index, 'Primary Actor Relative Ratings'])
@@ -1034,8 +1054,10 @@ def get_unique_values(dataframe, column, single_or_nested='single'):
 
 
 def evaluate_actor_to_film_score(actor_expected_2020_score, actor_gradient, actor_std_dev, film_year, film_score):
+    
+    
     year_of_intercept = 2020
-    actor_expected_score_for_films_year = (film_year - year_of_intercept) * actor_gradient + actor_expected_2020_score
+    actor_expected_score_for_films_year = (int(film_year) - int(year_of_intercept)) * actor_gradient + actor_expected_2020_score
     relative_z_difference = (film_score - actor_expected_score_for_films_year) / actor_std_dev
     return relative_z_difference
 
