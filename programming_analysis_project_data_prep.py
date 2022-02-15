@@ -442,15 +442,19 @@ for film_rel_index in md_actor_to_film.index:
    
     target_nconst = film_rel_index[0]
     target_tconst = film_rel_index[1]
-    
-    target_rating = md_actor_to_film['actor relative score'][film_rel_index][0]
+    n += 1
+    try:
+        target_rating = md_actor_to_film['actor relative score'][film_rel_index][0]
+    except KeyError as err:
+        print("film_rel_index")
+        
     '''This is a work-around to remove any entries in md_actor_to_films  that mention a film that was removed due to training purposes'''
     try:
         md_film_scores.loc[target_tconst, 'nconst'].append(target_nconst)
         md_film_scores.loc[target_tconst, 'Primary Actor Relative Ratings'].append(target_rating)
     except KeyError as err:
         md_actor_to_film = md_actor_to_film.drop(labels=film_rel_index)
-        
+    
         
     
     
