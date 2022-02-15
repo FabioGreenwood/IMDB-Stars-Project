@@ -36,7 +36,22 @@ runcell("start up run", script_filepath + dataprep_filename)
 runcell("Import Additional Modules and Define General Parameters", script_filepath + analysis_filename)
 
 
-#%% Import Additional Modules and Define General Parameters
+#%% Create Analysis Printout
+
+runcell("dud actors study", script_filepath + metadata_filepath)
+
+
+#%% Create Model
+
+
+runcell("Create Forecase Model Input", script_filepath + metadata_filepath)
+
+
+#%% Create Forecase Model Input
+
+film_tconst_list = ['tt1067106', 'tt2008009'] #film is a christmas carol
+X, Y = populate_actor_metascores_for_insertion_into_the_model(film_tconst_list, 3, 3, md_PrimaryActorsList, md_secondary_actors, md_actor_to_film, md_actor_to_film_secondary)
+
 
 
 
@@ -247,17 +262,3 @@ def populate_actor_metascores_for_insertion_into_the_model(film_tconst_list, des
     return output.drop(rating_string, axis = 1), output[rating_string]
         
     
-#def create_row_of_predicted_film_scores_for_rating_forecas    
-
-#filtered_primary_actor_list = print(md_actor_to_film[np.in1d(md_actor_to_film.index.get_level_values(1), [film_tconst])])
-film_tconst_list = ['tt1067106', 'tt2008009'] #film is a christmas carol
-
-# primary cast are: Colin Firth - nm0000147, Gary Oldman - nm0000198, Jim Carrey -  nm0000120
-# secondaries: Steve Valentine, nm0884313    
-
-X, Y = populate_actor_metascores_for_insertion_into_the_model(film_tconst_list, 3, 3, md_PrimaryActorsList, md_secondary_actors, md_actor_to_film, md_actor_to_film_secondary)
-
-
-#md_actor_to_film[(nm0001715, tt0118528)]
-
-#print(md_actor_to_film[np.in1d(md_actor_to_film.index.get_level_values(0), [film_tconst])])

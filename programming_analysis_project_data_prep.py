@@ -32,9 +32,8 @@ metadata_filepath = "C:\\Users\\fabio\\OneDrive\\Documents\\Studies\\Programming
 
 dataprep_filename = "programming_analysis_project_data_prep.py"
 analysis_filename = "programming_analysis_project_analysis_file.py"
-
+from datetime import datetime
 option_to_generate_training_set = True
-
 print(datetime.now())
 runcell("Import Modules and CSVs", script_filepath + dataprep_filename)
 print("1")
@@ -48,12 +47,20 @@ print(datetime.now())
 runcell("md_PrimaryActorsList - Step 1", script_filepath + dataprep_filename)
 print("3")
 print(datetime.now())
+
+print(datetime.now())
 runcell("md_PrimaryActorsList - Step 2", script_filepath + dataprep_filename)
 print("5")
+
+#%%
+
 print(datetime.now())
 runcell("md_PrimaryActorsList - Step 1", script_filepath + dataprep_filename)
 runcell("Generate md_title_principals_reduced", script_filepath + dataprep_filename)
+#%%
 
+print(datetime.now())
+runcell("half-step", script_filepath + dataprep_filename)
 print("6")
 print(datetime.now())
 runcell("Generate Actor Metadata", script_filepath + dataprep_filename)
@@ -119,8 +126,9 @@ import seaborn as sns
 import plotly.express as px
 import pathlib
 import os
-
-
+import sklearn
+import sklearn.model_selection
+from sklearn.model_selection import train_test_split
 
 
 
@@ -187,6 +195,7 @@ relister_main(md_secondary_actors, 'nconst', 'string')
 md_secondary_actors = md_secondary_actors.loc[:, ~md_secondary_actors.columns.str.contains('^Unnamed')]
 
 md_title_principals_reduced = pd.read_csv(metadata_filepath + 'md_title_principals_reduced.csv')
+md_title_principals_reduced_pretraining_filter = pd.read_csv(metadata_filepath + 'md_title_principals_reduced_pretraining_filter.csv')
 
 
 
@@ -284,11 +293,15 @@ for i in PrimaryActorsList:
 
 
 
-def populate_md_PrimaryActorsList(training_set = df_title_principals):
+def return_completed_md_PrimaryActorsList(training_set = df_title_principals):
     #changing
     counter = 0
-    for i in md_PrimaryActorsList.index:
-        counter += 1    
+    
+    
+    #for i in md_PrimaryActorsList.index:
+    for i in md_PrimaryActorsList.reindex(index=md_PrimaryActorsList.index[::-1]).index:
+        counter += 1
+        print(counter)
         if len(md_PrimaryActorsList.index) < 10:
             print(datetime.now())
         elif float(counter) % int(len(md_PrimaryActorsList.index) / 10) == 0:
@@ -297,18 +310,22 @@ def populate_md_PrimaryActorsList(training_set = df_title_principals):
             PC = float(float(i) / len(md_PrimaryActorsList.index))
             print(str(i) + " / " + str(md_PrimaryActorsList.index))
             print(PC)
-    
+        
+        
+        
         #runcell("Reset Metatables (md_PrimaryActorsList, md_actor_to_film) and Generate md_PrimaryActorsList", script_filepath + dataprep_filename)
-        get_film_ratings_v1(i, df_title_basics, df_title_ratings, training_set)
+        populate_film_ratings_v1(i, training_set)
+        
     
-    print(md_PrimaryActorsList['name'][md_PrimaryActorsList.index[94]])
-    get_film_ratings_v1(md_PrimaryActorsList.index[96], df_title_basics, df_title_ratings, training_set)
-    get_film_ratings_v1(md_PrimaryActorsList.index[97], df_title_basics, df_title_ratings, training_set)
-    get_film_ratings_v1(md_PrimaryActorsList.index[98], df_title_basics, df_title_ratings, training_set)
-    get_film_ratings_v1(md_PrimaryActorsList.index[99], df_title_basics, df_title_ratings, training_set)
+    #print(md_PrimaryActorsList['name'][md_PrimaryActorsList.index[94]])
+    print(md_PrimaryActorsList['tconst'][96])
+    populate_film_ratings_v1(md_PrimaryActorsList.index[96], training_set)
+    populate_film_ratings_v1(md_PrimaryActorsList.index[97], training_set)
+    populate_film_ratings_v1(md_PrimaryActorsList.index[98], training_set)
+    populate_film_ratings_v1(md_PrimaryActorsList.index[99], training_set)
 
     
-populate_md_PrimaryActorsList()
+return_completed_md_PrimaryActorsList()
 
 #%% Generate md_title_principals_reduced
 
@@ -323,18 +340,20 @@ mask_for_category = [True if ele in list_categories else False for ele in md_tit
 md_title_principals_reduced_pretraining_filter = md_title_principals_reduced_pretraining_filter[mask_for_category]
 
 
-if option_to_generate_training_set == True:
-    md_title_principals_reduced, training_tconsts, testing_tconsts = filter_testing_tconsts_from_title_principles(unique_tconsts, md_title_principals_reduced)
-    populate_md_PrimaryActorsList(md_title_principals_reduced)
+md_title_principals_reduced = md_title_principals_reduced_pretraining_filter.copy()
 
+if option_to_generate_training_set == True:
+    md_title_principals_reduced, training_tconsts, testing_tconsts = filter_testing_tconsts_from_title_principles(unique_tconst, md_title_principals_reduced)
+    runcell("md_PrimaryActorsList - Step 1", script_filepath + dataprep_filename)
+    return_completed_md_PrimaryActorsList(md_title_principals_reduced)
+else:
+    md_title_principals_reduced = md_title_principals_reduced_pretraining_filter.copy()
 
 unique_secondary_nconst = get_unique_values(md_title_principals_reduced_pretraining_filter, 'nconst')
 
 
 
-#%%
 
-get_film_ratings_v1(md_PrimaryActorsList.index[95])
 
 #%% Generate Actor Metadata
 
@@ -816,9 +835,9 @@ def relister_single_functional(cell, format_input):
   return new_list
 
 #find an actor's films and their ratings
-def get_film_ratings_v1(actor_ID, df_title_basics, df_title_ratings, df_title_principals):
+def populate_film_ratings_v1(actor_ID, df_title_principals):
   
-  global md_PrimaryActorsList, md_actor_to_film
+  global md_actor_to_film, md_PrimaryActorsList, df_title_basics, df_title_ratings
   
   #reset cells about to be populated
   md_PrimaryActorsList['Ratings'][actor_ID] = list([])
@@ -834,11 +853,11 @@ def get_film_ratings_v1(actor_ID, df_title_basics, df_title_ratings, df_title_pr
       #rating_index = df_title_ratings[df_title_ratings['tconst'] == title].index
       if title in df_title_ratings.index:
         value = df_title_ratings['averageRating'][title] 
-        
         title_year = df_title_basics['startYear'][title]
         
         addition_index = md_actor_to_film.columns
-        addition_2 = pd.Series(data=[df_title_basics['originalTitle'][title], md_PrimaryActorsList['name'][actor_ID], int(title_year), float(value), None], name=(md_PrimaryActorsList['nconst'][actor_ID][0], title) , index=addition_index)
+        #addition_2 = pd.Series(data=[df_title_basics['originalTitle'][title], md_PrimaryActorsList['Name'][actor_ID], int(title_year), float(value), None], name=(md_PrimaryActorsList['nconst'][actor_ID][0], title) , index=addition_index)
+        addition_2 = pd.Series(data=[df_title_basics['originalTitle'][title], md_PrimaryActorsList['Name'][actor_ID], title_year, value, None], name=(md_PrimaryActorsList['nconst'][actor_ID][0], title) , index=addition_index)
         md_actor_to_film = md_actor_to_film.append(addition_2)
         
         
@@ -1082,11 +1101,11 @@ def filter_testing_tconsts_from_title_principles(unique_tconsts, title_principle
     for i in range(len(title_principles_DB_temp) - 1, -1, -1):
         
         
-        fg_counter(counter, len(title_principles_DB_temp), 1000)
+        fg_counter(counter, len(title_principles_DB_temp), 10)
         counter += 1
         
         if title_principles_DB_temp['tconst'][i] in testing_tconsts:
-            title_principles_DB_temp.drop(df_title_principals_training.index[i])
+            title_principles_DB_temp = title_principles_DB_temp.drop(title_principles_DB.index[i])
     
     return title_principles_DB_temp, training_tconsts, testing_tconsts
 
