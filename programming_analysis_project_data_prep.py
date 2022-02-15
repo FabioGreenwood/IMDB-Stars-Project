@@ -41,30 +41,30 @@ print(datetime.now())
 runcell("md_PrimaryActorsList - Step 1", script_filepath + dataprep_filename)
 print("4")
 print(datetime.now())
-runcell("md_PrimaryActorsList - Step 2", script_filepath + dataprep_filename)
+runcell("Generate md_title_principals_reduced", script_filepath + dataprep_filename)
 print("5")
 print(datetime.now())
-runcell("Generate Actor Metadata", script_filepath + dataprep_filename)
+runcell("md_PrimaryActorsList - Step 2", script_filepath + dataprep_filename)
 print("6")
 print(datetime.now())
-runcell("Generate actor to film metadata", script_filepath + dataprep_filename)
+runcell("Generate Actor Metadata", script_filepath + dataprep_filename)
 print("7")
 print(datetime.now())
-runcell("md_film_scores - Step 1", script_filepath + dataprep_filename)
+runcell("Generate actor to film metadata", script_filepath + dataprep_filename)
 print("8")
 print(datetime.now())
-runcell("md_film_scores - Step 2", script_filepath + dataprep_filename)
+runcell("md_film_scores - Step 1", script_filepath + dataprep_filename)
 print("9")
 print(datetime.now())
-runcell("collect Secondary Actor Metadata - Step 1", script_filepath + dataprep_filename)
+runcell("md_film_scores - Step 2", script_filepath + dataprep_filename)
 print("10")
 print(datetime.now())
-runcell("collect Secondary Actor Metadata - Step 2", script_filepath + dataprep_filename)
+runcell("collect Secondary Actor Metadata - Step 1", script_filepath + dataprep_filename)
 print("11")
 print(datetime.now())
-runcell("collect Secondary Actor Metadata - Step 3", script_filepath + dataprep_filename)
+runcell("collect Secondary Actor Metadata - Step 2", script_filepath + dataprep_filename)
 print(datetime.now())
-runcell("collect Secondary Actor Metadata - Step 4", script_filepath + dataprep_filename)
+runcell("collect Secondary Actor Metadata - Step 3", script_filepath + dataprep_filename)
 
 
 
@@ -196,6 +196,7 @@ md_PrimaryActorsList.to_csv(metadata_filepath + 'md_PrimaryActorsList.csv')
 md_secondary_actors.to_csv(metadata_filepath + 'md_secondary_actors.csv')
 
 md_title_principals_reduced.to_csv(metadata_filepath + 'md_title_principals_reduced.csv')
+md_title_principals_reduced_pretraining_filter.to_csv(metadata_filepath + 'md_title_principals_reduced_pretraining_filter.csv')
 
 
 
@@ -212,7 +213,6 @@ md_RatingModels = pd.DataFrame(columns = md_RatingModels_column_names, dtype=obj
 md_actor_to_film_column_names = ['tconst', 'nconst', 'film name', 'actor name','film year', 'film score', 'actor relative score']
 md_actor_to_film = pd.DataFrame(columns = md_actor_to_film_column_names)
 md_actor_to_film.set_index(['nconst', 'tconst'], inplace=True)
-
 
 md_actor_to_film_secondary = pd.DataFrame(columns = md_actor_to_film_column_names)
 md_actor_to_film_secondary.set_index(['nconst', 'tconst'], inplace=True)
@@ -268,8 +268,7 @@ for i in PrimaryActorsList:
 #%% md_PrimaryActorsList - Step 2
 
 
-if option_to_generate_training_set == True:
-    md_title_principals_reduced, training_tconsts, testing_tconsts = filter_testing_tconsts_from_title_principles(unique_tconsts, md_title_principals_reduced)
+
 
 
 
@@ -400,22 +399,24 @@ for film_index in md_film_scores.index:
 
 #list_categories = ['self', 'actor', 'actress']
 
-md_title_principals_reduced_training, training_tconsts, testing_tconsts = filter_testing_tconsts_from_title_principles(unique_tconsts, md_title_principals_reduced)
-
 unique_tconst = get_unique_values__relevant_film_tconst()
 mask_for_film = [True if ele in unique_tconst else False for ele in df_title_principals['tconst']]
-md_title_principals_reduced = df_title_principals[mask_for_film]
+md_title_principals_reduced_pretraining_filter = df_title_principals[mask_for_film]
 
 list_categories = ['self', 'actor', 'actress']
-mask_for_category = [True if ele in list_categories else False for ele in md_title_principals_reduced['category']]
-md_title_principals_reduced = md_title_principals_reduced[mask_for_category]
+mask_for_category = [True if ele in list_categories else False for ele in md_title_principals_reduced_pretraining_filter['category']]
+md_title_principals_reduced_pretraining_filter = md_title_principals_reduced_pretraining_filter[mask_for_category]
 
 
-unique_secondary_nconst = get_unique_values(md_title_principals_reduced, 'nconst')
+if option_to_generate_training_set == True:
+    md_title_principals_reduced, training_tconsts, testing_tconsts = filter_testing_tconsts_from_title_principles(unique_tconsts, md_title_principals_reduced)
+
+
+unique_secondary_nconst = get_unique_values(md_title_principals_reduced_pretraining_filter, 'nconst')
 
 #%% Generate md_title_principals_reduced - alturnative With hardcoded counter
 
-
+'''This code is out of use
 
 
 
@@ -456,7 +457,7 @@ print("5")
 
 md_title_principals_reduced = df_title_principals[mask_for_film_x]
 
-
+'''
 
 #%% collect Secondary Actor Metadata - Step 1
 
