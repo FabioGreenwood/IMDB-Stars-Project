@@ -60,6 +60,9 @@ X, Y = populate_actor_metascores_for_insertion_into_the_model(training_tconsts, 
 
 
 
+
+
+
 #%% Table info and clean-up
 
 md_PrimaryActorsList = md_PrimaryActorsList.loc[:, ~md_PrimaryActorsList.columns.str.contains('^Unnamed*')]
