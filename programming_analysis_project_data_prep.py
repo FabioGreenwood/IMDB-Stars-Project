@@ -26,9 +26,16 @@ This is a temporary script file.
 """
 #%% Hard restart/regeneration of data
 
+script_filepath = "C:\\Users\\fabio\\OneDrive\\Documents\\Studies\\Programming_Analysis_Project\\IMDB-Stars-Project\\"
+database_filepath = "C:\\Users\\fabio\\OneDrive\\Documents\\Studies\\Programming_Analysis_Project\\IMDB-Stars-Project\\data\\"
+metadata_filepath = "C:\\Users\\fabio\\OneDrive\\Documents\\Studies\\Programming_Analysis_Project\\IMDB-Stars-Project\\Metadata\\"
+
+dataprep_filename = "programming_analysis_project_data_prep.py"
+analysis_filename = "programming_analysis_project_analysis_file.py"
 
 option_to_generate_training_set = False
 
+print(datetime.now())
 runcell("Import Modules and CSVs", script_filepath + dataprep_filename)
 print("1")
 print(datetime.now())
@@ -39,12 +46,14 @@ runcell("General Methods", script_filepath + dataprep_filename)
 print("3")
 print(datetime.now())
 runcell("md_PrimaryActorsList - Step 1", script_filepath + dataprep_filename)
-print("4")
-print(datetime.now())
-runcell("Generate md_title_principals_reduced", script_filepath + dataprep_filename)
-print("5")
+print("3")
 print(datetime.now())
 runcell("md_PrimaryActorsList - Step 2", script_filepath + dataprep_filename)
+print("5")
+print(datetime.now())
+runcell("md_PrimaryActorsList - Step 1", script_filepath + dataprep_filename)
+runcell("Generate md_title_principals_reduced", script_filepath + dataprep_filename)
+
 print("6")
 print(datetime.now())
 runcell("Generate Actor Metadata", script_filepath + dataprep_filename)
@@ -65,7 +74,8 @@ print(datetime.now())
 runcell("collect Secondary Actor Metadata - Step 2", script_filepath + dataprep_filename)
 print(datetime.now())
 runcell("collect Secondary Actor Metadata - Step 3", script_filepath + dataprep_filename)
-
+print(datetime.now())
+runcell("Save .csv's", script_filepath + dataprep_filename)
 
 
 #%%
@@ -265,6 +275,8 @@ for i in PrimaryActorsList:
   
 
 
+
+
 #%% md_PrimaryActorsList - Step 2
 
 
@@ -290,15 +302,34 @@ def md_PrimaryActorsList(training_set = df_title_principals):
         get_film_ratings_v1(i, df_title_basics, df_title_ratings, training_set)
     
     print(md_PrimaryActorsList['name'][md_PrimaryActorsList.index[94]])
-    #get_film_ratings_v1(md_PrimaryActorsList.index[96], df_title_basics, df_title_ratings, training_set)
-    #get_film_ratings_v1(md_PrimaryActorsList.index[97], df_title_basics, df_title_ratings, training_set)
-    #get_film_ratings_v1(md_PrimaryActorsList.index[98], df_title_basics, df_title_ratings, training_set)
-    #get_film_ratings_v1(md_PrimaryActorsList.index[99], df_title_basics, df_title_ratings, training_set)
+    get_film_ratings_v1(md_PrimaryActorsList.index[96], df_title_basics, df_title_ratings, training_set)
+    get_film_ratings_v1(md_PrimaryActorsList.index[97], df_title_basics, df_title_ratings, training_set)
+    get_film_ratings_v1(md_PrimaryActorsList.index[98], df_title_basics, df_title_ratings, training_set)
+    get_film_ratings_v1(md_PrimaryActorsList.index[99], df_title_basics, df_title_ratings, training_set)
 
     
 md_PrimaryActorsList()
 
+#%% Generate md_title_principals_reduced
 
+#list_categories = ['self', 'actor', 'actress']
+
+unique_tconst = get_unique_values__relevant_film_tconst()
+mask_for_film = [True if ele in unique_tconst else False for ele in df_title_principals['tconst']]
+md_title_principals_reduced_pretraining_filter = df_title_principals[mask_for_film]
+
+list_categories = ['self', 'actor', 'actress']
+mask_for_category = [True if ele in list_categories else False for ele in md_title_principals_reduced_pretraining_filter['category']]
+md_title_principals_reduced_pretraining_filter = md_title_principals_reduced_pretraining_filter[mask_for_category]
+
+
+if option_to_generate_training_set == True:
+    md_title_principals_reduced, training_tconsts, testing_tconsts = filter_testing_tconsts_from_title_principles(unique_tconsts, md_title_principals_reduced)
+
+
+unique_secondary_nconst = get_unique_values(md_title_principals_reduced_pretraining_filter, 'nconst')
+
+md_PrimaryActorsList(md_title_principals_reduced)
 
 #%%
 
@@ -395,24 +426,7 @@ for film_index in md_film_scores.index:
 
 
 
-#%% Generate md_title_principals_reduced
 
-#list_categories = ['self', 'actor', 'actress']
-
-unique_tconst = get_unique_values__relevant_film_tconst()
-mask_for_film = [True if ele in unique_tconst else False for ele in df_title_principals['tconst']]
-md_title_principals_reduced_pretraining_filter = df_title_principals[mask_for_film]
-
-list_categories = ['self', 'actor', 'actress']
-mask_for_category = [True if ele in list_categories else False for ele in md_title_principals_reduced_pretraining_filter['category']]
-md_title_principals_reduced_pretraining_filter = md_title_principals_reduced_pretraining_filter[mask_for_category]
-
-
-if option_to_generate_training_set == True:
-    md_title_principals_reduced, training_tconsts, testing_tconsts = filter_testing_tconsts_from_title_principles(unique_tconsts, md_title_principals_reduced)
-
-
-unique_secondary_nconst = get_unique_values(md_title_principals_reduced_pretraining_filter, 'nconst')
 
 #%% Generate md_title_principals_reduced - alturnative With hardcoded counter
 
