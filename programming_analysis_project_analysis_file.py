@@ -33,7 +33,8 @@ analysis_filename = "programming_analysis_project_analysis_file.py"
 
 #import prepared data and methods from [programming_analysis_project_data_prep.py]
 runcell("start up run", script_filepath + dataprep_filename)
-runcell("Import Additional Modules and Define General Parameters", script_filepath + analysis_filename)
+runcell("General Methods", script_filepath + analysis_filename)
+#runcell("Import Additional Modules and Define General Parameters", script_filepath + analysis_filename)
 
 
 #%% Create Analysis Printout
@@ -49,7 +50,7 @@ runcell("Create Forecase Model Input", script_filepath + metadata_filepath)
 
 #%% Create Forecase Model Input
 
-film_tconst_list = ['tt1067106', 'tt2008009'] #film is a christmas carol
+ #film is a christmas carol
 X, Y = populate_actor_metascores_for_insertion_into_the_model(film_tconst_list, 3, 3, md_PrimaryActorsList, md_secondary_actors, md_actor_to_film, md_actor_to_film_secondary)
 
 
@@ -90,7 +91,7 @@ md_film_scores_pairplot.fig.suptitle("md_film_scores")
 #md_secondary_actors_pairplot.fig.show()
 
 
-#%%
+
 
 
 

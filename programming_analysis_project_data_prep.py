@@ -52,8 +52,6 @@ print(datetime.now())
 runcell("md_PrimaryActorsList - Step 2", script_filepath + dataprep_filename)
 print("5")
 
-#%%
-
 print(datetime.now())
 
 runcell("Generate md_title_principals_reduced", script_filepath + dataprep_filename)
@@ -127,6 +125,10 @@ import sklearn
 import sklearn.model_selection
 from sklearn.model_selection import train_test_split
 
+# save numpy array as csv file
+from numpy import asarray
+from numpy import savetxt
+from numpy import loadtxt
 
 
 #from google.colab import drive
@@ -195,6 +197,9 @@ md_title_principals_reduced = pd.read_csv(metadata_filepath + 'md_title_principa
 md_title_principals_reduced_pretraining_filter = pd.read_csv(metadata_filepath + 'md_title_principals_reduced_pretraining_filter.csv')
 
 
+training_tconsts = loadtxt(metadata_filepath + 'training_tconsts.csv', delimiter=',', dtype=object)
+testing_tconsts = loadtxt(metadata_filepath + 'testing_tconsts.csv', delimiter=',', dtype=object)
+
 
 
 #%% Save .csv's 
@@ -214,6 +219,8 @@ md_secondary_actors.to_csv(metadata_filepath + 'md_secondary_actors.csv')
 md_title_principals_reduced.to_csv(metadata_filepath + 'md_title_principals_reduced.csv')
 md_title_principals_reduced_pretraining_filter.to_csv(metadata_filepath + 'md_title_principals_reduced_pretraining_filter.csv')
 
+savetxt(metadata_filepath + 'training_tconsts.csv', asarray(training_tconsts), delimiter=',', fmt='%s')
+savetxt(metadata_filepath + 'testing_tconsts.csv', asarray(testing_tconsts), delimiter=',', fmt='%s')
 
 
 
@@ -284,10 +291,6 @@ for i in PrimaryActorsList:
 
 
 #%% md_PrimaryActorsList - Step 2
-
-
-
-
 
 
 def return_completed_md_PrimaryActorsList(training_set = df_title_principals):
@@ -703,6 +706,8 @@ df_title_principals_reduced['Relationship Class'] = 0
 
 #%% Split Metatable Function
 
+'''this method is not being used at the moment
+
 def split_meta_table(table, training_tconst, testing_tconst, columns_to_copy, columns_to_split, split_index = 'tconst'):
     #this function splits various tables into to separate testing and training tables according to which tconst values have been deemed to be training films or testing films
     #it will then populate the data on films deemed for training in the table_training and data on the films deemed for table_testing and return both tables
@@ -752,7 +757,7 @@ columns_to_split = ['tconst', 'Ratings']
 
 table_training, table_testing = split_meta_table(md_PrimaryActorsList, unique_tconst[:5], unique_tconst[5:], columns_to_copy, columns_to_split)
 
-
+'''
 
 
 #%% General Methods
