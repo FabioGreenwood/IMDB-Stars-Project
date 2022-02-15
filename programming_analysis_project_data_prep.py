@@ -19,7 +19,6 @@
 '''
 
 
-
 """
 Spyder Editor
 
@@ -27,6 +26,8 @@ This is a temporary script file.
 """
 #%% Hard restart/regeneration of data
 
+
+option_to_generate_training_set = False
 
 runcell("Import Modules and CSVs", script_filepath + dataprep_filename)
 print("1")
@@ -63,6 +64,7 @@ print("11")
 print(datetime.now())
 runcell("collect Secondary Actor Metadata - Step 3", script_filepath + dataprep_filename)
 print(datetime.now())
+runcell("collect Secondary Actor Metadata - Step 4", script_filepath + dataprep_filename)
 
 
 
@@ -265,27 +267,36 @@ for i in PrimaryActorsList:
 
 #%% md_PrimaryActorsList - Step 2
 
-for i in md_PrimaryActorsList.index:
-    if len(md_PrimaryActorsList.index) < 10:
-        print(datetime.now())
-    elif float(i) % int(len(md_PrimaryActorsList.index) / 10) == 0:
-        print("-----")
-        print(datetime.now())
-        PC = float(float(i) / len(md_PrimaryActorsList.index))
-        print(str(i) + " / " + str(md_PrimaryActorsList.index))
-        print(PC)
 
-    #runcell("Reset Metatables (md_PrimaryActorsList, md_actor_to_film) and Generate md_PrimaryActorsList", script_filepath + dataprep_filename)
-    get_film_ratings_v1(i)
 
-print(md_PrimaryActorsList['name'][md_PrimaryActorsList.index[94]])
-get_film_ratings_v1(md_PrimaryActorsList.index[96])
-get_film_ratings_v1(md_PrimaryActorsList.index[97])
-get_film_ratings_v1(md_PrimaryActorsList.index[98])
-get_film_ratings_v1(md_PrimaryActorsList.index[99])
+
+
+
+def md_PrimaryActorsList(training_set = df_title_principals):
+    #changing
+    counter = 0
+    for i in md_PrimaryActorsList.index:
+        counter += 1    
+        if len(md_PrimaryActorsList.index) < 10:
+            print(datetime.now())
+        elif float(counter) % int(len(md_PrimaryActorsList.index) / 10) == 0:
+            print("-----")
+            print(datetime.now())
+            PC = float(float(i) / len(md_PrimaryActorsList.index))
+            print(str(i) + " / " + str(md_PrimaryActorsList.index))
+            print(PC)
+    
+        #runcell("Reset Metatables (md_PrimaryActorsList, md_actor_to_film) and Generate md_PrimaryActorsList", script_filepath + dataprep_filename)
+        get_film_ratings_v1(i, df_title_basics, df_title_ratings, training_set)
+    
+    print(md_PrimaryActorsList['name'][md_PrimaryActorsList.index[94]])
+    #get_film_ratings_v1(md_PrimaryActorsList.index[96], df_title_basics, df_title_ratings, training_set)
+    #get_film_ratings_v1(md_PrimaryActorsList.index[97], df_title_basics, df_title_ratings, training_set)
+    #get_film_ratings_v1(md_PrimaryActorsList.index[98], df_title_basics, df_title_ratings, training_set)
+    #get_film_ratings_v1(md_PrimaryActorsList.index[99], df_title_basics, df_title_ratings, training_set)
 
     
-
+md_PrimaryActorsList()
 
 
 
@@ -387,7 +398,9 @@ for film_index in md_film_scores.index:
 #%% collect Secondary Actor Metadata - Step 1
 
 #list_categories = ['self', 'actor', 'actress']
- 
+
+md_title_principals_reduced_training, training_tconsts, testing_tconsts = filter_testing_tconsts_from_title_principles(unique_tconsts, md_title_principals_reduced)
+
 unique_tconst = get_unique_values__relevant_film_tconst()
 mask_for_film = [True if ele in unique_tconst else False for ele in df_title_principals['tconst']]
 md_title_principals_reduced = df_title_principals[mask_for_film]
@@ -587,6 +600,8 @@ md_secondary_actors['Count'] = 0
 for x in range(0,len(md_secondary_actors)):
     md_secondary_actors['Count'][x] = len(md_secondary_actors['Relative Actor Scores'][x])
 
+md_actor_to_film_secondary  = return_populated_md_actor_to_film_secondary_dataframe(md_secondary_actors, md_actor_to_film_column_names)
+
     
 #md_PrimaryActorsList[md_PrimaryActorsList['Name'] == actor_name].index[0]
 
@@ -784,7 +799,7 @@ def relister_single_functional(cell, format_input):
   return new_list
 
 #find an actor's films and their ratings
-def get_film_ratings_v1(actor_ID, df_title_basics=df_title_basics, df_title_ratings=df_title_ratings):
+def get_film_ratings_v1(actor_ID, df_title_basics, df_title_ratings, df_title_principals):
   
   global md_PrimaryActorsList, md_actor_to_film
   
@@ -1026,34 +1041,50 @@ def return_populated_md_actor_to_film_secondary_dataframe(md_secondary_actors, m
 def retrive_film_rating(database, film_tconst):
     return database['Rating'][film_tconst]
 
+def fg_counter(counter_value, total_iterations_qty, number_of_updates_required_for_total_run = 10):
+    if float(counter_value) % int(total_iterations_qty / number_of_updates_required_for_total_run) == 0:
+        print("-----")
+        print(datetime.now())
+        PC = float(float(counter_value) / total_iterations_qty)
+        print(str(counter_value) + " / " + str(total_iterations_qty))
+        print(PC)
+
+def filter_testing_tconsts_from_title_principles(unique_tconsts, title_principles_DB):
+    '''
+    Returns:
+        Filtered film to actor relational database (a.k.a "XX_title_principles_XX") - For use in generation of metadata without films from testing set
+        List of training tconsts - Informs users on what films are considered within the training set
+        List of testing tconsts - Testing set, model will need to be tested from these films
+        
+    '''
+    counter = 0
+    training_tconsts, testing_tconsts = train_test_split(unique_tconsts, test_size = 0.2, random_state = 0)
+    
+    title_principles_DB_temp = title_principles_DB.copy()
+    
+    for i in range(len(title_principles_DB_temp) - 1, -1, -1):
+        
+        
+        fg_counter(counter, len(title_principles_DB_temp), 1000)
+        counter += 1
+        
+        if title_principles_DB_temp['tconst'][i] in testing_tconsts:
+            title_principles_DB_temp.drop(df_title_principals_training.index[i])
+    
+    return title_principles_DB_temp, training_tconsts, testing_tconsts
+
 
 #%%
 
 
 
-md_actor_to_film_secondary  = return_populated_md_actor_to_film_secondary_dataframe(md_secondary_actors, md_actor_to_film_column_names)
+
   
 #%%
 
 
 
-
-
-md_actor_to_film_secondary_2 = md_actor_to_film_secondary.copy()
-for i in range(0, len(md_actor_to_film_secondary_2)):
-    old_index = md_actor_to_film_secondary.index[i][0]
-    new_index = relister_single_functional(md_actor_to_film_secondary.index[i][0], 'string')
-    md_actor_to_film_secondary_2.rename(index={old_index : new_index},inplace=True)
-    
-    counter += 1
-    if float(counter) % int(len(md_actor_to_film_secondary_2) / 10) == 0:
-        print("-----")
-        print(datetime.now())
-        PC = float(float(counter) / len(md_actor_to_film_secondary_2))
-        print(str(counter ) + " / " + str(len(md_actor_to_film_secondary_2)))
-        print(PC)
-    
-    
+   
     
 #%% 
 print(relister_single_functional(md_actor_to_film_secondary.index[0][0], 'string'))

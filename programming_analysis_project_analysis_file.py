@@ -6,7 +6,17 @@ Created on Fri Jan 21 19:31:59 2022
 """
 
 
-
+from datetime import datetime
+import pdb
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import sklearn
+from sklearn.linear_model import LinearRegression
+import seaborn as sns
+import plotly.express as px
+import pathlib
+import os
 
 
 
@@ -126,7 +136,7 @@ def populate_input_actor_scores_for_film(film_tconst, desired_number_of_primary_
     
     '''Return up to [desired_number_of_primary_actors]  qty of tconsts'''
     nconsts = return_nconsts_in_film_with_highest_film_counts(film_tconst, desired_number_of_primary_actors, primary_actor_DB, [], md_actor_to_film)
-    print("a")
+    #print("a")
     '''Return up to X  qty of tconsts to ensure that the total number of tconsts equals the sum of decired primary and secondary actors'''
     secondary_actors_to_populate = desired_number_of_primary_actors + desired_number_of_secondary_actors - len(nconsts)
     nconsts = return_nconsts_in_film_with_highest_film_counts(film_tconst, secondary_actors_to_populate, md_secondary_actors, nconsts, md_actor_to_film_secondary)
@@ -174,14 +184,14 @@ def return_nconsts_in_film_with_highest_film_counts(film_tconst, actors_qty, act
     
     return nconsts
 
-def generate_entry_for_score_predictor(nconsts, column_qty, year, primary_actor_list, secondary_actor_list, md_actor_to_film, md_actor_to_film_secondary):
+def generate_entry_for_score_predictor_from_nconst(nconsts, column_qty, year, primary_actor_list, secondary_actor_list, md_actor_to_film, md_actor_to_film_secondary):
     meta_scores = np.array([])
     for i in range(0, len(nconsts)):
         #check if nconst is a primary actor
         nconst_is_primary = False
         #determine if nconst, belongs to a primary actor and return the row number
         for primary_actor_row in range(0, len(primary_actor_list)):
-            if nconsts[i] in primary_actor_list['nconst'] == True:
+            if nconsts[i] in primary_actor_list['nconst'][primary_actor_row]:
                 row_num = primary_actor_row
                 nconst_is_primary = True
                 break
@@ -203,22 +213,50 @@ def generate_entry_for_score_predictor(nconsts, column_qty, year, primary_actor_
                 ratings = np.append(ratings, md_film_scores['rating'][tconst])
             expected_rating = ratings.mean()
         
-        meta_scores = np.array(meta_scores, expected_rating)
+        meta_scores = np.append(meta_scores, expected_rating)
         
     for i in range(0, column_qty - len(nconsts)):
-        meta_scores = np.array(meta_scores, 0)
+        meta_scores = np.append(meta_scores, [0])
     
     return meta_scores
 
     
-
+def populate_actor_metascores_for_insertion_into_the_model(film_tconst_list, desired_number_of_primary_actors, desired_number_of_secondary_actors, primary_actor_DB, secondary_actor_DB, md_actor_to_film, md_actor_to_film_secondary):
+    
+    #this method is the wrapper that repeatability creates the inputs for the regression models.
+    #It also outputs a separate dfs documenting the film ratings
+    total_actor_metascores_qty = desired_number_of_primary_actors + desired_number_of_secondary_actors
+    input_column_values = np.array([])
+    rating_string = "rating"
+    
+    for i in range(0, total_actor_metascores_qty):
+        input_column_values = np.append(input_column_values, "metascore_" + str(i))
+    
+    input_column_values = np.append(input_column_values, rating_string)
+    output = pd.DataFrame(columns = input_column_values)
+       
+    for film_tconst in film_tconst_list:
+        nconsts = populate_input_actor_scores_for_film(film_tconst, desired_number_of_primary_actors, desired_number_of_secondary_actors, primary_actor_DB, secondary_actor_DB, md_actor_to_film, md_actor_to_film_secondary)
+        meta_scores = generate_entry_for_score_predictor_from_nconst(nconsts, total_actor_metascores_qty, md_film_scores['film year'][film_tconst], primary_actor_DB, secondary_actor_DB, md_actor_to_film, md_actor_to_film_secondary)        
+        data = np.append(meta_scores, md_film_scores['rating'][film_tconst])
+        addition = pd.Series(data=data, index = input_column_values)
+        output = output.append(addition, ignore_index=True)
+    
+    
+    
+    return output.drop(rating_string, axis = 1), output[rating_string]
         
     
 #def create_row_of_predicted_film_scores_for_rating_forecas    
 
 #filtered_primary_actor_list = print(md_actor_to_film[np.in1d(md_actor_to_film.index.get_level_values(1), [film_tconst])])
-film_tconst = 'tt1067106'
-nconsts = populate_input_actor_scores_for_film(film_tconst, 5, 5, md_PrimaryActorsList, md_secondary_actors, md_actor_to_film, md_actor_to_film_secondary)
+film_tconst_list = ['tt1067106', 'tt2008009'] #film is a christmas carol
+
+# primary cast are: Colin Firth - nm0000147, Gary Oldman - nm0000198, Jim Carrey -  nm0000120
+# secondaries: Steve Valentine, nm0884313    
+
+X, Y = populate_actor_metascores_for_insertion_into_the_model(film_tconst_list, 3, 3, md_PrimaryActorsList, md_secondary_actors, md_actor_to_film, md_actor_to_film_secondary)
+
 
 #md_actor_to_film[(nm0001715, tt0118528)]
 
