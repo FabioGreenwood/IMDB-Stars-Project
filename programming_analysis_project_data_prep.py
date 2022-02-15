@@ -268,7 +268,8 @@ for i in PrimaryActorsList:
 #%% md_PrimaryActorsList - Step 2
 
 
-
+if option_to_generate_training_set == True:
+    md_title_principals_reduced, training_tconsts, testing_tconsts = filter_testing_tconsts_from_title_principles(unique_tconsts, md_title_principals_reduced)
 
 
 
@@ -395,7 +396,7 @@ for film_index in md_film_scores.index:
 
 
 
-#%% collect Secondary Actor Metadata - Step 1
+#%% Generate md_title_principals_reduced
 
 #list_categories = ['self', 'actor', 'actress']
 
@@ -412,7 +413,7 @@ md_title_principals_reduced = md_title_principals_reduced[mask_for_category]
 
 unique_secondary_nconst = get_unique_values(md_title_principals_reduced, 'nconst')
 
-#%% collect Secondary Actor Metadata - Step 1 - alturnative With hardcoded counter
+#%% Generate md_title_principals_reduced - alturnative With hardcoded counter
 
 
 
@@ -457,7 +458,7 @@ md_title_principals_reduced = df_title_principals[mask_for_film_x]
 
 
 
-#%% collect Secondary Actor Metadata - Step 2
+#%% collect Secondary Actor Metadata - Step 1
 
 unique_secondary_nconst = get_unique_values(md_title_principals_reduced, 'nconst')
 md_secondary_actors = md_secondary_actors[0:0]
@@ -524,7 +525,7 @@ for i in range(0, len(md_secondary_actors)):
     
     
 
-#%% collect Secondary Actor Metadata - Step 3
+#%% collect Secondary Actor Metadata - Step 2
 
 print(datetime.now())
 iterations = len(md_title_principals_reduced)
@@ -539,7 +540,7 @@ for n in range(0, len(md_secondary_actors)):
     md_secondary_actors['Relative Actor Score - Std'][n]    = None
 
 
-#%% collect Secondary Actor Metadata - Step 4
+#%% collect Secondary Actor Metadata - Step 3
 print(datetime.now())
 counter = 0
 start = datetime.now()
