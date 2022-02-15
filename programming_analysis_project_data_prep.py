@@ -33,7 +33,7 @@ metadata_filepath = "C:\\Users\\fabio\\OneDrive\\Documents\\Studies\\Programming
 dataprep_filename = "programming_analysis_project_data_prep.py"
 analysis_filename = "programming_analysis_project_analysis_file.py"
 
-option_to_generate_training_set = False
+option_to_generate_training_set = True
 
 print(datetime.now())
 runcell("Import Modules and CSVs", script_filepath + dataprep_filename)
@@ -284,7 +284,7 @@ for i in PrimaryActorsList:
 
 
 
-def md_PrimaryActorsList(training_set = df_title_principals):
+def populate_md_PrimaryActorsList(training_set = df_title_principals):
     #changing
     counter = 0
     for i in md_PrimaryActorsList.index:
@@ -308,7 +308,7 @@ def md_PrimaryActorsList(training_set = df_title_principals):
     get_film_ratings_v1(md_PrimaryActorsList.index[99], df_title_basics, df_title_ratings, training_set)
 
     
-md_PrimaryActorsList()
+populate_md_PrimaryActorsList()
 
 #%% Generate md_title_principals_reduced
 
@@ -325,11 +325,12 @@ md_title_principals_reduced_pretraining_filter = md_title_principals_reduced_pre
 
 if option_to_generate_training_set == True:
     md_title_principals_reduced, training_tconsts, testing_tconsts = filter_testing_tconsts_from_title_principles(unique_tconsts, md_title_principals_reduced)
+    populate_md_PrimaryActorsList(md_title_principals_reduced)
 
 
 unique_secondary_nconst = get_unique_values(md_title_principals_reduced_pretraining_filter, 'nconst')
 
-md_PrimaryActorsList(md_title_principals_reduced)
+
 
 #%%
 
