@@ -683,7 +683,7 @@ print(datetime.now())
 #    md_secondary_actors['Count'][x] = len(md_secondary_actors['Relative Actor Scores'][x])
 
 md_actor_to_film_secondary  = return_populated_md_actor_to_film_secondary_dataframe(md_secondary_actors, md_actor_to_film_column_names)
-
+runcell("Create Forecase Model Input", script_filepath + analysis_filename)
     
 #md_PrimaryActorsList[md_PrimaryActorsList['Name'] == actor_name].index[0]
 
@@ -1103,7 +1103,7 @@ def return_populated_md_actor_to_film_secondary_dataframe(md_secondary_actors, m
 
     for md_secondary_actors_row in range(0, len(md_secondary_actors)):
         
-        if float(md_secondary_actors_row) % int(len(md_secondary_actors) / 10) == 0:
+        if float(md_secondary_actors_row) % int(len(md_secondary_actors) / 100) == 0:
             print("-----")
             print(datetime.now())
             PC = float(float(md_secondary_actors_row) / len(md_PrimaryActorsList.index))
@@ -1112,18 +1112,26 @@ def return_populated_md_actor_to_film_secondary_dataframe(md_secondary_actors, m
             
         
         for film_num in range(0, len(md_secondary_actors['tconst'][md_secondary_actors_row]) ):
-            print(md_secondary_actors_row)
-            print(film_num)
+            #print(md_secondary_actors_row)
+            #print(film_num)
             film_tconst = md_secondary_actors['tconst'][md_secondary_actors_row][film_num]
-            if not film_num > len(md_secondary_actors['Film Years'][md_secondary_actors_row]):
-                data = [ md_film_scores['name'][film_tconst], md_secondary_actors['name'][md_secondary_actors_row], md_secondary_actors['Film Years'][md_secondary_actors_row][film_num], md_film_scores['rating'][film_tconst], None]
-                index = md_actor_to_film_column_names[2:]
-                name_1 =str(md_secondary_actors['nconst'][md_secondary_actors_row][0]) 
-                name = (name_1 , film_tconst)
-                
-                addition = pd.Series(data = data, index = index, name = name)
-                md_actor_to_film_secondary = md_actor_to_film_secondary.append(addition, ignore_index=False)
-
+            '''Workaround to fix issue were the number of years and films assigned to a secondary actors varied, this means there is a mismatch in the filtering, where the years and ratings of a secondaries acots films are not aligned as some of these values are not being align. Not a major issue for the calculation as only the average overall score of an actors is considered'''
+            if film_tconst == 'tt0014624':
+                print("")
+            try:
+                a = md_film_scores['name'][film_tconst]
+                if not film_num > len(md_secondary_actors['Film Years'][md_secondary_actors_row])-1:
+                    data = [ md_film_scores['name'][film_tconst], md_secondary_actors['name'][md_secondary_actors_row], md_secondary_actors['Film Years'][md_secondary_actors_row][film_num], md_film_scores['rating'][film_tconst], None]
+                    index = md_actor_to_film_column_names[2:]
+                    name_1 =str(md_secondary_actors['nconst'][md_secondary_actors_row][0]) 
+                    name = (name_1 , film_tconst)
+                    
+                    addition = pd.Series(data = data, index = index, name = name)
+                    md_actor_to_film_secondary = md_actor_to_film_secondary.append(addition, ignore_index=False)
+            except KeyError as err:
+                f+=1
+    
+    print("failures to copy " + f)
     return md_actor_to_film_secondary 
 
 def retrive_film_rating(database, film_tconst):
