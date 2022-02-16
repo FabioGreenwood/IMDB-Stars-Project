@@ -634,18 +634,24 @@ for i in md_title_principals_reduced.index:
     while found == False and actor_index <= len(md_secondary_actors):
         
         if nconst in md_secondary_actors['nconst'][actor_index]:
-            found = True
+            try:
+                md_secondary_actors['tconst'][actor_index].append(tconst)
+                md_secondary_actors['Relative Actor Scores'][actor_index].append(md_film_scores['Primary Actor Relative Ratings - Mean'][tconst])
+                md_secondary_actors['Film Years'][actor_index].append(int(md_film_scores['film year'][tconst]))
+                found = True
+            except KeyError as err:
+                found = True
         else:
             actor_index += 1
     
     #film_index = md_film_scores[md_film_scores['tconst'] == tconst].index[0]
-    md_secondary_actors['tconst'][actor_index].append(tconst)
-    md_secondary_actors['Relative Actor Scores'][actor_index].append(md_film_scores['Primary Actor Relative Ratings - Mean'][tconst])
-    md_secondary_actors['Film Years'][actor_index].append(int(md_film_scores['film year'][tconst]))
+    
     
     #counter
     counter += 1
-    if float(counter) % int(len(md_title_principals_reduced) / 100) == 0:
+    if counter == 587:
+        print("F")
+    if float(counter) % int(len(md_title_principals_reduced) / 10) == 0:
         print("-----")
         print(datetime.now())
         PC = float(float(counter) / len(md_title_principals_reduced))
@@ -672,9 +678,9 @@ print(datetime.now())
 
 #%% collect Secondary Actor Metadata - Step 4
 
-md_secondary_actors['Count'] = 0
-for x in range(0,len(md_secondary_actors)):
-    md_secondary_actors['Count'][x] = len(md_secondary_actors['Relative Actor Scores'][x])
+#md_secondary_actors['Count'] = 0
+#for x in range(0,len(md_secondary_actors)):
+#    md_secondary_actors['Count'][x] = len(md_secondary_actors['Relative Actor Scores'][x])
 
 md_actor_to_film_secondary  = return_populated_md_actor_to_film_secondary_dataframe(md_secondary_actors, md_actor_to_film_column_names)
 
@@ -1087,7 +1093,7 @@ def evaluate_film_relative_scores(md_film_scores=md_film_scores, md_PrimaryActor
 
 def return_populated_md_actor_to_film_secondary_dataframe(md_secondary_actors, md_actor_to_film_column_names = ['tconst', 'nconst', 'film name', 'actor name','film year', 'film score', 'actor relative score']):
     
-    
+    f=0
     md_actor_to_film_secondary = pd.DataFrame(columns = md_actor_to_film_column_names)
     md_actor_to_film_secondary.set_index(['nconst', 'tconst'], inplace=True)
         
@@ -1106,16 +1112,18 @@ def return_populated_md_actor_to_film_secondary_dataframe(md_secondary_actors, m
             
         
         for film_num in range(0, len(md_secondary_actors['tconst'][md_secondary_actors_row]) ):
-            
+            print(md_secondary_actors_row)
+            print(film_num)
             film_tconst = md_secondary_actors['tconst'][md_secondary_actors_row][film_num]
-            data = [ md_film_scores['name'][film_tconst], md_secondary_actors['name'][md_secondary_actors_row], md_secondary_actors['Film Years'][md_secondary_actors_row][film_num], md_film_scores['rating'][film_tconst], None]
-            index = md_actor_to_film_column_names[2:]
-            name_1 =str(md_secondary_actors['nconst'][md_secondary_actors_row][0]) 
-            name = (name_1 , film_tconst)
-            
-            addition = pd.Series(data = data, index = index, name = name)
-            md_actor_to_film_secondary = md_actor_to_film_secondary.append(addition, ignore_index=False)
-    
+            if not film_num > len(md_secondary_actors['Film Years'][md_secondary_actors_row]):
+                data = [ md_film_scores['name'][film_tconst], md_secondary_actors['name'][md_secondary_actors_row], md_secondary_actors['Film Years'][md_secondary_actors_row][film_num], md_film_scores['rating'][film_tconst], None]
+                index = md_actor_to_film_column_names[2:]
+                name_1 =str(md_secondary_actors['nconst'][md_secondary_actors_row][0]) 
+                name = (name_1 , film_tconst)
+                
+                addition = pd.Series(data = data, index = index, name = name)
+                md_actor_to_film_secondary = md_actor_to_film_secondary.append(addition, ignore_index=False)
+
     return md_actor_to_film_secondary 
 
 def retrive_film_rating(database, film_tconst):
@@ -1128,6 +1136,10 @@ def fg_counter(counter_value, total_iterations_qty, number_of_updates_required_f
         PC = float(float(counter_value) / total_iterations_qty)
         print(str(counter_value) + " / " + str(total_iterations_qty))
         print(PC)
+        print("end estimate @: " + str((datetime.now() - start) * (total_iterations_qty / counter_value) + datetime.now()))
+                                        
+                                        
+                                        
 
 def filter_testing_tconsts_from_title_principles(unique_tconsts, title_principles_DB):
     '''

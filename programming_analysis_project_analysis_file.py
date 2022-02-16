@@ -53,10 +53,19 @@ runcell("Create Forecase Model Input", script_filepath + metadata_filepath)
  #film is a christmas carol
  
  
-film_tconst_list = ['tt1067106', 'tt2008009']
- 
-X, Y = populate_actor_metascores_for_insertion_into_the_model(training_tconsts, 3, 3, md_PrimaryActorsList, md_secondary_actors, md_actor_to_film, md_actor_to_film_secondary)
+X_train, Y_train = populate_actor_metascores_for_insertion_into_the_model(training_tconsts, 3, 3, md_PrimaryActorsList, md_secondary_actors, md_actor_to_film, md_actor_to_film_secondary)
+X_test, Y_test = populate_actor_metascores_for_insertion_into_the_model(testing_tconsts, 3, 3, md_PrimaryActorsList, md_secondary_actors, md_actor_to_film_complete, md_actor_to_film_secondary)
 
+from sklearn.linear_model import LinearRegression
+regressor = LinearRegression()
+regressor.fit(X_train, y_train)
+
+# Predicting the Test set results
+y_pred = regressor.predict(X_test)
+
+from sklearn.metrics import r2_score
+score=r2_score(y_test,y_pred)
+    
 
 
 
