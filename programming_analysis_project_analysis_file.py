@@ -18,7 +18,8 @@ import plotly.express as px
 import pathlib
 import os
 
-
+import warnings
+warnings.filterwarnings("ignore")
 
 #%% start up run
 
@@ -55,7 +56,8 @@ runcell("Create Forecase Model Input", script_filepath + metadata_filepath)
  #film is a christmas carol
 failures_to_populate_films_in_model_input = 0
 failure_to_populate_actor_nconst_for_metascore_generation = 0
-progress  = 0
+progress = 0
+film_years_approximated_as_2020 = 0
 
 #Convert the relational table of actor to film to a format required for the following operation
 md_title_principals_reduced_input = md_title_principals_reduced_pretraining_filter.copy()
@@ -67,15 +69,15 @@ print(str(datetime.now()))
 print("1")
 
 #%%
-
-X_train, Y_train = populate_actor_metascores_for_insertion_into_the_model(training_tconsts, 3, 3, md_PrimaryActorsList, md_secondary_actors, md_title_principals_reduced_pretraining_filter)
+                                                                         
+X_train, Y_train = populate_actor_metascores_for_insertion_into_the_model(training_tconsts, 6, md_PrimaryActorsList, md_secondary_actors, md_title_principals_reduced_input )
 
 #%%%
 print(str(datetime.now()))
 print("2")
 
 #%%
-
+                                                                        
 X_test, Y_test = populate_actor_metascores_for_insertion_into_the_model(testing_tconsts, 3, 3, md_PrimaryActorsList, md_secondary_actors_complete, md_actor_to_film_complete, md_actor_to_film_secondary_complete)
 
 #%%
@@ -189,65 +191,106 @@ fig.show()
 
 #%% General Methods
 
-def populate_input_actor_scores_for_film(film_tconst, desired_number_of_primary_actors, desired_number_of_secondary_actors, primary_actor_DB, secondary_actor_DB, md_title_principals_reduced_input):
-    #Returns a list of primary and secondary actors nconst related to a film, to later populate a row of the predictor
-    """ find a way to filter according to index"""
+def populate_actor_metascores_for_insertion_into_the_model(film_tconst_list, desired_number_of_actors, primary_actor_DB, secondary_actor_DB,  md_title_principals_relational):
+    """ these variables have been removed md_actor_to_film, md_actor_to_film_secondary):"""
     
-    '''Return up to [desired_number_of_primary_actors]  qty of tconsts'''
-    nconsts = return_nconsts_in_film_with_highest_film_counts(film_tconst, desired_number_of_primary_actors, primary_actor_DB, [], md_actor_to_film)
-    #print("a")
-    '''Return up to X  qty of tconsts to ensure that the total number of tconsts equals the sum of decired primary and secondary actors'''
-    secondary_actors_to_populate = desired_number_of_primary_actors + desired_number_of_secondary_actors - len(nconsts)
-    nconsts = return_nconsts_in_film_with_highest_film_counts(film_tconst, secondary_actors_to_populate, md_secondary_actors, nconsts, md_actor_to_film_secondary)
     
-    return nconsts
+    #this method is the wrapper that repeatability creates the inputs for the regression models.
+    #It also outputs a separate dfs documenting the film ratings
+    
+    global failures_to_populate_films_in_model_input, progress, film_years_approximated_as_2020
+    counter = 0
+    start = datetime.now()
+    input_column_values = np.array([])
+    rating_string = "rating"
+    start = datetime.now()
+    #md_film_scores_with_tconst_index =  md_film_scores.set_index([['tconst'], inplace=False])
+    
+    for i in range(0, desired_number_of_actors):
+        input_column_values = np.append(input_column_values, "metascore_" + str(i))
+    
+    input_column_values = np.append(input_column_values, rating_string)
+    output = pd.DataFrame(columns = input_column_values)
+       
+    for film_tconst in film_tconst_list:
         
-def return_nconsts_in_film_with_highest_film_counts(film_tconst, actors_qty, primary_actor_DB, secondary_actor_DB, previous_nconst, md_actor_to_film_relational_DB):
+        counter += 1
+        fg_counter(counter, len(film_tconst_list), 100, start, update_counter = False)
+        
+        
+        progress = fg_counter(counter, len(film_tconst_list), 10, start, True)
+        #nconsts = populate_input_actor_scores_for_film           (film_tconst, desired_number_of_actors, primary_actor_DB, secondary_actor_DB, md_title_principals_relational)
+        nconsts = return_nconsts_in_film_with_highest_film_counts(film_tconst, desired_number_of_actors, primary_actor_DB, secondary_actor_DB, md_actor_to_film)
+        '''work around add to return a film year of 2020 if a film year couldnt be found'''
+        try:
+            temp_film_year = md_film_scores['film year'][film_tconst]
+        except KeyError as err:
+            temp_film_year = 2020
+            film_years_approximated_as_2020 += 1
+        meta_scores = generate_entry_for_score_predictor_from_nconst(nconsts, desired_number_of_actors, temp_film_year , primary_actor_DB, secondary_actor_DB, md_title_principals_relational)        
+        try:
+            data = np.append(meta_scores, md_film_scores.loc[md_film_scores['tconst'] == film_tconst]['rating'].values[0])
+            addition = pd.Series(data=data, index = input_column_values)
+            output = output.append(addition, ignore_index=True)
+        except IndexError as err:
+            failures_to_populate_films_in_model_input += 1
+    
+    return output.drop(rating_string, axis = 1), output[rating_string]
+
+                  
+def return_nconsts_in_film_with_highest_film_counts(film_tconst, actors_qty,                primary_actor_DB, secondary_actor_DB, md_title_principals_reduced_input):
     # called twice by populate_input_actor_scores_for_film
     
     global failure_to_populate_actor_nconst_for_metascore_generation
     
-    if len(previous_nconst) == 0:
-        nconsts = np.array([])
-    else:
-        nconsts = previous_nconst
+    nconsts = np.array([])
+
     
-    primary_actors_in_film = md_actor_to_film_relational_DB[md_actor_to_film_relational_DB.index.get_level_values('tconst') == film_tconst]
-    primary_actors_in_film_columns = primary_actors_in_film.columns
-    #add count column in table if not yet existant
-    if not 'count' in primary_actors_in_film_columns:
+    #primary_actors_in_film = md_actor_to_film_relational_DB[md_actor_to_film_relational_DB.index.get_level_values('tconst') == film_tconst]
+    
+    
+    #primary_actors_in_film = pd.DataFrame(columns  = md_title_principals_reduced_input.columns)
+    primary_actors_in_film = md_title_principals_reduced_input[md_title_principals_reduced_input.index.get_level_values('tconst') == film_tconst]
+    primary_actors_in_film = primary_actors_in_film.drop_duplicates()
+
+    if not 'count' in primary_actors_in_film.columns:
         primary_actors_in_film['count'] = None
+    
     #assign a count value to a actor if one not populated yet
     for index in primary_actors_in_film.index:
-        
-        #print(index)
-        #print("x")
-        #count_needs_population = (primary_actors_in_film['count'][index] > 0).sum() == 0
-        #if count_needs_population == True:
-        if (primary_actors_in_film['count'][index] > 0).sum() == 0:
-            row_in_df = actor_DB.loc[actor_DB['name'] == primary_actors_in_film['actor name'][index][0]].index[0]
-            #primary_actors_in_film['count'][index] = len(md_PrimaryActorsList['tconst'][row_in_df])
-            primary_actors_in_film.loc[index, 'count'] = len(actor_DB['tconst'][row_in_df])
-        
-    #remove tconsts already counted
-    for row_num in range(len(primary_actors_in_film) - 1, -1, -1):
-        if primary_actors_in_film.index.get_level_values('nconst')[row_num] in nconsts:
-            primary_actors_in_film = primary_actors_in_film.drop(primary_actors_in_film.index[row_num])
-        try:
-            for i in range(0, len(primary_actors_in_film.index.get_level_values('nconst')[row_num])):
-                if primary_actors_in_film.index.get_level_values('nconst')[row_num][i] in nconsts:
-                    primary_actors_in_film = primary_actors_in_film.drop(primary_actors_in_film.index[row_num])
-                    i = len(primary_actors_in_film.index.get_level_values('nconst')[row_num])
-        except KeyError as err:
-            name = "w"
-    
-    actors_to_be_populated_qty = min(actors_qty, len(primary_actors_in_film.index.unique(level='nconst')))
+        if primary_actors_in_film['count'][index] == None:
+            # if not found in primary actor DB, try secondary
+            if len(primary_actor_DB.loc[primary_actor_DB['name'] == primary_actors_in_film['actor name'][index]]) > 0:
+                primary_actors_in_film.loc[:,('count', index)] = len(primary_actor_DB.loc[primary_actor_DB['name'] == primary_actors_in_film['actor name'][index]]['Ratings'].values[0])
+            elif len(secondary_actor_DB.loc[secondary_actor_DB['name'] == primary_actors_in_film['actor name'][index]]) > 0:
+                primary_actors_in_film.loc[:,('count', index)] = len(secondary_actor_DB.loc[primary_actor_DB['name'] == primary_actors_in_film['actor name'][index]]['Ratings'].values[0])
+            else:
+                #actor record not found. Drop for this film and count drop
+                primary_actors_in_film = primary_actors_in_film.drop(index )
+                failure_to_populate_actor_nconst_for_metascore_generation += 1
+                    
+    actors_to_be_populated_qty = min(actors_qty, len(primary_actors_in_film))
     #actors_to_populate_nconsts = np.array([])
     if film_tconst == ('tt0032285'):
         print("Step")
     
     
-    '''Work around to stop populating actor nconsts if more then one nconsts was deleted previously due to the multi-index nature of the method, also because the '''
+    for i in range(0, actors_to_be_populated_qty):
+        max_count = primary_actors_in_film['count'].max()
+        target_index = primary_actors_in_film.loc[primary_actors_in_film['count'] == max_count].index
+        if len(target_index) > 1:
+            target_index = target_index[0]
+        nconsts = np.append(nconsts, target_index[0][0])
+        primary_actors_in_film = primary_actors_in_film.drop(target_index)
+    
+    return nconsts
+    
+            
+    
+    
+    
+    """
+    #'''Work around to stop populating actor nconsts if more then one nconsts was deleted previously due to the multi-index nature of the method, also because the '''
     for i in range(0, actors_to_be_populated_qty):
         
         try:
@@ -259,16 +302,20 @@ def return_nconsts_in_film_with_highest_film_counts(film_tconst, actors_qty, pri
         except IndexError as err:
             failure_to_populate_actor_nconst_for_metascore_generation += 1
     
-    return nconsts
+    return nconsts"""
 
-def generate_entry_for_score_predictor_from_nconst(nconsts, column_qty, year, primary_actor_list, secondary_actor_list, md_actor_to_film, md_actor_to_film_secondary):
+
+
+def generate_entry_for_score_predictor_from_nconst(nconsts, column_qty, year, primary_actor_list, secondary_actor_list, md_title_principals_relational):
     meta_scores = np.array([])
-    for i in range(0, len(nconsts)):
+    
+    for nconst in nconsts:
         #check if nconst is a primary actor
         nconst_is_primary = False
+        nconst_is_secondary = False
         #determine if nconst, belongs to a primary actor and return the row number
         for primary_actor_row in range(0, len(primary_actor_list)):
-            if nconsts[i] in primary_actor_list['nconst'][primary_actor_row]:
+            if nconst in primary_actor_list['nconst'][primary_actor_row]:
                 row_num = primary_actor_row
                 nconst_is_primary = True
                 break
@@ -276,66 +323,34 @@ def generate_entry_for_score_predictor_from_nconst(nconsts, column_qty, year, pr
         #determine if nconst, belongs to a secondary actor and return the row number
         if nconst_is_primary == False:
             for secondary_actor_row in range(0, len(secondary_actor_list)):
-                if nconsts[i] in secondary_actor_list['nconst'] == True:
+                if nconst in secondary_actor_list['nconst'] == True:
                     row_num = secondary_actor_row
+                    nconst_is_secondary = True
                     break
             
         if nconst_is_primary == True:
             #if the nconst refers to a primary actor, their metascore for a film is generated according to their linear model and the films year
             expected_rating = (2020 - year) * md_PrimaryActorsList["Model_Gradient"][row_num] + md_PrimaryActorsList["Model Rating 2020"][row_num]
-        else:
+            meta_scores = np.append(meta_scores, expected_rating)
+        elif nconst_is_secondary == True:
             #otherwise thier metascore is just their average score of the dataset
             ratings = np.array([])
-            for tconst in secondary_actor_list['tconst']:
-                ratings = np.append(ratings, md_film_scores['rating'][tconst])
+            md_film_scores_temp = md_film_scores.set_index('tconst',inplace=False)
+            for tconst in secondary_actor_list['tconst'][row_num]:
+                ratings = np.append(ratings, md_film_scores_temp ['rating'][tconst])
             expected_rating = ratings.mean()
+            meta_scores = np.append(meta_scores, expected_rating)
         
-        meta_scores = np.append(meta_scores, expected_rating)
         
-    for i in range(0, column_qty - len(nconsts)):
+            
+    
+    zeros_to_add_qty = column_qty - len(meta_scores)
+    for i in range(0, zeros_to_add_qty):
         meta_scores = np.append(meta_scores, [0])
     
     return meta_scores
 
                                                             
-def populate_actor_metascores_for_insertion_into_the_model(film_tconst_list, desired_number_of_primary_actors, desired_number_of_secondary_actors, primary_actor_DB, secondary_actor_DB,  md_title_principals_relational):
-    """ these variables have been removed md_actor_to_film, md_actor_to_film_secondary):"""
-    
-    
-    #this method is the wrapper that repeatability creates the inputs for the regression models.
-    #It also outputs a separate dfs documenting the film ratings
-    
-    global failures_to_populate_films_in_model_input, progress 
-    counter = 0
-    total_actor_metascores_qty = desired_number_of_primary_actors + desired_number_of_secondary_actors
-    input_column_values = np.array([])
-    rating_string = "rating"
-    start = datetime.now()
-    
-    for i in range(0, total_actor_metascores_qty):
-        input_column_values = np.append(input_column_values, "metascore_" + str(i))
-    
-    input_column_values = np.append(input_column_values, rating_string)
-    output = pd.DataFrame(columns = input_column_values)
-       
-    for film_tconst in film_tconst_list:
-        
-        counter += 1
-        progress = fg_counter(counter, len(film_tconst_list), 10, start, True)
-        nconsts = populate_input_actor_scores_for_film(film_tconst, desired_number_of_primary_actors, desired_number_of_secondary_actors, primary_actor_DB, secondary_actor_DB, md_title_principals_relational)
-        '''work around add to return a film year of 2020 if a film year couldnt be found'''
-        try:
-            temp_film_year = md_film_scores['film year'][film_tconst]
-            meta_scores = generate_entry_for_score_predictor_from_nconst(nconsts, total_actor_metascores_qty, temp_film_year , primary_actor_DB, secondary_actor_DB, md_title_principals_relational)        
-            data = np.append(meta_scores, md_film_scores['rating'][film_tconst])
-            addition = pd.Series(data=data, index = input_column_values)
-            output = output.append(addition, ignore_index=True)
-        except KeyError as err:
-            failures_to_populate_films_in_model_input += 1
-        
-    
-    
-    
-    return output.drop(rating_string, axis = 1), output[rating_string]
+
         
     

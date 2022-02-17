@@ -98,10 +98,21 @@ metadata_filepath = "C:\\Users\\fabio\\OneDrive\\Documents\\Studies\\Programming
 dataprep_filename = "programming_analysis_project_data_prep.py"
 analysis_filename = "programming_analysis_project_analysis_file.py"
 
+from datetime import datetime
+print("1")
+print(datetime.now())
 runcell("Import Modules and CSVs", script_filepath + dataprep_filename)
+print("2")
+print(datetime.now())
 runcell("Reset and Define Metatables and General Variables/Methods", script_filepath + dataprep_filename)
+print("3")
+print(datetime.now())
 runcell("General Methods", script_filepath + dataprep_filename)
+print("4")
+print(datetime.now())
 runcell("Re-loading.csv's", script_filepath + dataprep_filename)
+print("5")
+print(datetime.now())
 
 #%% Save progress 
 
@@ -136,16 +147,16 @@ from numpy import loadtxt
 #drive.mount('/content/drive')
 #from google.colab import files
 #start = datetime.now()
-df_title_principals = pd.read_csv(database_filepath + "title_principals.tsv", sep='\t')
-df_title_ratings = pd.read_csv(database_filepath + "title_ratings.tsv", sep='\t')
-df_title_ratings.set_index('tconst', inplace=True)
+#df_title_principals = pd.read_csv(database_filepath + "title_principals.tsv", sep='\t')
+#df_title_ratings = pd.read_csv(database_filepath + "title_ratings.tsv", sep='\t')
+#df_title_ratings.set_index('tconst', inplace=True)
 
-df_name_basics = pd.read_csv(database_filepath + "name_basics.tsv", sep='\t')
-df_name_basics.set_index('nconst', inplace=True)
+#df_name_basics = pd.read_csv(database_filepath + "name_basics.tsv", sep='\t')
+#df_name_basics.set_index('nconst', inplace=True)
 #df_name_basics.set_index('nconst', inplace=True)
 #df_title_akas = pd.read_csv("/content/drive/MyDrive/Data_Analysis_Project/title_akas.tsv", sep='\t')
-df_title_basics = pd.read_csv(database_filepath + "title_basics.tsv", sep='\t')
-df_title_basics.set_index('tconst', inplace=True)
+#df_title_basics = pd.read_csv(database_filepath + "title_basics.tsv", sep='\t')
+#df_title_basics.set_index('tconst', inplace=True)
 #relister_main(df_title_basics, 'genres', "string")
 #df_title_basics.set_index('tconst', inplace=True)
 #df_title_crew = pd.read_csv("/content/drive/MyDrive/Data_Analysis_Project/title_crew.tsv", sep='\t')
@@ -166,10 +177,6 @@ md_actor_to_film.set_index(['nconst', 'tconst'], inplace=True)
 md_actor_to_film = md_actor_to_film.loc[:, ~md_actor_to_film.columns.str.contains('^Unnamed')]
 
 
-md_actor_to_film = pd.read_csv(metadata_filepath + 'md_actor_to_film.csv')
-md_actor_to_film.set_index(['nconst', 'tconst'], inplace=True)
-md_actor_to_film = md_actor_to_film.loc[:, ~md_actor_to_film.columns.str.contains('^Unnamed')]
-
 md_actor_to_film_complete = pd.read_csv(metadata_filepath + 'md_actor_to_film_complete.csv')
 md_actor_to_film_complete.set_index(['nconst', 'tconst'], inplace=True)
 md_actor_to_film_complete = md_actor_to_film.loc[:, ~md_actor_to_film_complete.columns.str.contains('^Unnamed')]
@@ -181,27 +188,31 @@ md_actor_to_film_secondary = md_actor_to_film_secondary.loc[:, ~md_actor_to_film
 
 
 md_film_scores = pd.read_csv(metadata_filepath + 'md_film_scores.csv')
-relister_main(md_film_scores, 'genre', "string")
-relister_main(md_film_scores, 'Primary Actor Relative Ratings', 'float')
-relister_main(md_film_scores, 'nconst', 'string')
-md_film_scores = md_film_scores.loc[:, ~md_film_scores.columns.str.contains('^Unnamed')]
-md_film_scores.set_index('tconst', inplace=True)
+#relister_main(md_film_scores, 'genre', "string")
+#relister_main(md_film_scores, 'Primary Actor Relative Ratings', 'float')
+#relister_main(md_film_scores, 'nconst', 'string')
+#md_film_scores = md_film_scores.loc[:, ~md_film_scores.columns.str.contains('^Unnamed')]
+#md_film_scores.set_index('tconst', inplace=True)
 
-
+print(datetime.now())
 md_PrimaryActorsList = pd.read_csv(metadata_filepath + "md_PrimaryActorsList.csv")
+print(datetime.now())
 relister_main(md_PrimaryActorsList, 'Ratings')
 relister_main(md_PrimaryActorsList, 'Rating Years', "int")
 relister_main(md_PrimaryActorsList, 'tconst', "string")
 relister_main(md_PrimaryActorsList, 'nconst', "string")
+md_PrimaryActorsList = md_PrimaryActorsList.loc[:, ~md_PrimaryActorsList.columns.str.contains('^Unnamed')]
+print(datetime.now())
 
 
 md_secondary_actors = pd.read_csv(metadata_filepath + 'md_secondary_actors.csv')
 #relister_main(md_secondary_actors, 'tconst', "string")
-relister_main(md_secondary_actors, 'Relative Actor Scores', 'float')
-relister_main(md_secondary_actors, 'Film Years', 'int')
-relister_main(md_secondary_actors, 'nconst', 'string')
+#relister_main(md_secondary_actors, 'Relative Actor Scores', 'float')
+#relister_main(md_secondary_actors, 'Film Years', 'int')
+#relister_main(md_secondary_actors, 'nconst', 'string')
 #md_secondary_actors = md_secondary_actors.loc[:, ~md_secondary_actors.columns.str.contains('^Unnamed')]
 md_secondary_actors = md_secondary_actors.loc[:, ~md_secondary_actors.columns.str.contains('^Unnamed')]
+
 
 md_title_principals_reduced = pd.read_csv(metadata_filepath + 'md_title_principals_reduced.csv')
 md_title_principals_reduced = md_title_principals_reduced.loc[:, ~md_title_principals_reduced.columns.str.contains('^Unnamed')]
@@ -279,7 +290,7 @@ md_PrimaryActorsList_column_values_reduced = ["Number", "Name", "nconst", "Ratin
 #Final_Training_Year = 2005
 title_principals_unique_category = list([])
 runcell("General Methods", script_filepath + dataprep_filename)
-get_unique_values__title_principals_category()
+#get_unique_values__title_principals_category()
 roles_of_secondary_interest = ['self', 'actor', 'actress']
 
 #%% md_PrimaryActorsList - Step 1
