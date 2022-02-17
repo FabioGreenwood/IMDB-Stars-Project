@@ -33,7 +33,7 @@ metadata_filepath = "C:\\Users\\fabio\\OneDrive\\Documents\\Studies\\Programming
 dataprep_filename = "programming_analysis_project_data_prep.py"
 analysis_filename = "programming_analysis_project_analysis_file.py"
 from datetime import datetime
-option_to_generate_training_set = True
+option_to_generate_training_set = False
 print(datetime.now())
 runcell("Import Modules and CSVs", script_filepath + dataprep_filename)
 print("1 - Reset and Define Metatables and General Variables/Methods")
@@ -55,7 +55,7 @@ print("5 - Generate md_title_principals_reduced")
 print(datetime.now())
 
 runcell("Generate md_title_principals_reduced", script_filepath + dataprep_filename)
-#%%
+
 print("6 - Generate Actor Metadata")
 print(datetime.now())
 runcell("Generate Actor Metadata", script_filepath + dataprep_filename)
@@ -204,11 +204,14 @@ relister_main(md_secondary_actors, 'nconst', 'string')
 md_secondary_actors = md_secondary_actors.loc[:, ~md_secondary_actors.columns.str.contains('^Unnamed')]
 
 md_title_principals_reduced = pd.read_csv(metadata_filepath + 'md_title_principals_reduced.csv')
-md_title_principals_reduced_pretraining_filter = pd.read_csv(metadata_filepath + 'md_title_principals_reduced_pretraining_filter.csv')
+md_title_principals_reduced = md_title_principals_reduced.loc[:, ~md_title_principals_reduced.columns.str.contains('^Unnamed')]
 
+md_title_principals_reduced_pretraining_filter = pd.read_csv(metadata_filepath + 'md_title_principals_reduced_pretraining_filter.csv')
+md_title_principals_reduced_pretraining_filter  = md_title_principals_reduced_pretraining_filter.loc[:, ~md_title_principals_reduced_pretraining_filter.columns.str.contains('^Unnamed')]
 
 training_tconsts = loadtxt(metadata_filepath + 'training_tconsts.csv', delimiter=',', dtype=object)
 testing_tconsts = loadtxt(metadata_filepath + 'testing_tconsts.csv', delimiter=',', dtype=object)
+
 
 
 
@@ -239,6 +242,9 @@ savetxt(metadata_filepath + 'testing_tconsts.csv', asarray(testing_tconsts), del
 #Reset and Define Metatables 
 md_PrimaryActorsList_column_values = ["Number", "Name", "nconst", "Ratings", "Rating Years", 'tconst', "Rating - Mean", "Rating - Std Dev", "Start Year", "Final Year", "Films_Training_Qty", "Films_Testing_Qty", "Model_Gradient", "Model_Intercept", "Model Rating 2020"]
 md_PrimaryActorsList = pd.DataFrame(columns = md_PrimaryActorsList_column_values)
+
+md_PrimaryActorsList_column_values = ["Number", "Name", "nconst", "Ratings", "Rating Years", 'tconst', "Rating - Mean", "Rating - Std Dev", "Start Year", "Final Year", "Films_Training_Qty", "Films_Testing_Qty", "Model_Gradient", "Model_Intercept", "Model Rating 2020"]
+md_PrimaryActorsList_complete = pd.DataFrame(columns = md_PrimaryActorsList_column_values)
 
 md_RatingModels_column_names = ["Name", 'tconst', "Model"]
 md_RatingModels = pd.DataFrame(columns = md_RatingModels_column_names, dtype=object)
@@ -355,7 +361,6 @@ mask_for_category = [True if ele in list_categories else False for ele in md_tit
 md_title_principals_reduced_pretraining_filter = md_title_principals_reduced_pretraining_filter[mask_for_category]
 
 
-md_title_principals_reduced = md_title_principals_reduced_pretraining_filter.copy()
 
 if option_to_generate_training_set == True:
     md_title_principals_reduced, training_tconsts, testing_tconsts = filter_testing_tconsts_from_title_principles(unique_tconst, md_title_principals_reduced)
@@ -683,8 +688,10 @@ print(datetime.now())
 #    md_secondary_actors['Count'][x] = len(md_secondary_actors['Relative Actor Scores'][x])
 
 md_actor_to_film_secondary  = return_populated_md_actor_to_film_secondary_dataframe(md_secondary_actors, md_actor_to_film_column_names)
+md_actor_to_film_secondary.to_csv(metadata_filepath + 'md_actor_to_film_secondary.csv')
+print("XXXXXXXXXXXXXXXXXXX next stage:" + str(datetime.now()))
 runcell("Create Forecase Model Input", script_filepath + analysis_filename)
-    
+print("XXXXXXXXXXXXXXXXXXX next stage:" + str(datetime.now()))    
 #md_PrimaryActorsList[md_PrimaryActorsList['Name'] == actor_name].index[0]
 
 #index = md_secondary_actors.loc[md_secondary_actors['nconst'].str.contains("nm0583948", case=False)]
@@ -1103,7 +1110,7 @@ def return_populated_md_actor_to_film_secondary_dataframe(md_secondary_actors, m
 
     for md_secondary_actors_row in range(0, len(md_secondary_actors)):
         
-        if float(md_secondary_actors_row) % int(len(md_secondary_actors) / 100) == 0:
+        if float(md_secondary_actors_row) % int(len(md_secondary_actors) / 10) == 0:
             print("-----")
             print(datetime.now())
             PC = float(float(md_secondary_actors_row) / len(md_PrimaryActorsList.index))
@@ -1116,8 +1123,8 @@ def return_populated_md_actor_to_film_secondary_dataframe(md_secondary_actors, m
             #print(film_num)
             film_tconst = md_secondary_actors['tconst'][md_secondary_actors_row][film_num]
             '''Workaround to fix issue were the number of years and films assigned to a secondary actors varied, this means there is a mismatch in the filtering, where the years and ratings of a secondaries acots films are not aligned as some of these values are not being align. Not a major issue for the calculation as only the average overall score of an actors is considered'''
-            if film_tconst == 'tt0014624':
-                print("")
+            #if film_tconst == 'tt0014624':
+            #    print("")
             try:
                 a = md_film_scores['name'][film_tconst]
                 if not film_num > len(md_secondary_actors['Film Years'][md_secondary_actors_row])-1:
@@ -1131,13 +1138,13 @@ def return_populated_md_actor_to_film_secondary_dataframe(md_secondary_actors, m
             except KeyError as err:
                 f+=1
     
-    print("failures to copy " + f)
+    print("failures to copy " + str(f))
     return md_actor_to_film_secondary 
 
 def retrive_film_rating(database, film_tconst):
     return database['Rating'][film_tconst]
 
-def fg_counter(counter_value, total_iterations_qty, number_of_updates_required_for_total_run = 10):
+def fg_counter(counter_value, total_iterations_qty, number_of_updates_required_for_total_run = 10, start = datetime.now(), update_counter = False):
     if float(counter_value) % int(total_iterations_qty / number_of_updates_required_for_total_run) == 0:
         print("-----")
         print(datetime.now())
@@ -1145,6 +1152,8 @@ def fg_counter(counter_value, total_iterations_qty, number_of_updates_required_f
         print(str(counter_value) + " / " + str(total_iterations_qty))
         print(PC)
         print("end estimate @: " + str((datetime.now() - start) * (total_iterations_qty / counter_value) + datetime.now()))
+        if update_counter == True:
+            return PC
                                         
                                         
                                         
