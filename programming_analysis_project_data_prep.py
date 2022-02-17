@@ -191,7 +191,7 @@ md_film_scores = pd.read_csv(metadata_filepath + 'md_film_scores.csv')
 #relister_main(md_film_scores, 'genre', "string")
 #relister_main(md_film_scores, 'Primary Actor Relative Ratings', 'float')
 #relister_main(md_film_scores, 'nconst', 'string')
-#md_film_scores = md_film_scores.loc[:, ~md_film_scores.columns.str.contains('^Unnamed')]
+md_film_scores = md_film_scores.loc[:, ~md_film_scores.columns.str.contains('^Unnamed')]
 #md_film_scores.set_index('tconst', inplace=True)
 
 print(datetime.now())
@@ -1166,6 +1166,7 @@ def fg_counter(counter_value, total_iterations_qty, number_of_updates_required_f
         if update_counter == True:
             return PC
                                         
+
                                         
                                         
 
@@ -1192,12 +1193,28 @@ def filter_testing_tconsts_from_title_principles(unique_tconsts, title_principle
             title_principles_DB_temp = title_principles_DB_temp.drop(title_principles_DB.index[i])
     
     return title_principles_DB_temp, training_tconsts, testing_tconsts
+    
+def return_actor_record_from_nconst(nconst_target, md_PrimaryActorsList = md_PrimaryActorsList, md_secondary_actors = md_secondary_actors):
+    
+    
+    record = md_PrimaryActorsList[pd.DataFrame(md_PrimaryActorsList.nconst.tolist()).isin([nconst_target]).any(1).values]
+    source = "primary"
+
+    if len(record) == 0:
+        record = md_secondary_actors[pd.DataFrame(md_secondary_actors.nconst.tolist()).isin([nconst_target]).any(1).values]
+        source = "secondary"
+    
+    if len(record) == 0:
+        record = None
+        source = None
+    
+    return record, source
 
 
 #%%
+ 
 
-
-
+record, source = return_actor_record_from_nconst('nm0590411')
 
   
 #%%
