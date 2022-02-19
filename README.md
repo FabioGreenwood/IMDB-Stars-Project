@@ -8,8 +8,8 @@ Limited documentation on the project will be uploaded at a later date
 # Project Objectives
 
 This project aims to answer the following business questions:
-"Are there supporting actors, who tend to appear in films that underperform given the star power of their leads?"
-"Are we capabile of creating a scoring predictor?"
+ - "Are there supporting actors, who tend to appear in films that underperform given the star power of their leads?"
+ - "Are we capabile of creating a scoring predictor?"
 
 
 # File Stucture
