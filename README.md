@@ -33,6 +33,9 @@ And may attempt (time willing) to answer the following:
 
 3. programming_analysis_project_analysis_file.py
   Script to analyse the "metadata" tables produced by "programming_analysis_project_data_prep.py"
+  
+4. stream_lit_script.py
+  Script to run the stream lit page. Large processes in both the file to preper the data and initially analyse the data required that this was a separate script. This means that some of the pair plots had to be deployed as images due to the size of the data
 
 
 
