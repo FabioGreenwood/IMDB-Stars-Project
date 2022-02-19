@@ -8,18 +8,8 @@ Limited documentation on the project will be uploaded at a later date
 # Project Objectives
 
 This project aims to answer the following business questions:
-
-### Primary BQs:
-1. Are there actors with “star power” who herald success for their films?
-2. Are there dud actors who herald failure for their films? (i.e. the data suggests that their presence alone will negatively effect a film with an otherwise stellar cast)
-3. What is the effect of dud actors on films with “star power”?
-
-And may attempt (time willing) to answer the following:
-
-
-### Secondary BQs:
-4. How is this effected by genre?
-5. Can we create a scoring predictor?
+"Are there supporting actors, who tend to appear in films that underperform given the star power of their leads?"
+"Are we capabile of creating a scoring predictor?"
 
 
 # File Stucture
