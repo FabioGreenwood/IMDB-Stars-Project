@@ -1,0 +1,12 @@
+wheel
+spyder-kernels
+numpy
+sklearn
+datetime
+numpy
+pandas
+matplotlib
+seaborn
+plotly
+plotly.express 
+streamlit

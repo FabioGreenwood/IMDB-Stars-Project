@@ -48,14 +48,14 @@ runcell("md_PrimaryActorsList - Step 1", script_filepath + dataprep_filename)
 print("4 - md_PrimaryActorsList - Step 2")
 print(datetime.now())
 
-print(datetime.now())
+
 runcell("md_PrimaryActorsList - Step 2", script_filepath + dataprep_filename)
 print("5 - Generate md_title_principals_reduced")
 
 print(datetime.now())
 
 runcell("Generate md_title_principals_reduced", script_filepath + dataprep_filename)
-
+print(datetime.now())
 print("6 - Generate Actor Metadata")
 print(datetime.now())
 runcell("Generate Actor Metadata", script_filepath + dataprep_filename)
@@ -141,26 +141,26 @@ from sklearn.model_selection import train_test_split
 from numpy import asarray
 from numpy import savetxt
 from numpy import loadtxt
-
+import warnings
+warnings.filterwarnings("ignore")
 
 #from google.colab import drive
 #drive.mount('/content/drive')
 #from google.colab import files
-#start = datetime.now()
-#df_title_principals = pd.read_csv(database_filepath + "title_principals.tsv", sep='\t')
-#df_title_ratings = pd.read_csv(database_filepath + "title_ratings.tsv", sep='\t')
-#df_title_ratings.set_index('tconst', inplace=True)
+start = datetime.now()
 
-#df_name_basics = pd.read_csv(database_filepath + "name_basics.tsv", sep='\t')
-#df_name_basics.set_index('nconst', inplace=True)
-#df_name_basics.set_index('nconst', inplace=True)
-#df_title_akas = pd.read_csv("/content/drive/MyDrive/Data_Analysis_Project/title_akas.tsv", sep='\t')
-#df_title_basics = pd.read_csv(database_filepath + "title_basics.tsv", sep='\t')
-#df_title_basics.set_index('tconst', inplace=True)
-#relister_main(df_title_basics, 'genres', "string")
-#df_title_basics.set_index('tconst', inplace=True)
-#df_title_crew = pd.read_csv("/content/drive/MyDrive/Data_Analysis_Project/title_crew.tsv", sep='\t')
-#print("Time taken: " + str(datetime.now() - start))
+df_title_principals = pd.read_csv(database_filepath + "title_principals.tsv", sep='\t')
+df_title_ratings = pd.read_csv(database_filepath + "title_ratings.tsv", sep='\t')
+df_title_ratings.set_index('tconst', inplace=True)
+df_name_basics = pd.read_csv(database_filepath + "name_basics.tsv", sep='\t')
+df_name_basics.set_index('nconst', inplace=True)
+df_title_basics = pd.read_csv(database_filepath + "title_basics.tsv", sep='\t')
+df_title_basics.set_index('tconst', inplace=True)
+
+
+
+
+print("Time taken: " + str(datetime.now() - start))
 
 
 
@@ -203,16 +203,20 @@ relister_main(md_PrimaryActorsList, 'tconst', "string")
 relister_main(md_PrimaryActorsList, 'nconst', "string")
 md_PrimaryActorsList = md_PrimaryActorsList.loc[:, ~md_PrimaryActorsList.columns.str.contains('^Unnamed')]
 print(datetime.now())
+md_secondary_actors.to_csv(metadata_filepath + 'md_secondary_actors.csv')
 
-
+print(datetime.now())
 md_secondary_actors = pd.read_csv(metadata_filepath + 'md_secondary_actors.csv')
-#relister_main(md_secondary_actors, 'tconst', "string")
-#relister_main(md_secondary_actors, 'Relative Actor Scores', 'float')
-#relister_main(md_secondary_actors, 'Film Years', 'int')
-#relister_main(md_secondary_actors, 'nconst', 'string')
+relister_main(md_secondary_actors, 'tconst', "string")
+print(datetime.now())
+relister_main(md_secondary_actors, 'Relative Actor Scores', 'float')
+print(datetime.now())
+relister_main(md_secondary_actors, 'Film Years', 'int')
+print(datetime.now())
+relister_main(md_secondary_actors, 'nconst', 'string')
 #md_secondary_actors = md_secondary_actors.loc[:, ~md_secondary_actors.columns.str.contains('^Unnamed')]
 md_secondary_actors = md_secondary_actors.loc[:, ~md_secondary_actors.columns.str.contains('^Unnamed')]
-
+print(datetime.now())
 
 md_title_principals_reduced = pd.read_csv(metadata_filepath + 'md_title_principals_reduced.csv')
 md_title_principals_reduced = md_title_principals_reduced.loc[:, ~md_title_principals_reduced.columns.str.contains('^Unnamed')]
@@ -223,6 +227,10 @@ md_title_principals_reduced_pretraining_filter  = md_title_principals_reduced_pr
 training_tconsts = loadtxt(metadata_filepath + 'training_tconsts.csv', delimiter=',', dtype=object)
 testing_tconsts = loadtxt(metadata_filepath + 'testing_tconsts.csv', delimiter=',', dtype=object)
 
+#X_train         = loadtxt(metadata_filepath + 'X_train.csv', delimiter=',', dtype=object)
+#Y_train         = loadtxt(metadata_filepath + 'Y_train.csv', delimiter=',', dtype=object)
+X_train_short   = loadtxt(metadata_filepath + 'X_train_short.csv', delimiter=',', dtype=object)
+Y_train_short   = loadtxt(metadata_filepath + 'Y_train_short.csv', delimiter=',', dtype=object)
 
 
 
@@ -244,17 +252,16 @@ md_title_principals_reduced.to_csv(metadata_filepath + 'md_title_principals_redu
 md_title_principals_reduced_pretraining_filter.to_csv(metadata_filepath + 'md_title_principals_reduced_pretraining_filter.csv')
 
 savetxt(metadata_filepath + 'training_tconsts.csv', asarray(training_tconsts), delimiter=',', fmt='%s')
-savetxt(metadata_filepath + 'testing_tconsts.csv', asarray(testing_tconsts), delimiter=',', fmt='%s')
 
 
 
 #%% Reset and Define Metatables and General Variables/Methods
 
 #Reset and Define Metatables 
-md_PrimaryActorsList_column_values = ["Number", "Name", "nconst", "Ratings", "Rating Years", 'tconst', "Rating - Mean", "Rating - Std Dev", "Start Year", "Final Year", "Films_Training_Qty", "Films_Testing_Qty", "Model_Gradient", "Model_Intercept", "Model Rating 2020"]
+md_PrimaryActorsList_column_values = ["Number", "Name", "nconst", "Ratings", "Rating Years", 'tconst', "Rating - Mean", "Rating - Std Dev", "Start Year", "Final Year", "Films_Training_Qty", "Film Count", "Model_Gradient", "Model_Intercept", "Model Rating 2020"]
 md_PrimaryActorsList = pd.DataFrame(columns = md_PrimaryActorsList_column_values)
 
-md_PrimaryActorsList_column_values = ["Number", "Name", "nconst", "Ratings", "Rating Years", 'tconst', "Rating - Mean", "Rating - Std Dev", "Start Year", "Final Year", "Films_Training_Qty", "Films_Testing_Qty", "Model_Gradient", "Model_Intercept", "Model Rating 2020"]
+md_PrimaryActorsList_column_values = ["Number", "Name", "nconst", "Ratings", "Rating Years", 'tconst', "Rating - Mean", "Rating - Std Dev", "Start Year", "Final Year", "Films_Training_Qty", "Film Count", "Model_Gradient", "Model_Intercept", "Model Rating 2020"]
 md_PrimaryActorsList_complete = pd.DataFrame(columns = md_PrimaryActorsList_column_values)
 
 md_RatingModels_column_names = ["Name", 'tconst', "Model"]
@@ -828,8 +835,12 @@ table_training, table_testing = split_meta_table(md_PrimaryActorsList, unique_tc
 #definition of methods
 
 def relister_main(dataframe, column_name, format='float'):
-  for i in range(0, len(dataframe)):
-    relister_single(dataframe, column_name, i, format)
+    counter = 0
+    start = datetime.now()
+    for i in range(0, len(dataframe)):
+        counter += 1
+        fg_counter(counter, len(dataframe), 10, start, False)
+        relister_single(dataframe, column_name, i, format)
 
 def relister_single(dataframe, column_name, row_num, format='float', return_value = False):
   if len(dataframe[column_name][row_num]) <= 2:
@@ -850,7 +861,10 @@ def relister_single(dataframe, column_name, row_num, format='float', return_valu
     elif format=='int':
         string = i.strip()
         string = string.replace("'","")
-        value = int(string)
+        try:
+            value = int(string)
+        except ValueError as err:
+            print('heelo')
     elif format=='string':
         string = i.strip()
         string = string.replace("'","")
@@ -952,7 +966,7 @@ def populate_film_ratings_v1(actor_ID, df_title_principals):
 
 def define_actor_metadata_step_1(datatable, row):
     ''' Generates various items of metadata per actor
-    Namely: Rating - Mean, Rating - Std Dev, Start Year, Final Year, Films_Training_Qty, Films_Testing_Qty
+    Namely: Rating - Mean, Rating - Std Dev, Start Year, Final Year, Films_Training_Qty, Film Count
     first of various actor metadata generation steps'''    
     
     datatable['Rating Years'][row] = [int(i) for i in datatable['Rating Years'][row]]
@@ -969,12 +983,12 @@ def define_actor_metadata_step_1(datatable, row):
     datatable['Rating - Mean'][row] = sum(rating_data) / len(rating_data)
     datatable['Rating - Std Dev'][row] = np.std(rating_data)
     #datatable['Films_Training_Qty'][row] = min(rating_years_data)
-    #datatable['Films_Testing_Qty'][row] = max(rating_years_data)
+    #datatable['Film Count'][row] = max(rating_years_data)
     datatable['Start Year'][row] = min(rating_years_data)
     datatable['Final Year'][row] = max(rating_years_data)
     
     datatable['Films_Training_Qty'][row] = training_films_count
-    datatable['Films_Testing_Qty'][row] = films_count - datatable['Films_Training_Qty'][row]
+    datatable['Film Count'][row] = films_count - datatable['Films_Training_Qty'][row]
 
 
 def visualise_ratings_career(actor_name_or_ID = 'Jack Nicholson', dataframe = md_PrimaryActorsList):
@@ -995,18 +1009,43 @@ def visualise_ratings_career(actor_name_or_ID = 'Jack Nicholson', dataframe = md
   
   plt.show()
 
+
+
+
+def visualise_ratings_career(actor_name_or_ID = 'Jack Nicholson', dataframe = md_PrimaryActorsList, add_linear_regression = False):
+  #FG comment: index initialied at impossible value to force failure down the line if the if statments dont catch it
+  actor_index = len(dataframe) + 5
+  
+  #actor_name_or_ID.str
+  
+  if isinstance(actor_name_or_ID, str):
+    actor_index = dataframe[dataframe['name'] == actor_name_or_ID].index[0]
+  else:
+    actor_index = actor_name_or_ID
+
+  ratings = dataframe['Ratings'][actor_index]
+  rating_years = dataframe['Rating Years'][actor_index]
+  plt.scatter(rating_years, ratings);
+  plt.title(dataframe['name'][actor_index])
+  
+  if add_linear_regression == True:
+      print("Hello")
+      gradient, intercept, rating_2020 = create_actor_model(actor_name_or_ID, dataframe, False, False)
+      x_regression = range(min(dataframe['Rating Years'][actor_index]), max(dataframe['Rating Years'][actor_index]))
+      plt.plot(x_regression, gradient*x_regression + intercept, color = "red", linewidth=1.6)
+
+  
+  plt.show()
+
+
+
 def create_actor_model(actor_name_or_ID = 'Jack Nicholson', dataframe = md_PrimaryActorsList, generate_chart=False, print_chart = False):
     
     '''   # This method splits the training data of an actor and 
     returns the linear regression model, std dev and charts the prediction 
     if required '''
 
-    
-    
-    #FG comment: index initialied at impossible value to force failure down the line if the if statments dont catch it
     actor_index = len(dataframe) + 5
-    
-    #actor_name_or_ID.str
     
     if isinstance(actor_name_or_ID, str):
       actor_index = dataframe[dataframe['name'] == actor_name_or_ID].index[0]
@@ -1017,39 +1056,13 @@ def create_actor_model(actor_name_or_ID = 'Jack Nicholson', dataframe = md_Prima
     ratings = dataframe['Ratings'][actor_index]
     rating_years = dataframe['Rating Years'][actor_index]
     
-    #training_mask = [(film < final_training_year + 1) for film in rating_years]
-    #training_mask = list(map(lambda x: x <= final_training_year, rating_years))
-    
-    #ratings_training = [ratings[i] for i in range(len(ratings)) if training_mask[i]]
-    #rating_years_training = [rating_years[i] for i in range(len(rating_years)) if training_mask[i]]
-    
-    #ratings_testing = [ratings[i] for i in range(len(ratings)) if not(training_mask[i])]
-    #rating_years_testing = [rating_years[i] for i in range(len(rating_years)) if not(training_mask[i])]
-        
     ratings = np.array(ratings).reshape(-1, 1)
     rating_years = np.array(rating_years).reshape(-1, 1)
           
     model = LinearRegression().fit(rating_years, ratings)
-    #print(model.score(rating_years, ratings))
-    #print(model.predict(np.array(2000).reshape(1, -1)))
-    #training_mean = np.mean(ratings_testing)
-    #training_std = np.std(ratings_testing)
     rating2020 = model.predict(np.array(2020).reshape(1,-1))[0][0]
     
-    if generate_chart == True:
-        plt.scatter(rating_years_training, ratings_training, label="Training")
-        plt.scatter(rating_years_testing, ratings_testing, label="Testing")
-        x_model = np.arange(min(rating_years), max(rating_years)+1).reshape(-1,1)
-        plt.plot(x_model, model.predict(x_model), color="Red", linewidth=3, linestyle="--")
-        
-        #plt.scatter(rating_years_testing, ratings_testing, label="Testing")
-        
-        plt.title(dataframe['name'][actor_index] + " Model Display")
-        plt.show()
-        if print_chart == True:
-            return model.coef_[0][0], model.intercept_[0][0], rating2020, training_mean, training_std, plt
-    
-    return model.coef_[0], model.intercept_[0], rating2020#, training_mean, training_std
+    return model.coef_[0][0], model.intercept_[0], rating2020
 
 def get_unique_values__title_principals_category():
     global title_principals_unique_category #list of unique roles in a film
@@ -1194,7 +1207,7 @@ def filter_testing_tconsts_from_title_principles(unique_tconsts, title_principle
     
     return title_principles_DB_temp, training_tconsts, testing_tconsts
     
-def return_actor_record_from_nconst(nconst_target, md_PrimaryActorsList = md_PrimaryActorsList, md_secondary_actors = md_secondary_actors):
+def return_actor_record_from_nconst_v2(nconst_target, md_PrimaryActorsList = md_PrimaryActorsList, md_secondary_actors = md_secondary_actors):
     
     
     record = md_PrimaryActorsList[pd.DataFrame(md_PrimaryActorsList.nconst.tolist()).isin([nconst_target]).any(1).values]

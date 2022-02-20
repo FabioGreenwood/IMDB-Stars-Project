@@ -18,8 +18,8 @@ import plotly.express as px
 import pathlib
 import os
 
-import warnings
-warnings.filterwarnings("ignore")
+#import warnings
+#warnings.filterwarnings("ignore")
 
 #%% start up run
 
@@ -34,7 +34,7 @@ analysis_filename = "programming_analysis_project_analysis_file.py"
 
 #import prepared data and methods from [programming_analysis_project_data_prep.py]
 runcell("start up run", script_filepath + dataprep_filename)
-runcell("General Methods", script_filepath + analysis_filename)
+runcell("General Methods", script_filepath + dataprep_filename)
 #runcell("Import Additional Modules and Define General Parameters", script_filepath + analysis_filename)
 
 
@@ -53,14 +53,15 @@ runcell("Create Forecase Model Input", script_filepath + metadata_filepath)
 
 #%% Create Forecase Model Input
 
- #film is a christmas carol
+runcell('General Methods', 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/IMDB-Stars-Project/programming_analysis_project_analysis_file.py')
+
 failures_to_populate_films_in_model_input = 0
 failure_to_populate_actor_nconst_for_metascore_generation = 0
 progress = 0
 film_years_approximated_as_2020 = 0
 
 #Convert the relational table of actor to film to a format required for the following operation
-md_title_principals_reduced_input = md_title_principals_reduced_pretraining_filter.copy()
+md_title_principals_reduced_input = md_title_principals_reduced.copy()
 md_title_principals_reduced_input.set_index(['nconst', 'tconst'], inplace=True)
 md_title_principals_reduced_input = md_title_principals_reduced_input.loc[:, ~md_title_principals_reduced_input.columns.str.contains('^Unnamed')]
 
@@ -68,51 +69,59 @@ md_title_principals_reduced_input = md_title_principals_reduced_input.loc[:, ~md
 print(str(datetime.now()))
 print("1")
 
-#%%
 failures_to_populate_films_in_model_input = 0
 failure_to_populate_actor_nconst_for_metascore_generation = 0
 progress = 0
 film_years_approximated_as_2020 = 0                                                                    
+training_tconsts = loadtxt(metadata_filepath + 'training_tconsts.csv', delimiter=',', dtype=object)
+testing_tconsts = loadtxt(metadata_filepath + 'testing_tconsts.csv', delimiter=',', dtype=object)
 
-X_train_short, Y_train_short = populate_actor_metascores_for_insertion_into_the_model(training_tconsts[0::20], 6, md_PrimaryActorsList, md_secondary_actors, md_title_principals_reduced)
-
-X_train, Y_train = populate_actor_metascores_for_insertion_into_the_model(training_tconsts, 6, md_PrimaryActorsList, md_secondary_actors, md_title_principals_reduced)
-
-
-#%%
-X_test, Y_test = populate_actor_metascores_for_insertion_into_the_model(testing_tconsts, 6, md_PrimaryActorsList, md_secondary_actors, md_title_principals_reduced)
-
-#%%
-
-
-
-#%%%
 print(str(datetime.now()))
-print("2")
+print("gen X_train_shor")
+X_train_short, Y_train_short = populate_actor_metascores_for_insertion_into_the_model(training_tconsts[0::10], 6, md_PrimaryActorsList, md_secondary_actors, md_title_principals_reduced)
+savetxt(metadata_filepath + 'X_train_short.csv', asarray(X_train_short), delimiter=',', fmt='%s')
+savetxt(metadata_filepath + 'Y_train_short.csv', asarray(Y_train_short), delimiter=',', fmt='%s')
+print(str(datetime.now()))
+X_test_short, Y_test_short = populate_actor_metascores_for_insertion_into_the_model(testing_tconsts[0::10], 6, md_PrimaryActorsList, md_secondary_actors, md_title_principals_reduced)
+savetxt(metadata_filepath + 'X_test_short.csv', asarray(X_train_short), delimiter=',', fmt='%s')
+savetxt(metadata_filepath + 'Y_test_short.csv', asarray(Y_train_short), delimiter=',', fmt='%s')
 
-#%%
-                                                                        
-X_test, Y_test = populate_actor_metascores_for_insertion_into_the_model(testing_tconsts, 3, 3, md_PrimaryActorsList, md_secondary_actors_complete, md_actor_to_film_complete, md_actor_to_film_secondary_complete)
 
-
-#%%
+print(str(datetime.now()))
+print("gen X_train")
+X_train, Y_train = populate_actor_metascores_for_insertion_into_the_model(training_tconsts, 6, md_PrimaryActorsList, md_secondary_actors, md_title_principals_reduced)
+savetxt(metadata_filepath + 'X_train.csv', asarray(X_train), delimiter=',', fmt='%s')
+savetxt(metadata_filepath + 'Y_train.csv', asarray(Y_train), delimiter=',', fmt='%s')
+X_train, Y_train = populate_actor_metascores_for_insertion_into_the_model(testing_tconsts, 6, md_PrimaryActorsList, md_secondary_actors, md_title_principals_reduced)
+savetxt(metadata_filepath + 'X_test.csv', asarray(X_train), delimiter=',', fmt='%s')
+savetxt(metadata_filepath + 'Y_test.csv', asarray(Y_train), delimiter=',', fmt='%s')
 
 print(str(datetime.now()))
 print("3")
+
 from sklearn.linear_model import LinearRegression
-regressor = LinearRegression()
+regressor_short_x = LinearRegression()
+regressor_x = LinearRegression()
+
 print(str(datetime.now()))
 print("4")
-regressor.fit(X_train, Y_train)
+
+regressor_short_x.fit(X_train_short, Y_train_short)
+regressor_x.fit(X_train, Y_train)
+
 print(str(datetime.now()))
 print("5")
 # Predicting the Test set results
-y_pred = regressor.predict(X_test)
+Y_pred_short = regressor_short_x.predict(X_test_short)
+Y_pred       = regressor_x.predict(X_test)
+
 print(str(datetime.now()))
 print("6")
 from sklearn.metrics import r2_score
-score=r2_score(y_test,y_pred)
-    
+score_short = r2_score(Y_test_short,Y_pred_short)
+score       = r2_score(Y_test,Y_pred)
+
+print(str(datetime.now()))
 
 
 
@@ -140,9 +149,27 @@ sns.pairplot(md_PrimaryActorsList_2)
 
 md_secondary_actors_2 = md_secondary_actors.drop(["name", "nconst", "tconst"], axis=1)
 md_secondary_actors_corr = md_secondary_actors_2.corr()
-md_secondary_actors_pairplot = sns.pairplot(md_secondary_actors_2)
+md_secondary_actors_pairplot = sns.pairplot(md_secondary_actors_2, plot_kws=dict(marker=".", linewidth=1))
 md_secondary_actors_pairplot.fig.suptitle("md_secondary_actors")
 #md_secondary_actors_pairplot.fig.show()
+
+#%%
+
+
+sns.pairplot(md_secondary_actors_2, kind="hist", diag_kws = {'alpha':1, 'bins':10})
+
+
+
+
+"""
+sns.set_theme(style="white")
+g = sns.PairGrid(md_secondary_actors_2, diag_sharey=False)
+g.map_upper(sns.scatterplot, s=15)
+g.map_lower(sns.kdeplot)
+g.map_diag(sns.kdeplot, lw=2)
+"""
+
+
 
 
 #%% md_film_scores - Basic Analysis
@@ -163,19 +190,21 @@ md_film_scores_pairplot.fig.suptitle("md_film_scores")
 
 
 md_secondary_actors_desc = md_secondary_actors.describe()
-md_secondary_actors_least_20_films_mask = md_secondary_actors["Count"] >= 20
-md_secondary_actors_least_20_films  = md_secondary_actors[md_secondary_actors_least_20_films_mask]
+md_secondary_actors_names_dropped = md_secondary_actors.drop(["name", "nconst"], axis=1)
+
+md_secondary_actors_least_20_films_mask = md_secondary_actors_names_dropped["Count"] >= 20
+md_secondary_actors_least_20_films  = md_secondary_actors_names_dropped[md_secondary_actors_least_20_films_mask]
 md_film_scores_pairplot = sns.pairplot(md_secondary_actors_least_20_films)
 md_film_scores_pairplot.fig.suptitle("md_film_scores_least_20_films")
 
-temp_mask = (md_secondary_actors["Count"] >= 20) & (md_secondary_actors["Relative Actor Score - Mean"] >=  0.5)
-md_secondary_actors_least_20_films_relative_rating_below_minus05 = md_secondary_actors[temp_mask]
-md_secondary_actors_least_20_films_relative_rating_below_minus05["Cat"] = 1
-temp_mask = (md_secondary_actors["Count"] >= 20) & (md_secondary_actors["Relative Actor Score - Mean"] <=  -0.5)
-md_secondary_actors_least_20_films_relative_rating_above_05 = md_secondary_actors[temp_mask]
-md_secondary_actors_least_20_films_relative_rating_above_05["Cat"] = 0
+temp_mask = (md_secondary_actors_names_dropped["Count"] >= 20) & (md_secondary_actors_names_dropped["Relative Actor Score - Mean"] >=  0.5)
+md_secondary_actors_least_20_films_relative_rating_below_minus05 = md_secondary_actors_names_dropped[temp_mask]
+md_secondary_actors_least_20_films_relative_rating_below_minus05["Cat"] = "Below -0.5"
+temp_mask = (md_secondary_actors_names_dropped["Count"] >= 20) & (md_secondary_actors_names_dropped["Relative Actor Score - Mean"] <=  -0.5)
+md_secondary_actors_least_20_films_relative_rating_above_05 = md_secondary_actors_names_dropped[temp_mask]
+md_secondary_actors_least_20_films_relative_rating_above_05["Cat"] = "Above +0.5"
 
-#temp_mask = (md_secondary_actors["Count"] >= 20) & ((md_secondary_actors["Relative Actor Score - Mean"] <=  -0.5) | (md_secondary_actors["Relative Actor Score - Mean"] >=  0.5))
+#temp_mask = (md_secondary_actors_names_dropped["Count"] >= 20) & ((md_secondary_actors_names_dropped["Relative Actor Score - Mean"] <=  -0.5) | (md_secondary_actors_names_dropped["Relative Actor Score - Mean"] >=  0.5))
 md_secondary_actors_least_20_films_relative_rating_above_below_05 = md_secondary_actors_least_20_films_relative_rating_below_minus05.append(md_secondary_actors_least_20_films_relative_rating_above_05)
 
 print(len(md_secondary_actors_least_20_films_relative_rating_below_minus05))
@@ -190,8 +219,9 @@ b = sns.pairplot(md_secondary_actors_least_20_films_relative_rating_above_05, hu
 b.fig.suptitle("md_secondary_actors_least_20_films_relative_rating_above_05")
 
 ab = sns.pairplot(md_secondary_actors_least_20_films_relative_rating_above_below_05, hue="Cat", palette="vlag")
-ab.fig.suptitle("md_secondary_actors_least_20_films_relative_rating_above_below_05")
+#ab.fig.suptitle("md_secondary_actors_least_20_films_relative_rating_above_below_05")
 
+abc = sns.pairplot(md_secondary_actors_least_20_films_relative_rating_above_below_05[['Relative Actor Score - Mean', 'Relative Actor Score - Std', "Cat"]], hue="Cat", palette="vlag")
 
 
 p=sns.diverging_palette(250, 30, l=65, center="dark", as_cmap=True)
@@ -254,7 +284,7 @@ def populate_actor_metascores_for_insertion_into_the_model(film_tconst_list, des
     return output.drop(rating_string, axis = 1), output[rating_string]
 
                   
-def return_nconsts_in_film_with_highest_film_counts(film_tconst, actors_qty,                primary_actor_DB, secondary_actor_DB, md_title_principals_reduced_input):
+def return_nconsts_in_film_with_highest_film_counts(film_tconst, actors_qty, primary_actor_DB, secondary_actor_DB, md_title_principals_reduced_input):
     # called twice by populate_input_actor_scores_for_film
     
     global failure_to_populate_actor_nconst_for_metascore_generation
@@ -280,7 +310,7 @@ def return_nconsts_in_film_with_highest_film_counts(film_tconst, actors_qty,    
         if primary_actors_in_film['count'][index] == None:
             # if not found in primary actor DB, try secondary
             actor_nconst = primary_actors_in_film['nconst'][index]
-            actor_record = return_actor_record_from_nconst(actor_nconst)
+            actor_record = return_actor_record_from_nconst_v2(actor_nconst)
             actor_name = actor_record[0]['name'].values[0]
             #if len(primary_actor_DB.loc[primary_actor_DB['name'] == primary_actors_in_film['actor name'][index]]) > 0:
             if len(primary_actor_DB.loc[primary_actor_DB['name'] == actor_name]) > 0:
@@ -366,7 +396,8 @@ def generate_entry_for_score_predictor_from_nconst(nconsts, column_qty, year, pr
         #determine if nconst, belongs to a secondary actor and return the row number
         if nconst_is_primary == False:
             _secondary_actor_row = secondary_actor_list.loc[secondary_actor_list['nconst'] == nconst]
-            secondary_actor_row = _secondary_actor_row.loc[_secondary_actor_row.index[0]]
+            #secondary_actor_row = _secondary_actor_row.loc[_secondary_actor_row.index[0]]
+            secondary_actor_row = _secondary_actor_row.loc[_secondary_actor_row.index]
             nconst_is_secondary = True
             
             
