@@ -13,7 +13,7 @@ import os
 from pathlib import Path
 import spyder_kernels
 import cachetools
-import functions
+#import functions
 
 from datetime import datetime
 import pdb
@@ -28,6 +28,8 @@ import os
 import sklearn
 import sklearn.model_selection
 from sklearn.model_selection import train_test_split
+import pickle
+
 
 # save numpy array as csv file
 from numpy import asarray
@@ -47,8 +49,7 @@ st.set_page_config(
      }
  )
 
-#%%
-#General Methods and Variables
+#%% #General Methods and Variables
 
 PrimaryActorsList = ["Jack Nicholson", "Marlon Brando", "Robert De Niro", "Al Pacino", "Daniel Day-Lewis", "Dustin Hoffman", "Tom Hanks", "Anthony Hopkins", "Paul Newman", "Denzel Washington", "Spencer Tracy", "Laurence Olivier", "Jack Lemmon", "Michael Caine", "James Stewart", "Robin Williams", "Robert Duvall", "Sean Penn", "Morgan Freeman", "Jeff Bridges", "Sidney Poitier", "Peter O'Toole", "Clint Eastwood", "Gene Hackman", "Charles Chaplin", "Ben Kingsley", "Philip Seymour Hoffman", "Leonardo DiCaprio", "Russell Crowe", "Kevin Spacey", "Humphrey Bogart", "Gregory Peck", "Clark Gable", "Gary Cooper", "George C. Scott", "Jason Robards", "Charles Laughton", "Anthony Quinn", "Peter Sellers", "James Cagney", "Peter Finch", "Henry Fonda", "Cary Grant", "Richard Burton", "Burt Lancaster", "William Holden", "John Wayne", "Kirk Douglas", "Alec Guinness", "Christopher Plummer", "Tommy Lee Jones", "Sean Connery", "Alan Arkin", "Christopher Walken", "Joe Pesci", "Ian McKellen", "Michael Douglas", "Jon Voight", "Albert Finney", "Geoffrey Rush", "Jeremy Irons", "Javier Bardem", "Heath Ledger", "Christoph Waltz", "Ralph Fiennes", "Johnny Depp", "Benicio Del Toro", "Jamie Foxx", "Joaquin Phoenix", "Colin Firth", "Matthew McConaughey", "Christian Bale", "Gary Oldman", "Edward Norton", "Brad Pitt", "Tom Cruise", "Matt Damon", "Hugh Jackman", "Robert Downey Jr.", "Liam Neeson", "Mel Gibson", "Harrison Ford", "Woody Allen", "Steve McQueen", "Orson Welles", "Robert Redford", "James Dean", "Charlton Heston", "Gene Kelly", "Robert Mitchum", "Bill Murray", "Samuel L. Jackson", "Jim Carrey", "Don Cheadle", "Martin Sheen", "Alan Rickman", "Edward G. Robinson", "Will Smith", "John Goodman", "Buster Keaton"]
 def relister_main(dataframe, column_name, format='float'):
@@ -144,21 +145,44 @@ def create_actor_model(actor_name_or_ID, dataframe, generate_chart, print_chart)
     
     return model.coef_[0][0], model.intercept_[0], rating2020
 
+def list_actors_films(actor_name, md_PrimaryActorsList, md_film_scores_tconst_index):
+    actor_tconsts = md_PrimaryActorsList.loc[md_PrimaryActorsList['name'] == actor_name]['tconst']
+    a = 0
+    list_of_film_names = np.array([])
+    target = md_PrimaryActorsList.loc[md_PrimaryActorsList['name'] == actor_name]['tconst'][0]
+    for i in range(0, len(target)):
+        try:
+            #new_name = md_film_scores_tconst_index['name'][target[i]]
+            new_name = target[i]
+            new_name = md_film_scores_tconst_index['name'][new_name]
+            list_of_film_names = np.append(list_of_film_names, new_name)
+        except TypeError as err:
+            a += 1
+
+        
+        
+    
+    return "Function pending" #list_of_film_names
+    
+    
+    
+
 #%% Call in data
 
 
 
 
-script_directory = "C:\\Users\\fabio\\OneDrive\\Documents\\Studies\\Programming_Analysis_Project\\IMDB-Stars-Project\\"
-database_directory = "C:\\Users\\fabio\\OneDrive\\Documents\\Studies\\Programming_Analysis_Project\\IMDB-Stars-Project\\data\\"
-metadata_directory = "C:\\Users\\fabio\\OneDrive\\Documents\\Studies\\Programming_Analysis_Project\\IMDB-Stars-Project\\Metadata\\"
+#script_directory = "C:\\Users\\fabio\\OneDrive\\Documents\\Studies\\Programming_Analysis_Project\\IMDB-Stars-Project\\"
+#database_directory = "C:\\Users\\fabio\\OneDrive\\Documents\\Studies\\Programming_Analysis_Project\\IMDB-Stars-Project\\data\\"
+#metadata_directory = "C:\\Users\\fabio\\OneDrive\\Documents\\Studies\\Programming_Analysis_Project\\IMDB-Stars-Project\\Metadata\\"
 streamlit_script_name = "stream_lit_script.py"
+
 
 
 @st.cache
 def get_data_from_excel(a):
     # md_PrimaryActorsList import
-    md_PrimaryActorsList = pd.read_csv(metadata_directory + "md_PrimaryActorsList.csv")
+    md_PrimaryActorsList = pd.read_csv(".\\Metadata\\md_PrimaryActorsList.csv")
     relister_main(md_PrimaryActorsList, 'Ratings')
     relister_main(md_PrimaryActorsList, 'Rating Years', "int")
     relister_main(md_PrimaryActorsList, 'tconst', "string")
@@ -173,32 +197,52 @@ def get_data_from_excel(a):
     return md_PrimaryActorsList_dataframe, md_PrimaryActorsList_corr, md_PrimaryActorsList
     #return sns.pairplot(md_PrimaryActorsList)
 
+@st.cache
+def get_film_info(b):
+    #md_film_scores_tconst_index = pd.read_csv(metadata_directory + 'md_film_scores.csv')
+    md_film_scores_tconst_index = pd.read_csv('.\\Metadata\\md_film_scores.csv')
+    md_film_scores_tconst_index = md_film_scores_tconst_index.set_index(['tconst'], inplace=True)
+    return md_film_scores_tconst_index
+
+
 
 #md_PrimaryActorsList, md_PrimaryActorsList_corr, md_PrimaryActorsList_sns = get_data_from_excel()
 md_PrimaryActorsList_dataframe, md_PrimaryActorsList_corr, md_PrimaryActorsList_full = get_data_from_excel("b")
-
+md_film_scores_tconst_index = get_film_info("e")
 
 
 
 
 #Pictoral Assets
-placeholder_diagram = Image.open("C:\\Users\\fabio\\OneDrive\\Documents\\Studies\\Programming_Analysis_Project\\IMDB-Stars-Project\\Images\\Place Holder Image.png")
-nick_cage_image =                   Image.open("C:\\Users\\fabio\\OneDrive\\Documents\\Studies\\Programming_Analysis_Project\\IMDB-Stars-Project\\Images\\nick_cage.jpg")
-md_PrimaryActorsList_sns_image =    Image.open("C:\\Users\\fabio\\OneDrive\\Documents\\Studies\\Programming_Analysis_Project\\IMDB-Stars-Project\\Images\\md_PrimaryActorList.jpg")
-md_secondary_actors_metadata_image = Image.open("C:\\Users\\fabio\\OneDrive\\Documents\\Studies\\Programming_Analysis_Project\\IMDB-Stars-Project\\Images\\md_secondary_actors_metadata_image.png")
-md_secondary_actors_least_20_films_relative_rating_above_below_05 = Image.open("C:\\Users\\fabio\\OneDrive\\Documents\\Studies\\Programming_Analysis_Project\\IMDB-Stars-Project\\Images\\md_secondary_actors_least_20_films_relative_rating_above_below_05.png")
-md_secondary_actors_least_20_films_relative_rating_above_below_05_Mean_STD_only = Image.open("C:\\Users\\fabio\\OneDrive\\Documents\\Studies\\Programming_Analysis_Project\\IMDB-Stars-Project\\Images\\md_secondary_actors_least_20_films_relative_rating_above_below_05_Mean_STD_only.png")
-FG_data_schema_image = Image.open("C:\\Users\\fabio\\OneDrive\\Documents\\Studies\\Programming_Analysis_Project\\IMDB-Stars-Project\\Images\\FG_data_schema.png")
-IMDB_data_schema_image = Image.open("C:\\Users\\fabio\\OneDrive\\Documents\\Studies\\Programming_Analysis_Project\\IMDB-Stars-Project\\Images\\IMDB_data_schema.png")
-
+placeholder_diagram = Image.open(".\\Images\\Place Holder Image.png")
+nick_cage_image =                   Image.open(".\\Images\\nick_cage.jpg")
+md_PrimaryActorsList_sns_image =    Image.open(".\\Images\\md_PrimaryActorList.jpg")
+md_secondary_actors_metadata_image = Image.open(".\\Images\\md_secondary_actors_metadata_image.png")
+md_secondary_actors_least_20_films_relative_rating_above_below_05 = Image.open(".\\Images\\md_secondary_actors_least_20_films_relative_rating_above_below_05.png")
+md_secondary_actors_least_20_films_relative_rating_above_below_05_Mean_STD_only = Image.open(".\\Images\\md_secondary_actors_least_20_films_relative_rating_above_below_05_Mean_STD_only.png")
+FG_data_schema_image = Image.open(".\\Images\\FG_data_schema.png")
+IMDB_data_schema_image = Image.open(".\\Images\\IMDB_data_schema.png")
+FG_acting_career = Image.open(".\\Images\\FGs acting career.jpg")
+rosie_o_donnell = Image.open(".\\Images\\rosie o'donnell.jpg")
 
 
 add_selectbox = st.sidebar.write("""
          Contents
          - Intro
          - Data Overview            
+         - Metadata Generation Overview
          - Primary Actor Film Metadata Analysis
          - Metadata Generation Overview
+         - Primary Actor Film Metadata Analysis
+         - Primary Actor Film Rating Analysis
+         - Secondary Actor Film Metadata Analysis
+         - Forecasting Introduction
+         - The Million Dollar Question
+         - Modelling Difficulties
+
+
+
+         
          """
          )
 add_selectbox = st.sidebar.write("")
@@ -212,7 +256,7 @@ add_selectbox = st.sidebar.write("""
              - Film/series unique identifier
              (t -> title)
          - Actor Relative Score
-             - see XXXX section
+             - see "Metadata Generation Overview" section
          """
          )
 
@@ -226,11 +270,10 @@ add_selectbox = st.sidebar.write("""
 
 
 
-
-#Layout Block - Intro
+#%% #Layout Block - Intro
 st.title("IMDB Dud Supporting Stars Study")
 col1, col2, col3 = st.columns(3)
-col2.image(nick_cage_image, caption="Our sweet prince")
+col2.image(nick_cage_image, caption="Example of divisive actor (personally a fan)")
 
 
 st.write("""
@@ -271,14 +314,20 @@ st.text("")
 
 
 
-
-#Layout Block - Metadata Generation
+#%% #Layout Block - Metadata Generation
 st.title("Metadata Generation Overview")
 st.subheader("Stage 1")
 st.write("""
-         To do this the top 100 actors (male and female) were selected (as defined by IMDB.com, link below XXXXX). 
+         To do this the top 100 actors (male and female) were selected (as defined by IMDB.com, link below). 
          These actors here on are referred to as "Primary Actors". All their IMDB ratings were collected. 
          From this a linear regression (over time) for each actor was created, creating an expected film rating for each year.
+         
+         References:
+             
+             https://www.imdb.com/interfaces/
+             
+             https://www.imdb.com/list/ls050274118/
+         
          """
          )
 st.write("")
@@ -292,7 +341,7 @@ st.write("""
 st.write("")
 st.subheader("Stage 3")
 st.write("""
-         For each film a secondary actor was in, their "Relative Actor Score” was collected XXXXX, this value is defined in the XXXX section. It is a measure comparing a film's rating to the expected rating for the primary actor (for that year), if there were multiple primary actors then the mean of these values would be assigned to the secondary actor for their involvement in the film.
+         For each film a secondary actor was in, their "Relative Actor Score” was collected, the exact definition is detailed below. It is a measure comparing a film's rating to the expected rating for the primary actor (for that year), if there were multiple primary actors then the mean of these values would be assigned to the secondary actor for their involvement in the film.
          
          These scores would be collected for each actor, over the films filtered as described above to produce the following scores for each secondary actor:
          - Relative Actor Score - Mean
@@ -300,13 +349,35 @@ st.write("""
 
          """
          )
+with st.expander("Relative Actor Score - Mean (and Std) Definition"):
+     st.write("""
+           Relative Actor Score, is the measure of a film's performance relative to the primary actor's expected performance.
+           Say a film is rated 6/10, for the year of the film *"primary actor A"* should be expected to star in a 7/10 rated film and his ratings tend to have a standard deviation of 0.75.
+           Then the "Primary Actor Relative Ratings" for that primary actor is calculated as:
+        """
+        )
+     st.write("""
+               PARR = (Film Rating - Actor Expected Rating) / Actor Rating Standard Deviation
+    """
+    )
+     st.write("""
+               PARR =  (6 - 7) / 0.75 = -1.33
+               """
+               )
+     st.write("""
+           This is the value relative is a single primary actor. If there are multiple primary actors on the film then the average of this is taken as the films "Primary Actor Relative Ratings - Mean"
+           These values is taken by each secondary actor and analysed for calculating a secondary actors statisitics:
+        - Relative Actor Score - Mean
+        - Relative Actor Score - Std
+           """
+         )
 
 st.write("")
 st.subheader("Filtering out of “testing set” films")
 st.write("""
          After stage 2 was completed all the films (represented by their unique identifiers the “tconst”) where split into two lists, to create a training set of films and a testing set of films. Stage 2 was then repeated, however only considering films from the training set.
          
-         This was done to ensure that for the forecast model, the metadata for the primary actors (film ratings, means and standard deviations) and secondary actors (relative film ratingXXX) were not swayed by films in the testing set.
+         This was done to ensure that for the forecast model, the metadata for the primary actors (film ratings, means and standard deviations) and secondary actors (relative film rating) were not swayed by films in the testing set.
          
          See cell: “Generate md_title_principals_reduced” in the file […..project_data.py].
          
@@ -325,8 +396,7 @@ st.text("")
 
 
 
-
-#Layout Block - Initial Data Exploration
+#%% #Layout Block - Initial Data Exploration
 st.title("Metadata Generation Overview")
 st.header("IMDB Native Data")
 st.write("Given the limited number of features we are able to directly tie to individual actors the following studies where undertaken:")
@@ -374,8 +444,7 @@ col1, col2 = st.columns(2)
 col1.image(md_PrimaryActorsList_sns_image, use_column_width=True)
 
 
-
-#Layout Block - Primary Actor Film Rating Analysis
+#%% #Layout Block - Primary Actor Film Rating Analysis
 st.title("Primary Actor Film Rating Analysis")
 st.write("Here individual primary actors were examined to see how their indiviual film ratings acted over time. On average a primary actors ratings tended to go up in time (with an average gradient of 0.0072, simular to Marlon Brando), however as there was a high standard deviation in this gradient (0.019) this was definitely not a rule")
 st.write("")
@@ -400,7 +469,7 @@ col3.pyplot(plot3)
 st.write("Robert De Niro is an example of one of the exceptions mentioned eariler (data pictured above)")
 st.write("While the other examples tended to drift up, De Niro's earlier films start with a high average/low spread and over time develop a mid average/high spread")
 st.write("Reviewing the *tconsts* (film unique identifiers), it is seen that his earlier films were mainly the mafia classics (godfather, goodfellas), foundly remembered films")
-st.write("Where as later in his career RD has attempted projects from a wide range types, to varying degrees of success, such as 'Meet the Fockers' XXXX rating and 'Bad Grandpa 2' XXXXX rating")
+st.write("Where as later in his career RD has attempted projects from a wide range types, to varying degrees of success, such as 'The Irishman' 7.8 rating, 'Meet the Fockers' 6.3 and 'Dirty Grandpa' 5.9")
 
 
 
@@ -420,6 +489,8 @@ col1.dataframe(test)
 
 plot_custom = visualise_ratings_career(option, md_PrimaryActorsList_full , True, True)
 col2.pyplot(plot_custom)
+#film_list = list_actors_films(option, md_PrimaryActorsList_full,md_film_scores_tconst_index)
+#col3.dataframe(film_list )
 
 
 st.text("")
@@ -427,8 +498,7 @@ st.text("")
 st.text("")
 
 
-
-#Layout Block - Metadata Generation
+#%% #Layout Block - Metadata Generation
 
 
 st.title("Secondary Actor Film Metadata Analysis")
@@ -460,8 +530,6 @@ col1, col2 = st.columns(2)
 col1.image(md_secondary_actors_least_20_films_relative_rating_above_below_05 , use_column_width=True)
 st.write("Here the red group show actors with at least 20 appearances and a 'Relative Actor Score - Mean' score of 0.5 or above")
 st.write("Whereas the blue group also have at least 20 appearances but a 'Relative Actor Score - Mean' score of -0.5 or below")
-
-
 with st.expander("Relative Actor Score - Mean (and Std) Definition"):
      st.write("""
            Relative Actor Score, is the measure of a film's performance relative to the primary actor's expected performance.
@@ -495,90 +563,109 @@ st.text("")
 st.text("")
 st.text("")
 
-#Layout Block - Forecasting Introduction
-st.title("Forecasting Introduction")
+#%% The million euro question
+
+st.title("The Million Dollar Question: Who is the Worst Supporting Actor in Hollywood?")
+st.title("")
+st.write("""
+         Potentially a mean question, obviously this result isn't a reflection of the actor themselves. This just a quirk of the films they have been in but regardless, their acting career is far better then mine!
+         """
+       )
+
+col1, col2 , col3 = st.columns(3)
+col2.image(FG_acting_career , use_column_width=True)
+
+st.write("""
+         So good on them for making it, doing something they love!
+         """
+       )
+st.write("""
+
+         Filtering for actors with a film count of above 10, the secondary actor with the lowest relative score is can be found quite quickly by the following code:
+          
+             >> md_secondary_actors_filtered_for_count = md_secondary_actors[md_secondary_actors["Count"] >= 20]
+          
+             >> worst_secondary_actor = md_secondary_actors_filtered_for_count.loc[md_secondary_actors_filtered_for_count['Relative Actor Score - Mean'] == md_secondary_actors_filtered_for_count['Relative Actor Score - Mean'].min()]
+             
+             
+            
+            And the results is..... 
+        """
+        )
+st.write("")    
+st.write("")
+st.write("")
+st.write("")
+
+col1, col2 , col3 = st.columns(3)
+col2.image(rosie_o_donnell , use_column_width=True)
+col2.write("Rose O'Donnell")
+st.write("Surely undeserved, likely just the target of internet dweebs who spend all their time writing web pages about film rating statistics")
+    
+            
+            
+            
+              
+              
+          
+
+
+#%% #Layout Block - Forecasting Introduction
+st.title("Forecasting")
 
 
 
 st.header("Data Input Derivation")
-
-
-
-
-st.text("")
-st.text("")
-st.text("")
-
-st.subheader("Modelling Difficulties")
 st.write("""
-         - XXXXX my issue around generating training data
-         - XXXX my issue on tconst numbers
-         - Unable to use the code [import functions.py] or the [runcell] functions in the streamlit application 
-         - This caused me to have to front load all the general function in the stream_lit_script.py file, apologies, please collapse that section when explaining the file
-            - I required a lot of work to generate the metadata
-         - Circa 2k lines of coding at time of writing
-         - Some of this effort could have been avoided by better data-schema planning (not covered yet in course) or a better knowledge of various methods of combining and operating with tables (learning in progress)
-         - There are various issues with some of the metadata XXXXXX
-            - I’ve applied better organisation to the coding on [programming_analysis_project_analysis_file.py] and [stream_lit_script.py]. I’ve ran out of time to safely clean up the coding on [programming_analysis_project_data_prep.py]
+         The forecasting model aims to predict the IMDB rating of a film, from an input made of 6 (at the time of writing) expected from actors involved with the film. First every primary actor linked with the film (starting with the actors with the highest “film count”) have a meta-score populated, then followed by any secondary actors (starting with the highest “film count”)
+         
+         For primary actors the expected score is taken from a linear regression over their film ratings (as pictured earlier), for secondary actors their expected score equals their average film rating
+         
+         There are always 6 input data points for a film, therefore in the case there are too many actors, the actors (beginning with secondary) with lower film counts are excluded. In the case there are not enough actors, the later data points are populated with a zero
 
+         “Film Count” – the number of films/series (titles) the actor is linked to
+      """
+    )
+
+
+
+st.header("Forecasting Model")
+st.write("""
+         The forecasting model can be found in the file [programming_analysis_project_analysis_file.py]
+        """         
+        )
+
+    
+    
+    
+
+
+st.text("")
+st.text("")
+st.text("")
+
+
+
+
+
+#%% Modelling Discussion
+st.title("Modelling Difficulties")
+
+st.write("""         
+         - Towards the end of my modelling I attempted to implement a system were the "metadata" (actors statistics based on film ratings), would only be based on films within the training set. Therefore the metascores produced for testing wouldn't be using any information from the testing set films
+             - This caused issues as it also filtered out any data relating a secondary actor to a film from the testing set of films. This was an issue for generating testing metadata. 
+             - At the time this issue was encountered it was taking around 7-9 hours to regenerate results
+             - Therefore the metadata from the training set was re-split and the forecasting model trained and tested from it.
+         - I was unable to use the code [>>import functions.py] or the [runcell] functions in the streamlit application
+             - Therefore I've had to place all the general functions at the start of the stream_lit_script.py file. Affecting readability
+         - It was a lot of work to generate the metadata
+             - Circa 2k lines of coding at time of writing
+             - Re-generating the data takes around 9 hours
+             - Some of this effort could have been avoided by better data-schema planning (not covered yet in course) or a better knowledge of various methods of combining and operating with tables (learning in progress)
+        - I’ve applied better organisation to the coding on [programming_analysis_project_analysis_file.py] and [stream_lit_script.py]. I’ve ran out of time to safely clean up the coding on [programming_analysis_project_data_prep.py]
+        - This was a good learning experience all-in-all as I've learnt some hard lessons and have a list of items I want to revise
+        - Was unable to link my images/datatables to their permalinks. So I've placed relative file locations (see lines 186, 204 for an example in the stream_lit_script.py file)' 
          """
          )
-
-
-
-
-#any secondary actor with less of 20 appearances and with a 'Relative Actor Score - Mean' of above or below +-0.5 (respectively) 
-
-
-
-
-
-
-st.text("")
-st.text("")
-st.text("")
-st.text("")
-st.text("")
-st.text("")
-st.text("")
-st.text("")
-st.text("")
-st.text("")
-st.text("")
-st.text("")
-st.text("")
-st.text("")
-st.text("")
-st.text("")
-st.text("")
-st.text("")
-st.text("")
-st.text("")
-st.text("")
-st.text("")
-st.text("")
-st.text("")
-st.text("")
-st.text("")
-st.text("")
-st.text("")
-st.text("")
-st.text("")
-
-chart_data = pd.DataFrame(
-     np.random.randn(20, 3),
-     columns=['a', 'b', 'c'])
-
-st.line_chart(chart_data)
-
-
-#%% General Methods
-
-
-""" Methods for the reordering of cells into lists after being reloaded from .csv """
-
-
-
-#%% Re-loading.csv's
-
+         
 

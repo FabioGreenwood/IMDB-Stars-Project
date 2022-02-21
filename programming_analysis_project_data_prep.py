@@ -188,9 +188,9 @@ md_actor_to_film_secondary = md_actor_to_film_secondary.loc[:, ~md_actor_to_film
 
 
 md_film_scores = pd.read_csv(metadata_filepath + 'md_film_scores.csv')
-#relister_main(md_film_scores, 'genre', "string")
-#relister_main(md_film_scores, 'Primary Actor Relative Ratings', 'float')
-#relister_main(md_film_scores, 'nconst', 'string')
+relister_main(md_film_scores, 'genre', "string")
+relister_main(md_film_scores, 'Primary Actor Relative Ratings', 'float')
+relister_main(md_film_scores, 'nconst', 'string')
 md_film_scores = md_film_scores.loc[:, ~md_film_scores.columns.str.contains('^Unnamed')]
 #md_film_scores.set_index('tconst', inplace=True)
 
@@ -205,6 +205,8 @@ md_PrimaryActorsList = md_PrimaryActorsList.loc[:, ~md_PrimaryActorsList.columns
 print(datetime.now())
 md_secondary_actors.to_csv(metadata_filepath + 'md_secondary_actors.csv')
 
+
+
 print(datetime.now())
 md_secondary_actors = pd.read_csv(metadata_filepath + 'md_secondary_actors.csv')
 relister_main(md_secondary_actors, 'tconst', "string")
@@ -213,8 +215,8 @@ relister_main(md_secondary_actors, 'Relative Actor Scores', 'float')
 print(datetime.now())
 relister_main(md_secondary_actors, 'Film Years', 'int')
 print(datetime.now())
-relister_main(md_secondary_actors, 'nconst', 'string')
-#md_secondary_actors = md_secondary_actors.loc[:, ~md_secondary_actors.columns.str.contains('^Unnamed')]
+#relister_main(md_secondary_actors, 'nconst', 'string')
+md_secondary_actors = md_secondary_actors.loc[:, ~md_secondary_actors.columns.str.contains('^Unnamed')]
 md_secondary_actors = md_secondary_actors.loc[:, ~md_secondary_actors.columns.str.contains('^Unnamed')]
 print(datetime.now())
 

@@ -17,6 +17,7 @@ import seaborn as sns
 import plotly.express as px
 import pathlib
 import os
+import pickle
 
 #import warnings
 #warnings.filterwarnings("ignore")
@@ -35,9 +36,10 @@ analysis_filename = "programming_analysis_project_analysis_file.py"
 #import prepared data and methods from [programming_analysis_project_data_prep.py]
 runcell("start up run", script_filepath + dataprep_filename)
 runcell("General Methods", script_filepath + dataprep_filename)
-#runcell("Import Additional Modules and Define General Parameters", script_filepath + analysis_filename)
 
-
+md_secondary_actors_fix = md_secondary_actors.copy()
+for i in range(0,len(md_secondary_actors_fix)):
+    md_secondary_actors_fix['nconst'][i] = md_secondary_actors_fix['nconst'][i][0]
 
 
 #%% Create Analysis Printout
@@ -53,6 +55,22 @@ runcell("Create Forecase Model Input", script_filepath + metadata_filepath)
 
 #%% Create Forecase Model Input
 
+"""
+There are thre models created by this model, marked by the following name suffixes:
+
+regressor_x = the model created by the whole available data. metadata is generated only from films within the training set. 
+This filtering this may cause only 0 scores populated in the testing set, hence the creation of the models with "split" as a backup
+
+regressor_short_x = 
+simular to the regressor_x model, only referencing less films for speed of calculation
+
+regressor_short_split_x = 
+This model will split the films from the "regressor_short_x" model, to create a testing and training set. To be used as a back-up
+if the previous filter causes the testing meta data for "regressor_x" testing set to populate as zeros
+"""
+
+
+
 runcell('General Methods', 'C:/Users/fabio/OneDrive/Documents/Studies/Programming_Analysis_Project/IMDB-Stars-Project/programming_analysis_project_analysis_file.py')
 
 failures_to_populate_films_in_model_input = 0
@@ -64,7 +82,7 @@ film_years_approximated_as_2020 = 0
 md_title_principals_reduced_input = md_title_principals_reduced.copy()
 md_title_principals_reduced_input.set_index(['nconst', 'tconst'], inplace=True)
 md_title_principals_reduced_input = md_title_principals_reduced_input.loc[:, ~md_title_principals_reduced_input.columns.str.contains('^Unnamed')]
-
+from sklearn.linear_model import LinearRegression
 
 print(str(datetime.now()))
 print("1")
@@ -78,53 +96,64 @@ testing_tconsts = loadtxt(metadata_filepath + 'testing_tconsts.csv', delimiter='
 
 print(str(datetime.now()))
 print("gen X_train_shor")
-X_train_short, Y_train_short = populate_actor_metascores_for_insertion_into_the_model(training_tconsts[0::10], 6, md_PrimaryActorsList, md_secondary_actors, md_title_principals_reduced)
+
+X_train_short, Y_train_short = populate_actor_metascores_for_insertion_into_the_model(training_tconsts[0::20], 6, md_PrimaryActorsList, md_secondary_actors_fix, md_title_principals_reduced)
 savetxt(metadata_filepath + 'X_train_short.csv', asarray(X_train_short), delimiter=',', fmt='%s')
 savetxt(metadata_filepath + 'Y_train_short.csv', asarray(Y_train_short), delimiter=',', fmt='%s')
 print(str(datetime.now()))
-X_test_short, Y_test_short = populate_actor_metascores_for_insertion_into_the_model(testing_tconsts[0::10], 6, md_PrimaryActorsList, md_secondary_actors, md_title_principals_reduced)
-savetxt(metadata_filepath + 'X_test_short.csv', asarray(X_train_short), delimiter=',', fmt='%s')
-savetxt(metadata_filepath + 'Y_test_short.csv', asarray(Y_train_short), delimiter=',', fmt='%s')
+#X_test_short, Y_test_short = populate_actor_metascores_for_insertion_into_the_model(testing_tconsts[0::20], 6, md_PrimaryActorsList, md_secondary_actors, md_title_principals_reduced)
+#savetxt(metadata_filepath + 'X_test_short.csv', asarray(X_train_short), delimiter=',', fmt='%s')
+#savetxt(metadata_filepath + 'Y_test_short.csv', asarray(Y_train_short), delimiter=',', fmt='%s')
 
+
+#creation spliting of training set if unable to generate metadata for the training films
+X_train_short_split, X_test_short_split, Y_train_short_split, Y_test_short_split = train_test_split(X_train_short, Y_train_short , test_size=0.2, random_state=42)
+savetxt(metadata_filepath + 'X_train_short_split.csv',  asarray(X_train_short_split), delimiter=',', fmt='%s')
+savetxt(metadata_filepath + 'X_test_short_split.csv',   asarray(X_test_short_split), delimiter=',', fmt='%s')
+savetxt(metadata_filepath + 'Y_train_short_split.csv',  asarray(Y_train_short_split), delimiter=',', fmt='%s')
+savetxt(metadata_filepath + 'Y_test_short_split.csv',   asarray(Y_test_short_split), delimiter=',', fmt='%s')
+
+
+
+#print(str(datetime.now()))
+#print("gen X_train")
+#X_train, Y_train = populate_actor_metascores_for_insertion_into_the_model(training_tconsts, 6, md_PrimaryActorsList, md_secondary_actors, md_title_principals_reduced)
+#savetxt(metadata_filepath + 'X_train.csv', asarray(X_train), delimiter=',', fmt='%s')
+#savetxt(metadata_filepath + 'Y_train.csv', asarray(Y_train), delimiter=',', fmt='%s')
+#X_train, Y_train = populate_actor_metascores_for_insertion_into_the_model(testing_tconsts, 6, md_PrimaryActorsList, md_secondary_actors, md_title_principals_reduced)
+#savetxt(metadata_filepath + 'X_test.csv', asarray(X_train), delimiter=',', fmt='%s')
+#savetxt(metadata_filepath + 'Y_test.csv', asarray(Y_train), delimiter=',', fmt='%s')
+
+#print(str(datetime.now()))
+#print("3")
 
 print(str(datetime.now()))
-print("gen X_train")
-X_train, Y_train = populate_actor_metascores_for_insertion_into_the_model(training_tconsts, 6, md_PrimaryActorsList, md_secondary_actors, md_title_principals_reduced)
-savetxt(metadata_filepath + 'X_train.csv', asarray(X_train), delimiter=',', fmt='%s')
-savetxt(metadata_filepath + 'Y_train.csv', asarray(Y_train), delimiter=',', fmt='%s')
-X_train, Y_train = populate_actor_metascores_for_insertion_into_the_model(testing_tconsts, 6, md_PrimaryActorsList, md_secondary_actors, md_title_principals_reduced)
-savetxt(metadata_filepath + 'X_test.csv', asarray(X_train), delimiter=',', fmt='%s')
-savetxt(metadata_filepath + 'Y_test.csv', asarray(Y_train), delimiter=',', fmt='%s')
-
-print(str(datetime.now()))
-print("3")
-
-from sklearn.linear_model import LinearRegression
-regressor_short_x = LinearRegression()
-regressor_x = LinearRegression()
+#regressor_short_x = LinearRegression()
+regressor_short_split_x = LinearRegression()
+#regressor_x = LinearRegression()
 
 print(str(datetime.now()))
 print("4")
 
-regressor_short_x.fit(X_train_short, Y_train_short)
-regressor_x.fit(X_train, Y_train)
+#regressor_short_x.fit(X_train_short, Y_train_short)
+regressor_short_split_x.fit(X_train_short_split, Y_train_short_split)
+#regressor_x.fit(X_train, Y_train)
 
 print(str(datetime.now()))
 print("5")
 # Predicting the Test set results
-Y_pred_short = regressor_short_x.predict(X_test_short)
-Y_pred       = regressor_x.predict(X_test)
+#Y_pred_short = regressor_short_x.predict(X_test_short)
+Y_pred_short_split = regressor_short_split_x.predict(X_test_short_split)
+#Y_pred       = regressor_x.predict(X_test)
 
 print(str(datetime.now()))
 print("6")
 from sklearn.metrics import r2_score
-score_short = r2_score(Y_test_short,Y_pred_short)
-score       = r2_score(Y_test,Y_pred)
+#score_short         = r2_score(Y_test_short,Y_pred_short)
+score_short_split   = r2_score(Y_test_short_split,Y_pred_short_split)
+#score       = r2_score(Y_test,Y_pred)
 
 print(str(datetime.now()))
-
-
-
 
 
 
@@ -159,19 +188,6 @@ md_secondary_actors_pairplot.fig.suptitle("md_secondary_actors")
 sns.pairplot(md_secondary_actors_2, kind="hist", diag_kws = {'alpha':1, 'bins':10})
 
 
-
-
-"""
-sns.set_theme(style="white")
-g = sns.PairGrid(md_secondary_actors_2, diag_sharey=False)
-g.map_upper(sns.scatterplot, s=15)
-g.map_lower(sns.kdeplot)
-g.map_diag(sns.kdeplot, lw=2)
-"""
-
-
-
-
 #%% md_film_scores - Basic Analysis
 
 md_film_scores_2 = md_film_scores.drop(["name", "genre", "nconst", "Primary Actor Relative Ratings"], axis=1)
@@ -179,10 +195,6 @@ md_film_scores_corr = md_film_scores_2.corr()
 md_film_scores_pairplot = sns.pairplot(md_film_scores_2)
 md_film_scores_pairplot.fig.suptitle("md_film_scores")
 #md_secondary_actors_pairplot.fig.show()
-
-
-
-
 
 
 
@@ -228,12 +240,6 @@ p=sns.diverging_palette(250, 30, l=65, center="dark", as_cmap=True)
 
 
 
-#%% Draft - Parallel Axis Chart
-
-fig2 = px.parallel_coordinates(md_PrimaryActorsList_2)
-fig.show()
-
-
 #%% General Methods
 
 def populate_actor_metascores_for_insertion_into_the_model(film_tconst_list, desired_number_of_actors, primary_actor_DB, secondary_actor_DB,  md_title_principals_relational):
@@ -260,7 +266,7 @@ def populate_actor_metascores_for_insertion_into_the_model(film_tconst_list, des
     for film_tconst in film_tconst_list:
         
         counter += 1
-        fg_counter(counter, len(film_tconst_list), 100, start, False)
+        fg_counter(counter, len(film_tconst_list), 10, start, False)
         
         
         
@@ -310,7 +316,14 @@ def return_nconsts_in_film_with_highest_film_counts(film_tconst, actors_qty, pri
         if primary_actors_in_film['count'][index] == None:
             # if not found in primary actor DB, try secondary
             actor_nconst = primary_actors_in_film['nconst'][index]
+            #actor_nconst = "nm0210915"
+            #print(actor_nconst)
+            #if actor_nconst == "nm0210915":
+            #    print("Hello")
+            
+            
             actor_record = return_actor_record_from_nconst_v2(actor_nconst)
+            
             actor_name = actor_record[0]['name'].values[0]
             #if len(primary_actor_DB.loc[primary_actor_DB['name'] == primary_actors_in_film['actor name'][index]]) > 0:
             if len(primary_actor_DB.loc[primary_actor_DB['name'] == actor_name]) > 0:
@@ -335,6 +348,9 @@ def return_nconsts_in_film_with_highest_film_counts(film_tconst, actors_qty, pri
                 #actor record not found. Drop for this film and count drop
                 primary_actors_in_film = primary_actors_in_film.drop(index )
                 failure_to_populate_actor_nconst_for_metascore_generation += 1
+            
+                
+
                     
     actors_to_be_populated_qty = min(actors_qty, len(primary_actors_in_film))
     #actors_to_populate_nconsts = np.array([])
@@ -406,12 +422,15 @@ def generate_entry_for_score_predictor_from_nconst(nconsts, column_qty, year, pr
             #if the nconst refers to a primary actor, their metascore for a film is generated according to their linear model and the films year
             expected_rating = (2020 - year) * md_PrimaryActorsList["Model_Gradient"][row_num] + md_PrimaryActorsList["Model Rating 2020"][row_num]
             meta_scores = np.append(meta_scores, expected_rating)
-        elif nconst_is_secondary == True:
+        elif nconst_is_secondary == True and len(secondary_actor_row) > 0:
             #otherwise thier metascore is just their average score of the dataset
             ratings = np.array([])
             md_film_scores_temp = md_film_scores.set_index('tconst',inplace=False)
+            
+            
             try:
-                for tconst in relister_single_functional(secondary_actor_row['tconst'], "string"):
+                for tconst in secondary_actor_row['tconst']:
+                #for tconst in relister_single_functional(secondary_actor_row['tconst'], "string"):
                     try:
                         ratings = np.append(ratings, md_film_scores_temp['rating'][tconst])
                     except KeyError as err:
